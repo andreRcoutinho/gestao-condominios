@@ -10,3 +10,5 @@ router.get('/reset-password');
 /* WITH MIDDLEWARE */
 router.use(authMiddleware);
 router.get('/sign-up');
+
+module.exports = router;

@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
 
-  User.associate = function(models) {
+  User.associate = function (models) {
     // associations can be defined here
     User.hasOne(models.user_password, {
       foreignKey: 'user_password_id'
@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
 
     User.hasOne(models.role, {
       foreignKey: 'role_id'
+    });
+
+    User.hasMany(models.Contact, {
+      foreignKey: 'user_id',
+      as: 'contacts'
     });
   };
   return User;

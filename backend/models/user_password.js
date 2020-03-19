@@ -1,4 +1,6 @@
 'use strict';
+
+var bcrypt = require('bcryptjs');
 module.exports = (sequelize, DataTypes) => {
   const User_Password = sequelize.define(
     'User_Password',
@@ -16,10 +18,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       }
     },
-    {}
+    {
+      hooks: {
+        beforeCreate: User_Password => {
+          var salt = bcrypt.genSaltSync(10);
+          User_Password.password_hash = bcrypt.hashSync(
+            User_Password.password_hash,
+            salt
+          );
+        }
+      }
+    }
   );
   User_Password.associate = function(models) {
     // associations can be defined here
+    //User_Password.belongsTo(models.User);
   };
   return User_Password;
 };

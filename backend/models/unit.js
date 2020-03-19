@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
       foriengKey: 'typology_id',
       onDelete: 'Cascade'
     });
+
+    Unit.belongsToMany(models.User, {
+      foreignKey: 'unit_id',
+      through: 'UserUnits',
+      as: 'users'
+    });
   };
   return Unit;
 };

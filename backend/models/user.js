@@ -3,6 +3,10 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
     {
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       first_name: {
         type: DataTypes.STRING(25),
         allowNull: false
@@ -18,24 +22,32 @@ module.exports = (sequelize, DataTypes) => {
       NIF: {
         type: DataTypes.STRING(9),
         allowNull: false
-      }
+      },
+      role_id: DataTypes.INTEGER,
+      user_password_id: DataTypes.INTEGER
     },
     {}
   );
 
-  User.associate = function (models) {
+  User.associate = function(models) {
     // associations can be defined here
-    User.hasOne(models.user_password, {
+    User.hasOne(models.User_Password, {
       foreignKey: 'user_password_id'
     });
 
-    User.hasOne(models.role, {
+    User.hasOne(models.Role, {
       foreignKey: 'role_id'
     });
 
     User.hasMany(models.Contact, {
       foreignKey: 'user_id',
       as: 'contacts'
+    });
+
+    User.belongsToMany(models.Unit, {
+      foreignKey: 'user_id',
+      through: 'UserUnits',
+      as: 'units'
     });
   };
   return User;

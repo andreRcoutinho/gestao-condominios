@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 var models = require('../models/index');
+var bcrypt = require('bcryptjs');
+var authConfig = require('../config/auth.json');
 
 module.exports = {
   async SignIn(req, res) {
@@ -9,21 +11,47 @@ module.exports = {
       res.status(400).send({ error: 'Missing Fields' });
     }
 
-    const user = await models.User.findOne({
+    const hasUser = await models.User.findOne({
       where: {
         email
       },
-      include: {
-        model: models.User_Password,
-        attributes: ['password_hash'],
-        required: true
-      }
+      attributes: ['id', 'email', 'first_name', 'last_name'],
+      include: [
+        {
+          model: models.Role,
+          attributes: ['role_name']
+        },
+        {
+          model: models.User_Password,
+          attributes: ['password_hash']
+        }
+      ]
     });
 
-    if (!user) {
+    if (!hasUser) {
       return res.status(400).send({ error: 'User not exists' });
     } else {
-      console.log(user);
+      if (!bcrypt.compareSync(password, hasUser.User_Password.password_hash)) {
+        return res.status(400).send({ error: 'Invalid Password' });
+      }
+
+      const token = jwt.sign(
+        { id: hasUser.id, role: hasUser.Role.role_name },
+        authConfig.secret,
+        {
+          expiresIn: 86400
+        }
+      );
+
+      const user = {
+        id: hasUser.id,
+        first_name: hasUser.first_name,
+        last_name: hasUser.last_name,
+        role: hasUser.Role.role_name,
+        email: hasUser.email
+      };
+
+      return res.send({ user, token });
     }
   },
   async SignUp(req, res) {

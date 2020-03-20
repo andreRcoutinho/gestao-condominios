@@ -43,15 +43,18 @@ module.exports = {
         }
       );
 
-      const user = {
-        id: hasUser.id,
-        first_name: hasUser.first_name,
-        last_name: hasUser.last_name,
-        role: hasUser.Role.role_name,
-        email: hasUser.email
+      const response = {
+        user: {
+          id: hasUser.id,
+          first_name: hasUser.first_name,
+          last_name: hasUser.last_name,
+          role: hasUser.Role.role_name,
+          email: hasUser.email
+        },
+        token: token
       };
 
-      return res.send({ user, token });
+      return res.send({ response });
     }
   },
   async SignUp(req, res) {

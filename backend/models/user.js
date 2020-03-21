@@ -29,25 +29,20 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
 
-  User.associate = function(models) {
+  User.associate = function (models) {
     // associations can be defined here
-    User.belongsTo(models.User_Password, {
-      foreignKey: 'user_password_id'
-    });
+    User.hasOne(models.User_Password);
 
-    User.belongsTo(models.Role, {
-      foreignKey: 'role_id'
-    });
+    User.hasOne(models.Role);
 
     User.hasMany(models.Contact, {
       foreignKey: 'user_id',
-      as: 'contacts'
+      as: 'contacts',
+      onDelete: 'CASCADE'
     });
 
     User.belongsToMany(models.Unit, {
-      foreignKey: 'user_id',
-      through: 'UserUnits',
-      as: 'units'
+      through: 'user_has_unit'
     });
   };
   return User;

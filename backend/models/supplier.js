@@ -10,7 +10,14 @@ module.exports = (sequelize, DataTypes) => {
   Supplier.associate = function (models) {
     Supplier.hasMany(models.Contact, {
       foreignKey: 'supplier_id',
-      as: 'contacts'
+    });
+
+    Supplier.hasMany(models.Expence, {
+      foreignKey: 'supplier_id',
+    });
+
+    Supplier.belongsToMany(models.ServiceType, {
+      through: 'supplier_has_service_type'
     });
   };
   return Supplier;

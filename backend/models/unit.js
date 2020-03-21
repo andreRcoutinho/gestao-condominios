@@ -10,17 +10,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Unit.associate = function(models) {
+  Unit.associate = function (models) {
     // associations can be defined here
     Unit.belongsTo(models.Typology, {
-      foriengKey: 'typology_id',
-      onDelete: 'Cascade'
+      onDelete: 'CASCADE'
     });
 
+    Unit.hasMany(models.Revenue, {
+      foreignKey: 'unit_id'
+    })
+
     Unit.belongsToMany(models.User, {
-      foreignKey: 'unit_id',
-      through: 'UserUnits',
-      as: 'users'
+      through: 'user_has_unit'
     });
   };
   return Unit;

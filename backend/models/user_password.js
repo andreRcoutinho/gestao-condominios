@@ -30,9 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   );
-  User_Password.associate = function(models) {
-    // associations can be defined here
-    //User_Password.belongsTo(models.User);
+  User_Password.associate = function (models) {
+    User_Password.belongsTo(models.User, {
+      foreignKey: 'user_password_id'
+    });
   };
   return User_Password;
 };

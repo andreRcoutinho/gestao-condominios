@@ -7,17 +7,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Contact.associate = function(models) {
+  Contact.associate = function (models) {
     Contact.belongsTo(models.Supplier, {
-      foreignKey: 'supplier_id',
-      onDelete: 'Cascade'
+      onDelete: 'CASCADE'
     });
 
-    Contact.belongsTo(models.User),
-      {
-        foreignKey: 'user_id',
-        onDelete: 'Cascade'
-      };
+    Contact.belongsTo(models.User, {
+      onDelete: 'CASCADE'
+    });
   };
   return Contact;
 };

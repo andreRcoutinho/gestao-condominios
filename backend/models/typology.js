@@ -10,10 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Typology.associate = function(models) {
+  Typology.associate = function (models) {
     Typology.hasMany(models.Unit, {
-      foreignKey: 'typology_id',
-      as: 'units'
+      foreignKey: 'typology_id'
     });
   };
   return Typology;

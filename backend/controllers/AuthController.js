@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 var models = require('../models/index');
 var bcrypt = require('bcryptjs');
-var authConfig = require('../config/auth.json');
+var authConfig = require('../config/auth');
 
 module.exports = {
   async SignIn(req, res) {

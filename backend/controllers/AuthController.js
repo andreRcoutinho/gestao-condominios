@@ -67,8 +67,7 @@ module.exports = {
       IBAN,
       role_id,
       unit_id,
-      phone_numbers,
-      user_password_id
+      phone_numbers
     } = req.body;
 
     try {
@@ -113,16 +112,13 @@ module.exports = {
             user_password_id: pass.dataValues.id
           });
 
-          if (!user) {
-            return res.status(400).send({ error: 'Something went wrong' });
-          } else {
-            return res.status(200).send({ message: 'Success Create', user });
-          }
+          return res.status(200).send({ message: 'Success Create', user });
         }
       }
     } catch (e) {
       console.log(e);
       return res.status(400).send({ error: 'Registration Failed' });
     }
-  }
+  },
+  async ForgetPassword(req, res) {}
 };

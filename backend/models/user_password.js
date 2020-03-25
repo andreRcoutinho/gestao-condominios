@@ -30,10 +30,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   );
-  User_Password.associate = function (models) {
-    User_Password.belongsTo(models.User, {
-      foreignKey: 'user_password_id'
-    });
+  User_Password.associate = function(models) {
+    User_Password.belongsTo(models.User);
   };
   return User_Password;
 };

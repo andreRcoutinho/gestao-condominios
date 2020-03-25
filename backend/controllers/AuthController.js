@@ -119,6 +119,5 @@ module.exports = {
       console.log(e);
       return res.status(400).send({ error: 'Registration Failed' });
     }
-  },
-  async ForgetPassword(req, res) {}
+  }
 };

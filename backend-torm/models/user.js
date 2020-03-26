@@ -11,8 +11,8 @@ module.exports = new EntitySchema({
     },
     relations: {
         role: { target: "Role", type: "one-to-one", joinColumn: true },
-        contacts: { target: "Contact", type: "one-to-many" },
-        user_password: { target: "UserPassword", type: "one-to-one", joinColumn: true, name: 'test' },
+        contacts: { target: "Contact", type: "one-to-many"},
+        user_password: { target: "UserPassword", type: "one-to-one", joinColumn: true },
         units: { target: "Unit", type: "many-to-many", joinTable: true }
     }
 });

@@ -1,15 +1,14 @@
-import 'reflect-metadata';
-import express from "express";
-import {Request, Response} from "express";
-import bodyParser from  "body-parser";
+import express from 'express';
+import authRouter from './routes/authRouter';
+import 'reflect-metadata'
+import { createConnection } from 'typeorm';
 
-// create and setup express app
 const app = express();
-app.use(bodyParser.json());
 
-app.get("/test", function(req: Request, res: Response) {
-    console.log('Test');
-});
+createConnection().then( con => {
+    console.log('Connected')
+})
 
-// start express server
-app.listen(3000);
+app.use('/', authRouter);
+
+app.listen(3333);

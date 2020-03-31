@@ -1,5 +1,5 @@
 import { BaseEntity } from 'typeorm';
-import { User } from './unit';
+import { User } from './user';
 import { Supplier } from './supplier';
 
 export class Contact extends BaseEntity {

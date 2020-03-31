@@ -8,6 +8,20 @@ const conn = require('typeorm');
 module.exports = {
     async signIn(req, res) {
         //TO DO Validations
+        let rules = {
+            email: 'required|email',
+            password: 'required'
+        }
+
+        let validation = new Validator(req.body, rules);
+
+        if (validation.fails()) {
+            return res.status(400).send({ success: false, message: "Faltam informações" })
+        }
+
+        //let user = conn.getConnection().getRepository('User').createQueryBuilder('u').innerJoin('userPasswordId', 'user_password').where({email: req.body.email})
+        //console.log(user)
+        //return res.send(user);
 
     },
     async signUp(req, res) {

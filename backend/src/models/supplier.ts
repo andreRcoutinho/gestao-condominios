@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Expense } from './expense';
 import { Contact } from './contact';
 import { ServiceType } from './service_type';
@@ -30,6 +30,7 @@ export class Supplier extends BaseEntity {
     private contacts: Contact[];
 
     @ManyToMany(type => ServiceType, { eager: true })
+    @JoinTable()
     private service_type: ServiceType[];
 
     constructor() {

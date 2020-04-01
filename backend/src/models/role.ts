@@ -1,4 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from './user';
 
 @Entity('Role')
 export class Role extends BaseEntity {
@@ -8,6 +9,8 @@ export class Role extends BaseEntity {
 
     @Column({ name: 'role_name' })
     private role_name: String;
+
+    private users: User[];
 
     constructor(role_name: String) {
         super();

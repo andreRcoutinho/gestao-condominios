@@ -1,4 +1,8 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable } from 'typeorm';
+import { Role } from './role';
+import { Contact } from './contact';
+import { UserPassword } from './user_password';
+import { Unit } from './unit';
 
 @Entity('User')
 export class User extends BaseEntity {
@@ -17,6 +21,20 @@ export class User extends BaseEntity {
 
     @Column({ name: 'NIF' })
     private NIF: String;
+
+    @ManyToOne(type => Role, { eager: true, cascade: true })
+    private role: Role;
+
+    @OneToMany(type => Contact, contact => contact.getUser)
+    private contacts: Contact[];
+
+    @OneToOne(type => UserPassword)
+    @JoinColumn()
+    private user_password: UserPassword;
+
+    @ManyToMany(type => Unit)
+    @JoinTable()
+    private units: Unit[];
 
     constructor(first_name: String, last_name: String, IBAN: String, NIF: String) {
         super();
@@ -64,6 +82,38 @@ export class User extends BaseEntity {
 
     public setNIF(NIF: String): void {
         this.NIF = NIF;
+    }
+
+    public getRole(): Role {
+        return this.role;
+    }
+
+    public setRole(role: Role): void {
+        this.role = role;
+    }
+
+    public getContacts(): Contact[] {
+        return this.contacts;
+    }
+
+    public setContacts(contacts: Contact[]): void {
+        this.contacts = contacts;
+    }
+
+    public getUser_password(): UserPassword {
+        return this.user_password;
+    }
+
+    public setUser_password(user_password: UserPassword): void {
+        this.user_password = user_password;
+    }
+
+    public getUnits(): Unit[] {
+        return this.units;
+    }
+
+    public setUnits(units: Unit[]): void {
+        this.units = units;
     }
 
 }

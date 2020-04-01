@@ -10,8 +10,6 @@ export class Role extends BaseEntity {
     @Column({ name: 'role_name' })
     private role_name: String;
 
-    private users: User[];
-
     constructor(role_name: String) {
         super();
         this.role_name = role_name;

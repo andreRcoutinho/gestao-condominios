@@ -1,14 +1,25 @@
-import { BaseEntity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Unit } from './unit';
 import { PaymentMap } from './payment_map';
 
 export class Revenue extends BaseEntity {
 
+    @PrimaryGeneratedColumn({ name: 'id' })
     private id: Number;
+
+    @Column({ name: 'month' })
     private month: String;
+
+    @Column({ name: 'payment_date' })
     private payment_date: Date;
-    private is_paid: Boolean;
-    private unit: Unit;
+
+    @Column({ name: 'paid' })
+    private paid: Boolean;
+
+    @ManyToOne(type => Unit, { eager: true })
+    private units: Unit[];
+
+    @OneToMany(type => PaymentMap, payment_map => payment_map.getRevenue)
     private payment_map: PaymentMap;
 
     constructor() {
@@ -39,20 +50,20 @@ export class Revenue extends BaseEntity {
         this.payment_date = payment_date;
     }
 
-    public isIs_paid(): Boolean {
-        return this.is_paid;
+    public isPaid(): Boolean {
+        return this.paid;
     }
 
-    public setIs_paid(is_paid: Boolean): void {
-        this.is_paid = is_paid;
+    public setPaid(paid: Boolean): void {
+        this.paid = paid;
     }
 
-    public getUnit(): Unit {
-        return this.unit;
+    public getUnits(): Unit[] {
+        return this.units;
     }
 
-    public setUnit(unit: Unit): void {
-        this.unit = unit;
+    public setUnits(units: Unit[]): void {
+        this.units = units;
     }
 
     public getPayment_map(): PaymentMap {

@@ -1,13 +1,22 @@
-import { BaseEntity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Revenue } from './revenue';
 import { PaymentMapValues } from './payment_map_values';
 
 export class PaymentMap extends BaseEntity {
 
+    @PrimaryGeneratedColumn({ name: 'id' })
     private id: Number;
+
+    @Column({ name: 'name' })
     private name: String;
+
+    @Column({ name: 'description' })
     private description: String;
+
+    @ManyToOne(type => Revenue, { eager: true })
     private revenue: Revenue[];
+
+    
     private payment_map_values: PaymentMapValues;
 
     constructor() {

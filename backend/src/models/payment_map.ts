@@ -17,8 +17,8 @@ export class PaymentMap extends BaseEntity {
     @ManyToOne(type => Revenue, { eager: true })
     private revenue: Revenue[];
 
-    
-    private payment_map_values: PaymentMapValues;
+    @ManyToOne(type => PaymentMapValues, { eager: true })
+    private payment_map_values: PaymentMapValues[];
 
     constructor() {
         super();
@@ -54,6 +54,14 @@ export class PaymentMap extends BaseEntity {
 
     public setRevenue(revenue: Revenue[]): void {
         this.revenue = revenue;
+    }
+
+    public getPayment_map_values(): PaymentMapValues[] {
+        return this.payment_map_values;
+    }
+
+    public setPayment_map_values(payment_map_values: PaymentMapValues[]): void {
+        this.payment_map_values = payment_map_values;
     }
 
 }

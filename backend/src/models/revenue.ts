@@ -1,7 +1,8 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, Entity } from 'typeorm';
 import { Unit } from './unit';
 import { PaymentMap } from './payment_map';
 
+@Entity('Revenue')
 export class Revenue extends BaseEntity {
 
     @PrimaryGeneratedColumn({ name: 'id' })

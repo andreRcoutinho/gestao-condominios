@@ -1,7 +1,8 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { Supplier } from './supplier';
 
+@Entity('Contact')
 export class Contact extends BaseEntity {
 
     @PrimaryGeneratedColumn({ name: 'id' })

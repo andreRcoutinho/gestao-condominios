@@ -1,7 +1,8 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity ,BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Typology } from './typology';
 import { Revenue } from './revenue';
 
+@Entity('Unit')
 export class Unit extends BaseEntity {
 
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -13,7 +14,7 @@ export class Unit extends BaseEntity {
     @ManyToOne(type => Typology, { eager: true, cascade: true })
     private typology: Typology;
 
-    @OneToMany(type => Revenue, revenue => revenue.getUnit)
+    @OneToMany(type => Revenue, revenue => revenue.getUnits)
     private revenues: Revenue[];
 
     constructor() {

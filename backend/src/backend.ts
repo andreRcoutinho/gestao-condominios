@@ -9,6 +9,6 @@ createConnection().then( con => {
     console.log('Connected')
 })
 
-app.use('/', authRouter);
+app.use('/api', authRouter);
 
 app.listen(3333);

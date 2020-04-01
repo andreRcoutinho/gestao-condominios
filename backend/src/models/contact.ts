@@ -1,12 +1,19 @@
-import { BaseEntity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { Supplier } from './supplier';
 
 export class Contact extends BaseEntity {
 
+    @PrimaryGeneratedColumn({ name: 'id' })
     private id: Number;
+
+    @Column({ name: 'phone_number' })
     private phone_number: String;
+
+    @ManyToOne(type => User, { eager: true })
     private user: User;
+
+    @ManyToOne(type => Supplier, { eager: true })
     private supplier: Supplier;
 
     constructor() {

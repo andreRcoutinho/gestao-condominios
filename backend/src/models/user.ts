@@ -10,6 +10,9 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn({ name: 'id' })
     private id: Number;
 
+    @Column({ name: 'email' })
+    private email: String;
+
     @Column({ name: 'first_name' })
     private first_name: String;
 
@@ -28,7 +31,7 @@ export class User extends BaseEntity {
     @OneToMany(type => Contact, contact => contact.getUser)
     private contacts: Contact[];
 
-    @OneToOne(type => UserPassword)
+    @OneToOne(type => UserPassword, { eager: true, cascade: true })
     @JoinColumn()
     private user_password: UserPassword;
 
@@ -36,8 +39,9 @@ export class User extends BaseEntity {
     @JoinTable()
     private units: Unit[];
 
-    constructor(first_name: String, last_name: String, IBAN: String, NIF: String, role: Role, user_password: UserPassword) {
+    constructor(email: String, first_name: String, last_name: String, IBAN: String, NIF: String, role: Role, user_password: UserPassword) {
         super();
+        this.email = email;
         this.first_name = first_name;
         this.last_name = last_name;
         this.IBAN = IBAN;
@@ -52,6 +56,14 @@ export class User extends BaseEntity {
 
     public setId(id: Number): void {
         this.id = id;
+    }
+
+    public setEmail(email: String): void {
+        this.email = email;
+    }
+
+    public getEmail(): String {
+        return this.email;
     }
 
     public getFirst_name(): String {

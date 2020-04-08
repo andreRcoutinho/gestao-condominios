@@ -10,5 +10,10 @@ module.exports = {
     synchronize: true,
     dropSchema: true,
     logging: false,
-    entities: ['./src/models/*.ts']
+    entities: [
+        "build/models/*.js"
+    ],
+    cli: {
+        "entitiesDir": "src/models"
+    }
 } 

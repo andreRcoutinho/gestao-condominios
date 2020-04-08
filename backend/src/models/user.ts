@@ -36,12 +36,14 @@ export class User extends BaseEntity {
     @JoinTable()
     private units: Unit[];
 
-    constructor(first_name: String, last_name: String, IBAN: String, NIF: String) {
+    constructor(first_name: String, last_name: String, IBAN: String, NIF: String, role: Role, user_password: UserPassword) {
         super();
         this.first_name = first_name;
         this.last_name = last_name;
         this.IBAN = IBAN;
         this.NIF = NIF;
+        this.role = role;
+        this.user_password = user_password;
     }
 
     public getId(): Number {

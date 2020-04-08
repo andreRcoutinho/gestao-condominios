@@ -19,9 +19,6 @@ export class PaymentMapValues extends BaseEntity {
     @Column({ name: 'reserve_fund' })
     private reserve_fund: String;
 
-    @ManyToOne(type => PaymentMap, { eager: true })
-    private payment_map: PaymentMap;
-
     constructor() {
         super();
     }
@@ -64,14 +61,6 @@ export class PaymentMapValues extends BaseEntity {
 
     public setReserve_fund(reserve_fund: String): void {
         this.reserve_fund = reserve_fund;
-    }
-
-    public getPayment_map(): PaymentMap {
-        return this.payment_map;
-    }
-
-    public setPayment_map(payment_map: PaymentMap): void {
-        this.payment_map = payment_map;
     }
 
 }

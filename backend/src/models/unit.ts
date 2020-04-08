@@ -1,4 +1,4 @@
-import { Entity ,BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Typology } from './typology';
 import { Revenue } from './revenue';
 
@@ -17,8 +17,10 @@ export class Unit extends BaseEntity {
     @OneToMany(type => Revenue, revenue => revenue.getUnits)
     private revenues: Revenue[];
 
-    constructor() {
+    constructor(unit: String, typology: Typology) {
         super();
+        this.unit = unit;
+        this.typology = typology;
     }
 
     public getId(): Number {

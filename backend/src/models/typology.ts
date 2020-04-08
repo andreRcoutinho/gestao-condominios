@@ -9,8 +9,9 @@ export class Typology extends BaseEntity {
     @Column({ name: 'typology' })
     private typology: String;
 
-    constructor() {
+    constructor(typology: String) {
         super();
+        this.typology = typology;
     }
 
     public getId(): Number {

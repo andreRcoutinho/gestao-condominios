@@ -2,10 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "backend.js",
   "scripts": {
     "dev": "nodemon",
-    "start": "ts-node src/backend.ts"
+    "ts-node": "ts-node src/backend.ts",
+    "start": "npm run build && node ./build/backend.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

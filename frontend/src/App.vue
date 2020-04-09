@@ -1,46 +1,37 @@
-<template>
+<!-- <template>
 	<v-app>
-		<v-app-bar app color="primary" dark>
-			<div class="d-flex align-center">
-				<v-img
-					alt="Vuetify Logo"
-					class="shrink mr-2"
-					contain
-					src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-					transition="scale-transition"
-					width="40"
-				/>
-			</div>
-
-			<v-spacer></v-spacer>
-
-			<v-btn text rounded to="/">
-				Home
-			</v-btn>
-
-			<v-btn text rounded :to="{ name: 'about' }">
-				About
-			</v-btn>
-		</v-app-bar>
+		<NavDrawer />
+		<AppNav />
 
 		<v-content>
-			<router-view class="page" />
+			<div class="main">
+				<router-view />
+			</div>
 		</v-content>
+	</v-app>
+</template> -->
+
+<template>
+	<v-app>
+		<component :is="layout" class="bg">
+			<router-view :layout.sync="layout" />
+		</component>
 	</v-app>
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld';
-
 export default {
 	name: 'App',
-
-	components: {
-		// HelloWorld
+	data: () => {
+		return {
+			layout: 'div',
+		};
 	},
-
-	data: () => ({
-		//
-	})
 };
 </script>
+
+<style scoped>
+#app {
+	background-color: #fafafa;
+}
+</style>

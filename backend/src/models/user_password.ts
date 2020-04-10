@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
 
 import bcrypt from 'bcryptjs';
@@ -66,5 +65,10 @@ export class UserPassword extends BaseEntity {
     this.setPassword_hash(
       bcrypt.hashSync(this.getPassword_hash().toString(), salt)
     );
+  }
+
+  public update_password(new_password): void {
+    var salt = bcrypt.genSaltSync(10);
+    this.setPassword_hash(bcrypt.hashSync(new_password.toString(), salt));
   }
 }

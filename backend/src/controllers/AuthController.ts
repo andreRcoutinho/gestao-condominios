@@ -6,7 +6,7 @@ import Validator from 'validatorjs';
 import { Unit } from '../models/unit';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import auth from '../config/auth';
+import authConfig from '../config/auth';
 
 export default {
   async signUp(req: Request, res: Response) {
@@ -99,9 +99,13 @@ export default {
         res.status(400).send({ message: 'Password Inválida' });
       }
 
-      const token = jwt.sign({ id: user.getId() }, auth.secret, {
-        expiresIn: 86400,
-      });
+      const token = jwt.sign(
+        { id: user.getId(), role: user.getRole().getRole_name() },
+        authConfig.secret,
+        {
+          expiresIn: 86400,
+        }
+      );
 
       return res.send({ user, token });
     } catch (error) {}

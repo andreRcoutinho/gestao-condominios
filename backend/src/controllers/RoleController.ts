@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Role } from '../models/role';
-import * as HttpStatus from 'http-status-codes';
+import HttpStatus from 'http-status-codes';
 
 export default {
   async index(req: Request, res: Response) {

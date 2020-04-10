@@ -1,10 +1,4 @@
-import {
-  Entity,
-  BaseEntity,
-  PrimaryGeneratedColumn,
-  Column,
-  BeforeInsert,
-} from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
 
 import bcrypt from 'bcryptjs';
 

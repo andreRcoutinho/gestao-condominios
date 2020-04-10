@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import Validator from 'validatorjs';
 import { UserPassword } from '../models/user_password';
 import { User } from '../models/user';
-import * as HttpStatus from 'http-status-codes';
+import HttpStatus from 'http-status-codes';
+import { Contact } from '../models/contact';
 
 export default {
   async index(req: Request, res: Response) {},

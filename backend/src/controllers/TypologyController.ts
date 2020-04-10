@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Typology } from '../models/typology';
 import Validator from 'validatorjs';
-import * as HttpStatus from 'http-status-codes';
+import HttpStatus from 'http-status-codes';
 
 export default {
   async index(req: Request, res: Response) {

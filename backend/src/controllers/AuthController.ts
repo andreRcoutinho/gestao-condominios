@@ -7,7 +7,7 @@ import { Unit } from '../models/unit';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth';
-import * as HttpStatus from 'http-status-codes';
+import HttpStatus from 'http-status-codes';
 
 export default {
   async signUp(req: Request, res: Response) {
@@ -24,12 +24,7 @@ export default {
         unit_id: 'required',
         phone_numbers: 'required',
       };
-      var validation = new Validator(req.body, rules);
-      if (validation.fails()) {
-        return res
-          .status(400)
-          .send({ message: 'Faltam informações para completar o registo!' });
-      }
+
       // Check if the user exists in database
       var has_user = await User.getRepository().findOne({
         where: { email: req.body.email },

@@ -28,10 +28,5 @@ app.use('/api', authRouter);
 app.use('/api/typologies', typologyRouter);
 app.use('/api/roles', roleRouter);
 app.use('/api/users', userRouter);
-// /
-// /
-// /
-// /
-// /
 
 app.listen(3333);

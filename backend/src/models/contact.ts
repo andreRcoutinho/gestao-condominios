@@ -6,7 +6,7 @@ import { Supplier } from './supplier';
 export class Contact extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   private id: Number;
-
+  
   @Column({ name: 'phone_number' })
   private phone_number: String;
 

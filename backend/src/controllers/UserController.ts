@@ -9,7 +9,6 @@ export default {
   async index(req: Request, res: Response) {},
   async show(req: Request, res: Response) {},
   // TO DO
-  // EMAIL OR ID?
   // REPEAT NEW PASSWORD?
   async updatePassword(req: Request, res: Response) {
     try {

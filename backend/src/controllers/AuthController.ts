@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/user';
 import { Role } from '../models/role';
 import { UserPassword } from '../models/user_password';
-import Validator from 'validatorjs';
+import Validator, { Rules } from 'validatorjs';
 import { Unit } from '../models/unit';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -13,7 +13,7 @@ export default {
   async signUp(req: Request, res: Response) {
     // Validation
     try {
-      var rules = {
+      var rules: Rules = {
         first_name: 'required',
         last_name: 'required',
         email: 'required|email',
@@ -24,6 +24,13 @@ export default {
         unit_id: 'required',
         phone_numbers: 'required',
       };
+
+      var validation = new Validator(req.body, rules);
+      if (validation.fails()) {
+        return res
+          .status(400)
+          .send({ message: 'Faltam informações para completar o registo!' });
+      }
 
       // Check if the user exists in database
       var has_user = await User.getRepository().findOne({
@@ -96,7 +103,7 @@ export default {
       }
 
       const token = jwt.sign(
-        { id: user.getId(), role: user.getRole().getRole_name() },
+        { id: user.getId(), role: user.getRole().getRole_name()},
         authConfig.secret,
         {
           expiresIn: 86400,

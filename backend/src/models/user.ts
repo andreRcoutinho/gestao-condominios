@@ -31,7 +31,7 @@ export class User extends BaseEntity {
     @OneToMany(type => Contact, contact => contact.getUser)
     private contacts: Contact[];
 
-    @OneToOne(type => UserPassword, { eager: true, cascade: true })
+    @OneToOne(type => UserPassword, { eager: true, cascade: true})
     @JoinColumn()
     private user_password: UserPassword;
 

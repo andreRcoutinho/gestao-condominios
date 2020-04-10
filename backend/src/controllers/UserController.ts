@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Validator from 'validatorjs';
 import { UserPassword } from '../models/user_password';
 import { User } from '../models/user';
+import * as HttpStatus from 'http-status-codes';
 
 export default {
   async index(req: Request, res: Response) {},
@@ -33,7 +34,9 @@ export default {
       user_password.update_password(req.body.new_password);
       await user_password.save();
 
-      return res.send({ message: 'Password alterada com sucesso' });
+      return res
+        .status(HttpStatus.OK)
+        .send({ message: 'Password alterada com sucesso' });
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: 'Alguma coisa correu mal ...' });

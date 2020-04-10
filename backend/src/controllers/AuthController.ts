@@ -7,6 +7,7 @@ import { Unit } from '../models/unit';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth';
+import * as HttpStatus from 'http-status-codes';
 
 export default {
   async signUp(req: Request, res: Response) {
@@ -66,7 +67,7 @@ export default {
       user.setUnits(units);
       await user.save();
 
-      return res.status(200).send({ message: 'Sucesso', user });
+      return res.status(HttpStatus.OK).send({ message: 'Sucesso', user });
     } catch (error) {
       console.log(error);
       res.status(400).send({ message: 'Alguma coisa correu mal ...' });
@@ -107,7 +108,7 @@ export default {
         }
       );
 
-      return res.send({ user, token });
+      return res.status(HttpStatus.OK).send({ user, token });
     } catch (error) {}
   },
   //TO DO

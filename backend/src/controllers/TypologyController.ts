@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { Typology } from '../models/typology';
 import Validator from 'validatorjs';
+import * as HttpStatus from 'http-status-codes';
 
 export default {
   async index(req: Request, res: Response) {
     try {
       var typologys: Typology[] = await Typology.find();
-      return res.send(typologys);
+      return res.status(HttpStatus.OK).send(typologys);
     } catch (error) {
       console.log(error);
       return res.status(500).send({ message: 'Alguma coisa correu mal ...' });
@@ -38,7 +39,7 @@ export default {
       var typology: Typology = new Typology(req.body.typology);
       await typology.save();
 
-      return res.send({ success: true, typology });
+      return res.status(HttpStatus.OK).send({ success: true, typology });
     } catch (error) {
       console.log(error);
       return res.status(500).send({ message: 'Alguma coisa correu mal ...' });
@@ -62,7 +63,7 @@ export default {
 
       var typology: Typology = await Typology.findOne(req.params.id);
 
-      return res.send(typology);
+      return res.status(HttpStatus.OK).send(typology);
     } catch (error) {
       console.log(error);
       return res.status(500).send({ message: 'Alguma coisa correu mal ...' });
@@ -75,7 +76,7 @@ export default {
       });
       await Typology.remove(typology);
 
-      return res.send({ success: true });
+      return res.status(HttpStatus.OK).send({ success: true });
     } catch (error) {
       res.status(500).send({ message: 'Alguma coisa correu mal ...' });
     }

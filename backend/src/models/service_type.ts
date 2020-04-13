@@ -9,8 +9,9 @@ export class ServiceType extends BaseEntity {
     @Column({ name: 'service_type' })
     private service_type: String;
 
-    constructor() {
+    constructor(service_type: String) {
         super();
+        this.service_type = service_type;
     }
 
     public getId(): Number {

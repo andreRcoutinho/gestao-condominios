@@ -1,15 +1,17 @@
-import express from 'express';
-import authRouter from './routes/authRouter';
-import typologyRouter from './routes/typologyRouter';
-import roleRouter from './routes/roleRouter';
-import userRouter from './routes/userRouter';
-import unitRouter from './routes/unitRouter';
-import serviceTypeRouter from './routes/serviceTypeRouter';
+//Imports
 import 'reflect-metadata';
+import express from 'express';
 import { createConnection } from 'typeorm';
-import { SeedTypologies } from './seeds/typologies';
-import { SeedRoles } from './seeds/roles';
-import { SeedUnits } from './seeds/units';
+//Local
+import auth from './routes/auth';
+import typology from './routes/typology';
+import role from './routes/role';
+import user from './routes/user';
+import unit from './routes/unit';
+import service_type from './routes/service_type';
+import { SeedTypologies } from './database/typologies';
+import { SeedRoles } from './database/roles';
+import { SeedUnits } from './database/units';
 
 const app = express();
 
@@ -26,11 +28,11 @@ app.use(express.json());
 /**
  * Routes
  */
-app.use('/api', authRouter);
-app.use('/api/typologies', typologyRouter);
-app.use('/api/roles', roleRouter);
-app.use('/api/users', userRouter);
-app.use('/api/units', unitRouter);
-app.use('/api/service-types', serviceTypeRouter);
+app.use('/api', auth);
+app.use('/api/typologies', typology);
+app.use('/api/roles', role);
+app.use('/api/users', user);
+app.use('/api/units', unit);
+app.use('/api/service-types', service_type);
 
 app.listen(3333);

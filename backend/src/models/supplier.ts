@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { Expense } from './expense';
 import { Contact } from './contact';
 import { ServiceType } from './service_type';
@@ -18,24 +18,33 @@ export class Supplier extends BaseEntity {
     @Column({ name: 'company_name' })
     private company_name: String;
 
-    @Column({ name: 'IBAN' })
+    @Column({ name: 'IBAN', nullable: true })
     private IBAN: String;
 
-    @Column({ name: 'NIF' })
+    @Column({ name: 'NIF', nullable: true })
     private NIF: String;
+
+    @Column({ name: 'email', nullable: true })
+    private email: String;
 
     @OneToMany(type => Expense, expense => expense.getSupplier)
     private expenses: Expense[];
 
-    @OneToMany(type => Contact, contact => contact.getSupplier)
+    @OneToMany(type => Contact, contact => contact.getSupplier, { cascade: true })
     private contacts: Contact[];
 
     @ManyToMany(type => ServiceType, { eager: true })
     @JoinTable()
-    private service_type: ServiceType[];
+    private service_types: ServiceType[];
 
-    constructor() {
+    constructor(first_name: String, last_name: String, company_name: String, email?: String, NIF?: String, IBAN?: String) {
         super();
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.NIF = NIF;
+        this.IBAN = IBAN;
+        this.company_name = company_name;
     }
 
     public getId(): Number {
@@ -86,6 +95,14 @@ export class Supplier extends BaseEntity {
         this.NIF = NIF;
     }
 
+    public getEmail(): String {
+        return this.email;
+    }
+
+    public setEmail(Email: String): void {
+        this.email = Email;
+    }
+
     public getExpenses(): Expense[] {
         return this.expenses;
     }
@@ -102,12 +119,16 @@ export class Supplier extends BaseEntity {
         this.contacts = contacts;
     }
 
-    public getService_type(): ServiceType[] {
-        return this.service_type;
+    public addContact(contact: Contact): void {
+        this.contacts.push(contact);
     }
 
-    public setService_type(service_type: ServiceType[]): void {
-        this.service_type = service_type;
+    public getService_types(): ServiceType[] {
+        return this.service_types;
+    }
+
+    public setService_types(service_type: ServiceType[]): void {
+        this.service_types = service_type;
     }
 
 }

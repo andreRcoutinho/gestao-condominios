@@ -10,25 +10,24 @@ async function findUser(email: Number): Promise<User> {
     return;
 }
 
-export default {
-    async updatePassword(body: any) {
 
-        try {
-            let user = await findUser(body.email);
+export async function updatePassword(body: any) {
 
-            if (!user) {
-                console.log('aqui');
-                throw new UserNotExists();
-            }
+    try {
+        let user = await findUser(body.email);
 
-            var user_password: UserPassword = user.getUser_password();
-            user_password.update_password(body.new_password);
-            await user_password.save();
-
-            return {};
-        } catch (e) {
-            console.log(e);
-            return;
+        if (!user) {
+            console.log('aqui');
+            throw new UserNotExists();
         }
+
+        var user_password: UserPassword = user.getUser_password();
+        user_password.update_password(body.new_password);
+        await user_password.save();
+
+        return {};
+    } catch (e) {
+        console.log(e);
+        return;
     }
 }

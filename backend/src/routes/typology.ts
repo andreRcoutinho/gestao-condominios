@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import typology from '../controllers/typology';
+import * as typology from '../controllers/typology';
 import authMiddleware from '../middlewares/auth';
 import adminMiddleware from '../middlewares/admin';
 
@@ -14,6 +14,6 @@ routes.use(adminMiddleware);
 
 routes.post('/create', typology.create);
 routes.put('/:id', typology.update);
-routes.delete('/:id', typology.delete);
+routes.delete('/:id', typology.remove);
 
 export default routes;

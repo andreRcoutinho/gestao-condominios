@@ -1,0 +1,1 @@
+export function indexRules(body: any): boolean | void { }

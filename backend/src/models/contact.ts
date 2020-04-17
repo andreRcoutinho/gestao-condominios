@@ -11,6 +11,7 @@ export class Contact extends BaseEntity {
     private phone_number: String;
 
     @ManyToOne((type) => User, { eager: true })
+    @JoinColumn()
     private user: User;
 
     @ManyToOne((type) => Supplier, { eager: true })

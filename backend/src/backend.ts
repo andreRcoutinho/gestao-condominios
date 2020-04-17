@@ -9,6 +9,7 @@ import role from './routes/role';
 import user from './routes/user';
 import unit from './routes/unit';
 import service_type from './routes/service_type';
+import supplier from './routes/supplier';
 import { SeedTypologies } from './database/typologies';
 import { SeedRoles } from './database/roles';
 import { SeedUnits } from './database/units';
@@ -34,5 +35,6 @@ app.use('/api/roles', role);
 app.use('/api/users', user);
 app.use('/api/units', unit);
 app.use('/api/service-types', service_type);
+app.use('/api/suppliers', supplier);
 
 app.listen(3333);

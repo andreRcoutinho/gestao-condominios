@@ -65,4 +65,8 @@ export class UserPassword extends BaseEntity {
     var salt = bcrypt.genSaltSync(10);
     this.setPassword_hash(bcrypt.hashSync(new_password.toString(), salt));
   }
+
+  public verify_password(password: string): Boolean {
+      return bcrypt.compareSync(password, this.password_hash.toString());
+  }
 }

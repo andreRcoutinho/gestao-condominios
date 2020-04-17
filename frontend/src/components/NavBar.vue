@@ -12,12 +12,12 @@
 		</div>
 		<v-spacer></v-spacer>
 
-		<v-btn text rounded to="/home">
+		<v-btn text tile to="/home" class="mr-5">
 			Home
 		</v-btn>
 
-		<v-btn text rounded :to="{ name: 'about' }">
-			About
+		<v-btn icon large outlined to="/login" class="mr-3">
+			<v-icon>{{ 'mdi-power' }}</v-icon>
 		</v-btn>
 	</v-app-bar>
 </template>

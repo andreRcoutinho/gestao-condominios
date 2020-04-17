@@ -41,7 +41,13 @@
 </template>
 
 <script>
+import LayoutAuth from '@/layouts/LayoutAuth';
+
 export default {
+	name: 'Login',
+	created() {
+		this.$emit('update:layout', LayoutAuth);
+	},
 	data() {
 		return {
 			email: '',

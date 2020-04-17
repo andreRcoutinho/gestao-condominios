@@ -10,12 +10,10 @@ export class Contact extends BaseEntity {
     @Column({ name: 'phone_number' })
     private phone_number: String;
 
-    @ManyToOne((type) => User, { eager: true })
-    @JoinColumn()
+    @ManyToOne(type => User, { eager: true })
     private user: User;
 
-    @ManyToOne((type) => Supplier, { eager: true })
-    @JoinColumn()
+    @ManyToOne(type => Supplier, { eager: true })
     private supplier: Supplier;
 
     constructor(phone_number: String, user?: User, supplier?: Supplier) {

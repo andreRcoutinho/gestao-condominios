@@ -1,9 +1,9 @@
 require('dotenv')
 
 module.exports = {
-    type: 'postgres',
+    type: 'mysql',
     host: 'localhost',
-    port: 5432,
+    port: 3306,
     username: process.env.USER,
     password: process.env.PASSWORD,
     database: 'lei_condominios',

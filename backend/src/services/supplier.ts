@@ -6,7 +6,7 @@ export async function index() { }
 export async function show(id: Number) {
     try {
         let supplier: Supplier = await Supplier.findOne({ where: { id } });
-        console.log(supplier);
+        console.log(supplier)
         return supplier;
     } catch (e) {
         console.log(e);
@@ -16,7 +16,6 @@ export async function show(id: Number) {
 
 export async function create(body: any) {
     try {
-        let contacts: Contact[] = await Contact.findByIds([])
         let supplier: Supplier = new Supplier(body.first_name, body.last_name, body.company_name, body.email, body.NIF, body.IBAN);
         await supplier.save();
 

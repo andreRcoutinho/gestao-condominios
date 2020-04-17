@@ -1,9 +1,8 @@
-import { Request, Response } from 'express';
-import Validator from 'validatorjs';
-import { UserPassword } from '../models/user_password';
-import { User } from '../models/user';
+import { Request, Response, response } from "express";
+import userService from "../services/user";
+import { ApiResponse } from "../api/api_response";
 import HttpStatus from 'http-status-codes';
-import { Contact } from '../models/contact';
+import * as userRules from '../rules/user';
 
 export default {
   async index(req: Request, res: Response) {},
@@ -11,35 +10,17 @@ export default {
   // TO DO
   // REPEAT NEW PASSWORD?
   async updatePassword(req: Request, res: Response) {
-    try {
-      let rules = {
-        email: 'required|email',
-        new_password: 'required',
-      };
-      var validation = new Validator(req.body, rules);
-      if (validation.fails()) {
-        return res
-          .status(400)
-          .send({ message: 'Faltam informações para completar a ação!' });
-      }
 
-      var user: User = await User.findOne({ where: { email: req.body.email } });
-      if (!user) {
-        return res
-          .status(400)
-          .send({ message: 'Esse email não existe na Base de Dados!' });
-      }
+    if(!userRules.updatePasswordRules(req.body)){
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Update Password", "Invalid Body", HttpStatus.BAD_REQUEST, {}));
+    }
 
-      var user_password: UserPassword = user.getUser_password();
-      user_password.update_password(req.body.new_password);
-      await user_password.save();
+    let response: {} = await userService.updatePassword(req.body);
 
-      return res
-        .status(HttpStatus.OK)
-        .send({ message: 'Password alterada com sucesso' });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: 'Alguma coisa correu mal ...' });
+    if (response) {
+      return res.send(new ApiResponse("Update Password", "Success", HttpStatus.OK, response));
+    }else {
+      return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Update Password", "Update Password Failed", HttpStatus.BAD_REQUEST, {}));
     }
   },
 };

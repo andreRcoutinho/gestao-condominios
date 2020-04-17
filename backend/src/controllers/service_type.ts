@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 import { ServiceType } from '../models/service_type';
-import Validador from 'validatorjs';
 import HttpStatus from 'http-status-codes';
+import serviceTypeService from '../services/service_type';
 import Validator from 'validatorjs';
+import { ApiResponse } from '../api/api_response';
 
 export default {
     async index(req: Request, res: Response){
-        try{
-            let service_types = await ServiceType.find();
-            return res.send(service_types);
-        }catch(error){
-            console.log(error);
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: "Alguma coisa correu mal ..."});
-        }
+        let serviceTypes : ServiceType[] = await serviceTypeService.index();
+        if(serviceTypes)
+            return res.send(new ApiResponse("All Service Types", "All Service Types Success", HttpStatus.OK, serviceTypes));
+        return res.status(HttpStatus.NOT_FOUND).send(new ApiResponse("All Service Types", "All Service Types Failed", HttpStatus.OK, {}));
+
+
     },
     async show(req: Request, res: Response){
         try{

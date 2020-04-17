@@ -1,5 +1,3 @@
-import { ApiError } from './api_error';
-
 export class ApiResponse {
   private request: String;
 
@@ -9,9 +7,9 @@ export class ApiResponse {
 
   private data: any; //DTO interface
 
-  private error?: ApiError;
+  private error?: Error;
 
-  constructor(request: String, message: String, status: Number, data: any, error?: ApiError) {
+  constructor(request: String, message: String, status: Number, data: any, error?: Error) {
     this.request = request;
     this.message = message;
     this.status = status;

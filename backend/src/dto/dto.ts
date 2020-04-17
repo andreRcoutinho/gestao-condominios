@@ -1,3 +1,3 @@
-export interface DTO {
-  exportToJsonObject();
+export class DTO{
+
 }

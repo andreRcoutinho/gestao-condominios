@@ -1,4 +1,4 @@
-import {Entity ,BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Expense } from './expense';
 import { Contact } from './contact';
 import { ServiceType } from './service_type';

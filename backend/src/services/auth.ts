@@ -6,21 +6,21 @@ import { Unit } from '../models/unit';
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth';
 
-async function hasUser(email: String) : Promise<boolean | User> {
-    try{
-        let hasUser: User = await User.findOne({ where : { email }})
-        if(hasUser)
+async function hasUser(email: String): Promise<boolean | User> {
+    try {
+        let hasUser: User = await User.findOne({ where: { email } })
+        if (hasUser)
             return true;
         return false;
-    }catch(e){
+    } catch (e) {
         return false;
     }
 }
 
 export default {
     async signUp(body: any) {
-        try{
-            if(await hasUser(body.email)){
+        try {
+            if (await hasUser(body.email)) {
                 throw new UserAlreadyExists();
             }
 
@@ -29,14 +29,14 @@ export default {
                 throw new RoleNotExists();
             }
 
-            var user_password : UserPassword = new UserPassword(body.password);
+            var user_password: UserPassword = new UserPassword(body.password);
 
-            var user : User = new User(body.email, body.first_name, body.last_name, body.IBAN, body.NIF, role, user_password);
-            
+            var user: User = new User(body.email, body.first_name, body.last_name, body.IBAN, body.NIF, role, user_password);
+
             await user_password.save();
 
             let units = await Unit.findByIds(body.units_id);
-            if(!units){
+            if (!units) {
                 throw new UnitNotExists();
             }
 
@@ -44,27 +44,27 @@ export default {
             await user.save();
 
             return user;
-        }catch(e){
+        } catch (e) {
             return;
         }
     },
-    async signIn(body: any){
-        try{
-            if(await !hasUser(body.email)){
+    async signIn(body: any) {
+        try {
+            if (await !hasUser(body.email)) {
                 throw new UserNotExists();
             }
 
-            let user : User = await User.findOne({ where : { email: body.email }});
-                        
-            if(!user.getUser_password().verify_password(body.password)){
+            let user: User = await User.findOne({ where: { email: body.email } });
+
+            if (!user.getUser_password().verify_password(body.password)) {
                 throw new InvalidPassword();
             }
 
-            const token : string = jwt.sign(
+            const token: string = jwt.sign(
                 { id: user.getId(), role: user.getRole().getRole_name() },
                 authConfig.secret,
                 {
-                  expiresIn: 86400,
+                    expiresIn: 86400,
                 }
             );
 
@@ -77,9 +77,9 @@ export default {
                 },
                 token
             }
-            return response; 
+            return response;
 
-        }catch(e){
+        } catch (e) {
             return;
         }
     }

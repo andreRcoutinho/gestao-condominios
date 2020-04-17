@@ -28,11 +28,11 @@ export async function SeedUnits(): Promise<boolean> {
         for (let index = 0; index < units_descriptions.length; index++) {
             let desc: String = units_descriptions[index];
             let unit: Unit;
-            if(desc.includes('Dto')){
+            if (desc.includes('Dto')) {
                 unit = new Unit(desc, typology_t4);
-            }else if(desc.includes('Esq')){
+            } else if (desc.includes('Esq')) {
                 unit = new Unit(desc, typology_t4_duplex);
-            }else{
+            } else {
                 unit = new Unit(desc, typology_shop);
             }
             await unit.save();

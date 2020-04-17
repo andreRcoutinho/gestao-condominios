@@ -1,3 +1,3 @@
-export class DTO{
+export class DTO {
 
 }

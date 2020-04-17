@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { Supplier } from './supplier';
 
@@ -15,6 +15,7 @@ export class Contact extends BaseEntity {
     private user: User;
 
     @ManyToOne((type) => Supplier, { eager: true })
+    @JoinColumn()
     private supplier: Supplier;
 
     constructor(phone_number: String, user?: User, supplier?: Supplier) {

@@ -2,5 +2,5 @@
 Ferramenta de Gestão de Condomínios
 
 ## Anexos:
-- [MER mwb](../gestao-condominios/anexos/condominios.mwb)
-- [MER imagem](../anexos/er.png)
+- [MER mwb](./anexos/condominios.mwb)
+- [MER imagem](./anexos/ER.png)

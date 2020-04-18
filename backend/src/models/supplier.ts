@@ -30,7 +30,8 @@ export class Supplier extends BaseEntity {
     @OneToMany(type => Expense, expense => expense.getSupplier)
     private expenses: Expense[];
 
-    @OneToMany(type => Contact, contact => contact.getSupplier, { cascade: true })
+    @OneToMany(type => Contact, contact => contact.getSupplier)
+    @JoinColumn()
     private contacts: Contact[];
 
     @ManyToMany(type => ServiceType, { eager: true })

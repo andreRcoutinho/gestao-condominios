@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, RelationId } from 'typeorm';
 import { User } from './user';
 import { Supplier } from './supplier';
 
@@ -10,10 +10,12 @@ export class Contact extends BaseEntity {
     @Column({ name: 'phone_number' })
     private phone_number: String;
 
-    @ManyToOne(type => User, { eager: true })
+    @ManyToOne(type => User)
+    @JoinColumn()
     private user: User;
 
-    @ManyToOne(type => Supplier, { eager: true })
+    @ManyToOne(type => Supplier)
+    @JoinColumn()
     private supplier: Supplier;
 
     constructor(phone_number: String, user?: User, supplier?: Supplier) {

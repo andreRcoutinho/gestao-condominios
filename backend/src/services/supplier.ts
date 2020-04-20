@@ -7,7 +7,6 @@ export async function show(id: Number) {
     try {
         console.log('vou entrar suppliers')
         let supplier: Supplier = await Supplier.findOne({ where: { id } });
-        console.log('morri')
         let contacts: Contact[] = await Contact.find({ where: { userId: supplier.getId() } })
         console.log(contacts)
         console.log(supplier)

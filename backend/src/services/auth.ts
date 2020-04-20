@@ -6,9 +6,9 @@ import { Unit } from '../models/unit';
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth';
 
-async function hasUser(email: String): Promise<boolean | User> {
+async function hasUser(email: String): Promise<boolean> {
     try {
-        let hasUser: User = await User.findOne({ where: { email } })
+        let hasUser: User = await User.findOne({ where: { email } });
         if (hasUser)
             return true;
         return false;
@@ -45,13 +45,14 @@ export async function signUp(body: any) {
 
         return user;
     } catch (e) {
+        console.log(e);
         return;
     }
 }
 
 export async function signIn(body: any) {
     try {
-        if (await !hasUser(body.email)) {
+        if (!hasUser(body.email)) {
             throw new UserNotExists();
         }
 

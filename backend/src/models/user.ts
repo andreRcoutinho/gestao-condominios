@@ -38,7 +38,7 @@ export class User extends BaseEntity {
     @ManyToOne((type) => Role, { eager: true, cascade: true })
     private role: Role;
 
-    @OneToMany((type) => Contact, (contact) => contact.getUser, { eager: true })
+    @OneToMany((type) => Contact, (contact) => contact.getUser)
     private contacts: Contact[];
 
     @OneToOne((type) => UserPassword, { eager: true, cascade: true })

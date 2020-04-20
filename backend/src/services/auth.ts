@@ -1,10 +1,11 @@
 import { User } from '../models/user';
 import { UserPassword } from '../models/user_password';
-import { UserAlreadyExists, RoleNotExists, UnitNotExists, UserNotExists, InvalidPassword } from '../api/api_error';
 import { Role } from '../models/role';
 import { Unit } from '../models/unit';
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth';
+import * as api_errors from '../api/api_errors';
+
 
 async function hasUser(email: String): Promise<boolean> {
     try {
@@ -21,12 +22,12 @@ async function hasUser(email: String): Promise<boolean> {
 export async function signUp(body: any) {
     try {
         if (await hasUser(body.email)) {
-            throw new UserAlreadyExists();
+            throw new Error(api_errors.USER_ALREADY_EXISTS);
         }
 
         var role = await Role.findOne({ where: { id: body.role_id } });
         if (!role) {
-            throw new RoleNotExists();
+            throw new Error(api_errors.ROLE_NOT_EXISTS);
         }
 
         var user_password: UserPassword = new UserPassword(body.password);
@@ -37,7 +38,7 @@ export async function signUp(body: any) {
 
         let units = await Unit.findByIds(body.units_id);
         if (!units) {
-            throw new UnitNotExists();
+            throw new Error(api_errors.UNIT_NOT_EXISTS);
         }
 
         user.setUnits(units);
@@ -45,21 +46,20 @@ export async function signUp(body: any) {
 
         return user;
     } catch (e) {
-        console.log(e);
-        return;
+        return e;
     }
 }
 
 export async function signIn(body: any) {
     try {
-        if (!hasUser(body.email)) {
-            throw new UserNotExists();
+        if (! await hasUser(body.email)) {
+            throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
         let user: User = await User.findOne({ where: { email: body.email } });
 
         if (!user.getUser_password().verify_password(body.password)) {
-            throw new InvalidPassword();
+            throw new Error(api_errors.INVALID_PASSWORD);
         }
 
         const token: string = jwt.sign(
@@ -82,6 +82,6 @@ export async function signIn(body: any) {
         return response;
 
     } catch (e) {
-        return;
+        return e;
     }
 }

@@ -7,9 +7,9 @@ export class ApiResponse {
 
     private data: any; //DTO interface
 
-    private error?: Error;
+    private error?: String;
 
-    constructor(request: String, message: String, status: Number, data: any, error?: Error) {
+    constructor(request: String, message: String, status: Number, data: any, error?: String) {
         this.request = request;
         this.message = message;
         this.status = status;

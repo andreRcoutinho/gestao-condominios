@@ -7,29 +7,31 @@ import * as authRules from '../rules/auth';
 
 export async function signUp(req: Request, res: Response) {
     if (!authRules.signUpRules(req.body)) {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign Up", "Invalid Body", HttpStatus.BAD_REQUEST, {}));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign Up", "Sign Up Failed", HttpStatus.BAD_REQUEST, {}, "Invalid Body"));
     }
 
-    let user: User = await authServices.signUp(req.body);
+    let response = await authServices.signUp(req.body);
 
-    if (user) {
-        return res.send(new ApiResponse("Sign Up", "Sign Up Success", HttpStatus.OK, user));
+    if (response instanceof Error) {
+        console.log(response);
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign Up", "Sign Up Failed", HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign Up", "Sign Up Failed", HttpStatus.BAD_REQUEST, user));
+        return res.send(new ApiResponse("Sign Up", "Sign Up Success", HttpStatus.OK, response));
     }
 }
 
 export async function signIn(req: Request, res: Response) {
     if (!authRules.signInRules(req.body)) {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign In", "Invalid Body", HttpStatus.BAD_REQUEST, {}));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign In", "Sign In Failed", HttpStatus.BAD_REQUEST, {}, "Invalid Body"));
     }
 
-    let response: {} = await authServices.signIn(req.body);
+    let response = await authServices.signIn(req.body);
 
-    if (response) {
-        return res.send(new ApiResponse("Sign In", "Sign In Success", HttpStatus.OK, response));
+    if (response instanceof Error) {
+        console.log(response);
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Sign In", "Sign In Failed", HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
-        return res.send(new ApiResponse("Sign In", "Sign In Failed", HttpStatus.BAD_REQUEST, response));
+        return res.send(new ApiResponse("Sign In", "Sign In Success", HttpStatus.OK, response));
     }
 }
 

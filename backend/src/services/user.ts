@@ -1,13 +1,12 @@
 import { User } from '../models/user';
 import { UserPassword } from '../models/user_password';
-import { UserNotExists } from '../api/api_error';
+import * as api_errors from '../api/api_errors';
 
 
 async function findUser(email: Number): Promise<User> {
     let user: User = await User.findOne({ where: { email } });
     if (user)
         return user;
-    return;
 }
 
 
@@ -17,8 +16,7 @@ export async function updatePassword(body: any) {
         let user = await findUser(body.email);
 
         if (!user) {
-            console.log('aqui');
-            throw new UserNotExists();
+            throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
         var user_password: UserPassword = user.getUser_password();
@@ -26,8 +24,7 @@ export async function updatePassword(body: any) {
         await user_password.save();
 
         return {};
-    } catch (e) {
-        console.log(e);
-        return;
+    } catch (error) {
+        return error;
     }
 }

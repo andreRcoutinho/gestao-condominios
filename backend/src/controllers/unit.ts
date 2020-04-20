@@ -1,52 +1,38 @@
 import { Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
-import { Unit } from '../models/unit';
-import Validator from 'validatorjs';
+import * as unitService from '../services/unit';
+import * as unitRules from '../rules/unit';
+import { ApiResponse } from '../api/api_response';
+
 
 export async function index(req: Request, res: Response) {
-    try {
-        let units = await Unit.find();
-        res.status(HttpStatus.OK).send(units);
-    } catch (error) {
-        console.log(error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: "Alguma coisa correu mal ..." })
+    var response = await unitService.index();
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Get all units", "Get all units Failed", HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse("Get all units", "Get all units Success", HttpStatus.OK, response));
     }
 }
 export async function show(req: Request, res: Response) {
-    try {
-        let unit = await Unit.findOne({ where: { id: req.params.id } });
-        if (!unit) {
-            return res.status(HttpStatus.NOT_FOUND).send({ message: "O ID dessa Unidade não existe na base de dados" })
-        }
-        return res.status(HttpStatus.OK).send(unit);
-    } catch (error) {
-        console.log(error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: "Alguma coisa correu mal ..." })
+    var response = await unitService.show(Number(req.params.id));
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Unit", "Unit Failed", HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse("Unit", "Unit Success", HttpStatus.OK, response));
     }
 }
 export async function update(req: Request, res: Response) {
-    try {
-        let rules = {
-            unit: 'required'
-        };
-        var validation = new Validator(req.body, rules);
-        if (validation.fails()) {
-            return res.status(400).send({
-                message: 'Faltam campos para completar o update!',
-            });
-        }
+    if (!unitRules.updateRules(req.body)) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Update Unit", "Update Unit Failed", HttpStatus.BAD_REQUEST, {}, "Invalid Body"));
+    }
 
-        let unit = await Unit.findOne({ where: { id: req.params.id } });
-        if (!unit) {
-            return res.status(HttpStatus.NOT_FOUND).send({ message: "O ID dessa Unidade não existe na base de dados" })
-        }
+    var response = await unitService.update(req.body, Number(req.params.id));
 
-        unit.setUnit(req.body.unit);
-        await unit.save();
-        return res.send({ success: true, unit });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: "Alguma coisa correu mal ..." })
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("Update Unit", "Update Unit Failed", HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse("Update Unit", "Update Unit Success", HttpStatus.OK, response));
     }
 }

@@ -1,14 +1,14 @@
 import { Role } from '../models/role';
-import { RoleNotExists } from '../api/api_error';
+import * as api_errors from '../api/api_errors';
 
 
 export async function index() {
     try {
         var roles: Role[] = await Role.find();
         if (!roles)
-            throw new RoleNotExists();
+            throw new Error(api_errors.ROLES_EMPTY);
         return roles;
     } catch (e) {
-        return;
+        return e;
     }
 }

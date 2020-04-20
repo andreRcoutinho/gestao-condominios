@@ -12,6 +12,12 @@ export function createRules(body: any): boolean | void {
     return !validation.fails();
 }
 
-export function updateRules(body: any): boolean | void { }
+export function updateRules(body: any): boolean | void {
+    let rules: Rules = {
+        typology: 'required',
+    };
+    var validation = new Validator(body, rules);
+    return !validation.fails();
+}
 
 export function removeRules(body: any): boolean | void { }

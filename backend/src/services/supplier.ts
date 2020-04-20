@@ -1,19 +1,20 @@
 import { Supplier } from '../models/supplier';
 import { Contact } from '../models/contact';
+import { ServiceType } from '../models/service_type';
+import * as api_errors from '../api/api_errors';
+
 
 export async function index() { }
 
 export async function show(id: Number) {
     try {
-        console.log('vou entrar suppliers')
         let supplier: Supplier = await Supplier.findOne({ where: { id } });
-        let contacts: Contact[] = await Contact.find({ where: { userId: supplier.getId() } })
-        console.log(contacts)
-        console.log(supplier)
+        let contacts: Contact[] = await Contact.find({ where: { supplierId: supplier.getId() } })
+        console.log(contacts);
+        console.log(supplier);
         return supplier;
-    } catch (e) {
-        console.log(e);
-        return;
+    } catch (error) {
+        return error;
     }
 }
 
@@ -27,10 +28,15 @@ export async function create(body: any) {
             await c.save();
         });
 
+        let service_types: ServiceType[] = await ServiceType.findByIds(body.service_types);
+        if (service_types) {
+            supplier.setService_types(service_types);
+            await supplier.save();
+        }
+
         return supplier;
-    } catch (e) {
-        console.log(e);
-        return;
+    } catch (error) {
+        return error;
     }
 }
 

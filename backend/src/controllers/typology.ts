@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { Typology } from '../models/typology';
-import Validator from 'validatorjs';
 import HttpStatus from 'http-status-codes';
 import * as typologyRules from '../rules/typology';
 import * as typologyServices from '../services/typology';

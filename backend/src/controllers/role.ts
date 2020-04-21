@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import * as roleService from '../services/role';
 import { ApiResponse } from '../api/api_response';
 import HttpStatus from "http-status-codes";
-import { Role } from '../models/role';
 
 export async function index(req: Request, res: Response) {
     let response = await roleService.index();

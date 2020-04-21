@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import authConfig from '../config/auth';
+import { SECRET } from '../config/auth';
 import { Request, Response, NextFunction } from 'express';
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -21,9 +21,9 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
         return res.status(401).send({ message: "Token de autorização não está no formato correto!" });
     }
 
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
+    jwt.verify(token, SECRET, (err, decoded) => {
         if (err) return res.status(401).send({ error: 'Token de autorização inválido' });
-        req["role"] = decoded.role;
+        req["role"] = decoded["role"];
         return next();
     });
 };

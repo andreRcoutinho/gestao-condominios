@@ -35,3 +35,8 @@ export async function show(req: Request, res: Response) {
 
     return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, supplier));
 }
+
+export async function index(req: Request, res: Response) {
+    let response = await supplierService.index();
+    return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
+}

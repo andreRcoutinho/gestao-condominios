@@ -40,3 +40,9 @@ export async function index(req: Request, res: Response) {
     let response = await supplierService.index();
     return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
 }
+
+export async function update(req: Request, res: Response) {
+    let response = await supplierService.update(Number(req.params.id), req.body);
+
+    return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
+}

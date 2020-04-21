@@ -26,13 +26,10 @@ export async function index() {
             }
             res.push(sup);
         }
-        console.log(res);
         return res;
     } catch (error) {
-        console.log(error)
         return error;
     }
-
 }
 
 // TO DO ALL EXPENSEVES 
@@ -83,6 +80,17 @@ export async function create(body: any) {
     }
 }
 
-export async function update() { }
+export async function update(id: Number, body: any) {
+    try {
+        let supplier: Supplier = await Supplier.findOne({ where: { id } });
+        if (!supplier) {
+            throw new Error('Não existe')
+        }
+
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+}
 
 export async function remove() { }

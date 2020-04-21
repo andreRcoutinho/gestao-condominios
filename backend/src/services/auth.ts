@@ -3,7 +3,7 @@ import { UserPassword } from '../models/user_password';
 import { Role } from '../models/role';
 import { Unit } from '../models/unit';
 import jwt from 'jsonwebtoken';
-import authConfig from '../config/auth';
+import { SECRET } from '../config/auth';
 import * as api_errors from '../api/api_errors';
 
 
@@ -64,7 +64,7 @@ export async function signIn(body: any) {
 
         const token: string = jwt.sign(
             { id: user.getId(), role: user.getRole().getRole_name() },
-            authConfig.secret,
+            SECRET,
             {
                 expiresIn: 86400,
             }

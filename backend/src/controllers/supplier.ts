@@ -21,9 +21,9 @@ export async function create(req: Request, res: Response) {
     if (!supplierRules.createRules(req.body))
         return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, INVALID_JSON_BODY, HttpStatus.BAD_REQUEST, {}));
 
-    let supplier: Supplier = await supplierService.create(req.body);
+    let supplier = await supplierService.create(req.body);
 
-    return res.send(res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_SUCCESS, HttpStatus.CREATED, supplier)));
+    return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_SUCCESS, HttpStatus.CREATED, supplier));
 }
 
 

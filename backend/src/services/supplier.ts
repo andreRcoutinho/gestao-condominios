@@ -9,9 +9,8 @@ export async function index() { }
 export async function show(id: Number) {
     try {
         let supplier: Supplier = await Supplier.findOne({ where: { id } });
-        let contacts: Contact[] = await Contact.find({ where: { supplierId: supplier.getId() } })
-        console.log(contacts);
-        console.log(supplier);
+        let contacts: Contact[] = await Contact.find({ where: { supplierId: supplier.getId() } });
+        console.log(contacts[0]);
         return supplier;
     } catch (error) {
         return error;
@@ -29,13 +28,16 @@ export async function create(body: any) {
         });
 
         let service_types: ServiceType[] = await ServiceType.findByIds(body.service_types);
-        if (service_types) {
-            supplier.setService_types(service_types);
-            await supplier.save();
+        console.log(service_types);
+        if (service_types.length === 0) {
+            throw new Error('');
         }
+        supplier.setService_types(service_types);
+        await supplier.save();
 
         return supplier;
     } catch (error) {
+        console.log(error);
         return error;
     }
 }

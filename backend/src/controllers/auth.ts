@@ -31,7 +31,7 @@ export async function signUp(req: Request, res: Response) {
 
 export async function signIn(req: Request, res: Response) {
     if (!authRules.signInRules(req.body)) {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(AUTH_SIGN_IN_REQUEST, AUTH_SIGN_IN_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, AUTH_INVALID_BODY));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(AUTH_SIGN_IN_REQUEST, AUTH_SIGN_IN_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
     }
 
     let response = await authServices.signIn(req.body);

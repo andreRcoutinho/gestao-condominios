@@ -8,7 +8,9 @@ const routes = Router();
 //routes.use(authMiddleware);
 //routes.use(adminMiddleware);
 
+routes.get('/', supplier.index);
 routes.get('/:id', supplier.show);
 routes.post('/', supplier.create);
+routes.put('/:id', supplier.update);
 
 export default routes;

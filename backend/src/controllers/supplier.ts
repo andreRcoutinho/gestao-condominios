@@ -4,27 +4,45 @@ import { ApiResponse } from '../api/api_response';
 import HttpStatus from "http-status-codes";
 import { Supplier } from '../models/supplier';
 import * as supplierRules from '../rules/supplier';
+import { INVALID_JSON_BODY } from '../api/api_errors';
+
+//Create
+const SUPPLIER_CREATE_REQUEST: String = "Create supplier";
+const SUPPLIER_CREATE_MESSAGE_SUCCESS: String = "Supplier created successfully";
+const SUPPLIER_CREATE_MESSAGE_FAIL: String = "Failed to create the supplier";
+
+//Show
+const SUPPLIER_SHOW_REQUEST: String = "Get supplier";
+const SUPPLIER_SHOW_MESSAGE_SUCCESS: String = "Retrieved supplier successfully";
+const SUPPLIER_SHOW_MESSAGE_FAIL: String = "Failed to retrieve supplier";
+const SUPPLIER_SHOW_MESSAGE_NOT_FOUND: String = "No supplier found with given id"
 
 export async function create(req: Request, res: Response) {
-
     if (!supplierRules.createRules(req.body))
-        return res.send(new ApiResponse("Create Supplier", "Invalid Body", HttpStatus.BAD_REQUEST, {}));
+        return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, INVALID_JSON_BODY, HttpStatus.BAD_REQUEST, {}));
 
-    let supplier: Supplier = await supplierService.create(req.body);
+    let supplier = await supplierService.create(req.body);
 
-    return res.send(supplier);
-
-    //return res.send(new ApiResponse("All roles", "Success", HttpStatus.OK, roles));
-    //return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("All roles", "Request Failed", HttpStatus.BAD_REQUEST, []));
+    return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_SUCCESS, HttpStatus.CREATED, supplier));
 }
 
 
 export async function show(req: Request, res: Response) {
-
     let supplier: Supplier = await supplierService.show(Number(req.params.id));
 
-    return res.send(supplier);
+    if (!supplier)
+        return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_NOT_FOUND, HttpStatus.OK, {}));
 
-    //return res.send(new ApiResponse("All roles", "Success", HttpStatus.OK, roles));
-    //return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse("All roles", "Request Failed", HttpStatus.BAD_REQUEST, []));
+    return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, supplier));
+}
+
+export async function index(req: Request, res: Response) {
+    let response = await supplierService.index();
+    return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
+}
+
+export async function update(req: Request, res: Response) {
+    let response = await supplierService.update(Number(req.params.id), req.body);
+
+    return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
 }

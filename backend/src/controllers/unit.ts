@@ -1,52 +1,53 @@
 import { Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
-import { Unit } from '../models/unit';
-import Validator from 'validatorjs';
+import * as unitService from '../services/unit';
+import * as unitRules from '../rules/unit';
+import { ApiResponse } from '../api/api_response';
+import { INVALID_JSON_BODY } from '../api/api_errors';
+
+//Index
+const UNIT_INDEX_REQUEST: String = "Get all units";
+const UNIT_INDEX_MESSAGE_SUCCESS: String = "Retrieved all units successfully";
+const UNIT_INDEX_MESSAGE_FAILED: String = "Failed to retrieve all units";
+//Show
+const UNIT_SHOW_REQUEST: String = "Get specific unit";
+const UNIT_SHOW_MESSAGE_SUCCESS: String = "Retrieved specific unit successfully";
+const UNIT_SHOW_MESSAGE_FAILED: String = "Failed to retrieve specific unit";
+//Update
+const UNIT_UPDATE_REQUEST: String = "Update unit";
+const UNIT_UPDATE_MESSAGE_SUCCESS: String = "Updated unit successfully";
+const UNIT_UPDATE_MESSAGE_FAILED: String = "Failed to update unit";
 
 export async function index(req: Request, res: Response) {
-    try {
-        let units = await Unit.find();
-        res.status(HttpStatus.OK).send(units);
-    } catch (error) {
-        console.log(error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: "Alguma coisa correu mal ..." })
+    var response = await unitService.index();
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(UNIT_INDEX_REQUEST, UNIT_INDEX_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(UNIT_INDEX_REQUEST, UNIT_INDEX_MESSAGE_SUCCESS, HttpStatus.OK, response));
     }
 }
+
 export async function show(req: Request, res: Response) {
-    try {
-        let unit = await Unit.findOne({ where: { id: req.params.id } });
-        if (!unit) {
-            return res.status(HttpStatus.NOT_FOUND).send({ message: "O ID dessa Unidade não existe na base de dados" })
-        }
-        return res.status(HttpStatus.OK).send(unit);
-    } catch (error) {
-        console.log(error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: "Alguma coisa correu mal ..." })
+    var response = await unitService.show(Number(req.params.id));
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(UNIT_SHOW_REQUEST, UNIT_SHOW_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(UNIT_SHOW_REQUEST, UNIT_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
     }
 }
+
 export async function update(req: Request, res: Response) {
-    try {
-        let rules = {
-            unit: 'required'
-        };
-        var validation = new Validator(req.body, rules);
-        if (validation.fails()) {
-            return res.status(400).send({
-                message: 'Faltam campos para completar o update!',
-            });
-        }
+    if (!unitRules.updateRules(req.body)) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(UNIT_UPDATE_REQUEST, UNIT_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+    }
 
-        let unit = await Unit.findOne({ where: { id: req.params.id } });
-        if (!unit) {
-            return res.status(HttpStatus.NOT_FOUND).send({ message: "O ID dessa Unidade não existe na base de dados" })
-        }
+    var response = await unitService.update(req.body, Number(req.params.id));
 
-        unit.setUnit(req.body.unit);
-        await unit.save();
-        return res.send({ success: true, unit });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: "Alguma coisa correu mal ..." })
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(UNIT_UPDATE_REQUEST, UNIT_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(UNIT_UPDATE_REQUEST, UNIT_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
     }
 }

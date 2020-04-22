@@ -1,4 +1,4 @@
-import { Request, Response, response } from "express";
+import { Request, Response } from "express";
 import * as userService from "../services/user";
 import { ApiResponse } from "../api/api_response";
 import HttpStatus from 'http-status-codes';

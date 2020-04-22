@@ -10,12 +10,14 @@ import user from './routes/user';
 import unit from './routes/unit';
 import service_type from './routes/service_type';
 import supplier from './routes/supplier';
+import expense from './routes/expense';
 import { SeedTypologies } from './database/typologies';
 import { SeedRoles } from './database/roles';
 import { SeedUnits } from './database/units';
 
 const app = express();
 
+//TO DO 
 createConnection().then(async (connection) => {
     console.log('Connected');
     await SeedTypologies();
@@ -36,5 +38,6 @@ app.use('/api/users', user);
 app.use('/api/units', unit);
 app.use('/api/service-types', service_type);
 app.use('/api/suppliers', supplier);
+app.use('/api/expenses', expense);
 
 app.listen(3333);

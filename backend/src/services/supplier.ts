@@ -2,8 +2,7 @@ import { Supplier } from '../models/supplier';
 import { Contact } from '../models/contact';
 import { ServiceType } from '../models/service_type';
 import * as api_errors from '../api/api_errors';
-import { getRepository } from 'typeorm';
-
+import { Expense } from '../models/expense';
 
 export async function index() {
     try {
@@ -20,9 +19,22 @@ export async function index() {
                 }
                 sup_contacts.push(c);
             });
+            var expenses: Expense[] = await Expense.find({ where: { supplier: supplier } });
+            let sup_expenses: { id, description, value, payment_date, payment_record_date }[] = [];
+            expenses.forEach(expense => {
+                let e = {
+                    id: expense.getId(),
+                    description: expense.getDescription(),
+                    value: expense.getValue(),
+                    payment_date: expense.getPayment_date(),
+                    payment_record_date: expense.getPayment_record_date()
+                }
+                sup_expenses.push(e)
+            })
             let sup = {
                 ...supplier,
-                contacts: sup_contacts
+                contacts: sup_contacts,
+                expenses: sup_expenses
             }
             res.push(sup);
         }
@@ -37,8 +49,10 @@ export async function show(id: Number) {
     try {
         var supplier: Supplier = await Supplier.findOne({ where: { id } });
         var contacts: Contact[] = await Contact.find({ where: { supplier: supplier } });
+        var expenses: Expense[] = await Expense.find({ where: { supplier: supplier } });
 
         let contacts_res: { id, phone_number }[] = [];
+        let expenses_res: { id, description, value, payment_date, payment_record_date }[] = [];
         contacts.forEach(contact => {
             let c = {
                 id: contact.getId(),
@@ -47,13 +61,26 @@ export async function show(id: Number) {
             contacts_res.push(c);
         });
 
+        expenses.forEach(expense => {
+            let e = {
+                id: expense.getId(),
+                description: expense.getDescription(),
+                value: expense.getValue(),
+                payment_date: expense.getPayment_date(),
+                payment_record_date: expense.getPayment_record_date()
+            }
+            expenses_res.push(e)
+        })
+
         let res = {
             ...supplier,
-            contacts_res
+            contacts: contacts_res,
+            expenses: expenses_res
         };
 
         return res;
     } catch (error) {
+        console.log(error);
         return error;
     }
 }
@@ -63,10 +90,11 @@ export async function create(body: any) {
         let supplier: Supplier = new Supplier(body.first_name, body.last_name, body.company_name, body.email, body.NIF, body.IBAN);
         await supplier.save();
 
-        body.contacts.forEach(async contact => {
+        for (let index = 0; index < body.contacts.length; index++) {
+            const contact = body.contacts[index];
             let c: Contact = new Contact(contact, null, supplier);
             await c.save();
-        });
+        }
 
         let service_types: ServiceType[] = await ServiceType.findByIds(body.service_types);
         if (service_types.length === 0) {
@@ -76,6 +104,7 @@ export async function create(body: any) {
         await supplier.save();
         return supplier;
     } catch (error) {
+        console.log(error);
         return error;
     }
 }
@@ -87,10 +116,13 @@ export async function update(id: Number, body: any) {
             throw new Error('Não existe')
         }
 
+        await Supplier.update(Number(supplier.getId()), body);
+
+        return supplier;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
 
+//TO DO
 export async function remove() { }

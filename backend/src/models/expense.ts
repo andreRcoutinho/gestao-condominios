@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, JoinColumn } from 'typeorm';
 import { Supplier } from './supplier';
 
 @Entity('Expense')
@@ -6,8 +6,8 @@ export class Expense extends BaseEntity {
     @PrimaryGeneratedColumn({ name: 'id' })
     private id: Number;
 
-    @Column({ name: 'value' })
-    private value: String;
+    @Column({ name: 'value', type: "decimal" })
+    private value: Number;
 
     @Column({ name: 'description' })
     private description: String;
@@ -19,10 +19,16 @@ export class Expense extends BaseEntity {
     private payment_record_date: Date;
 
     @ManyToOne((type) => Supplier, { eager: true })
+    @JoinColumn()
     private supplier: Supplier;
 
-    constructor() {
+    constructor(value: Number, description: String, payment_date: Date, supplier: Supplier) {
         super();
+        this.value = value;
+        this.description = description;
+        this.payment_date = payment_date;
+        this.payment_record_date = new Date();
+        this.supplier = supplier;
     }
 
     public getId(): Number {
@@ -33,11 +39,11 @@ export class Expense extends BaseEntity {
         this.id = id;
     }
 
-    public getValue(): String {
+    public getValue(): Number {
         return this.value;
     }
 
-    public setValue(value: String): void {
+    public setValue(value: Number): void {
         this.value = value;
     }
 

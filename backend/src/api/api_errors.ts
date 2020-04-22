@@ -17,7 +17,7 @@ export const UNIT_NOT_EXISTS = "Unidade inexistente";
 export const UNIT_ALREADY_EXISTS = "Já existe uma unidade com esse nome na base de dados";
 
 export const INVALID_JSON_BODY = "Invalid JSON Body";
-
+export const ONLY_ADMIN = ""
 
 
 

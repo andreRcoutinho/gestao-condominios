@@ -20,7 +20,7 @@ export class PaymentMap extends BaseEntity {
     @ManyToOne(type => PaymentMapValues, { eager: true })
     private payment_map_values: PaymentMapValues[];
 
-    constructor() {
+    constructor(name: String, description: String) {
         super();
     }
 

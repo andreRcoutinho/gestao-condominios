@@ -33,9 +33,9 @@ export default {
 		return {
 			items: [
 				{ title: 'Home', icon: 'mdi-home-city', route: '/home' },
-				{ title: 'Mapa de Pagamento', icon: 'mdi-clipboard-text', route: '/about' },
+				{ title: 'Mapa de Pagamento', icon: 'mdi-clipboard-text', route: '' },
 				{ title: 'Gestão do Condomínio', icon: 'mdi-office-building', route: '' },
-				{ title: 'Movimentos', icon: 'mdi-currency-usd', route: '' },
+				{ title: 'Movimentos', icon: 'mdi-currency-usd', route: '/movimentos' },
 				{ title: 'Contactos', icon: 'mdi-card-account-mail', route: '' },
 				{ title: 'Gestão de Utilizadores', icon: 'mdi-account-group', route: '' },
 				{ title: 'Definições', icon: 'mdi-cog', route: '' },

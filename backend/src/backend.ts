@@ -11,6 +11,7 @@ import unit from './routes/unit';
 import service_type from './routes/service_type';
 import supplier from './routes/supplier';
 import expense from './routes/expense';
+import payment_map from './routes/payment_map';
 import { SeedTypologies } from './database/typologies';
 import { SeedRoles } from './database/roles';
 import { SeedUnits } from './database/units';
@@ -39,5 +40,6 @@ app.use('/api/units', unit);
 app.use('/api/service-types', service_type);
 app.use('/api/suppliers', supplier);
 app.use('/api/expenses', expense);
+app.use('/api/payment_map', payment_map);
 
 app.listen(3333);

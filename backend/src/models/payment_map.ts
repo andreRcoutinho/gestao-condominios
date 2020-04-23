@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, OneToMany } from 'typeorm';
 import { Revenue } from './revenue';
 import { PaymentMapValues } from './payment_map_values';
 
@@ -14,14 +14,28 @@ export class PaymentMap extends BaseEntity {
     @Column({ name: 'description' })
     private description: String;
 
-    @ManyToOne(type => Revenue, { eager: true })
+    @Column({ name: 'record_date' })
+    private record_date: Date;
+
+    @Column({ name: "yearly" })
+    private yearly: Boolean;
+
+    @Column({ name: "year" })
+    private year: String;
+
+    @OneToMany(type => Revenue, revenue => revenue.getPayment_map)
     private revenue: Revenue[];
 
-    @ManyToOne(type => PaymentMapValues, { eager: true })
+    @OneToMany(type => PaymentMapValues, payment_map_values => payment_map_values.getPayment_map)
     private payment_map_values: PaymentMapValues[];
 
-    constructor(name: String, description: String) {
+    constructor(name: String, description: String, yearly: Boolean, year: String) {
         super();
+        this.name = name;
+        this.description = description;
+        this.record_date = new Date();
+        this.yearly = yearly;
+        this.year = year;
     }
 
     public getId(): Number {
@@ -46,6 +60,30 @@ export class PaymentMap extends BaseEntity {
 
     public setDescription(description: String): void {
         this.description = description;
+    }
+
+    public getRecord_date(): Date {
+        return this.record_date;
+    }
+
+    public setRecord_date(record_date: Date): void {
+        this.record_date = record_date;
+    }
+
+    public getYearly(): Boolean {
+        return this.yearly;
+    }
+
+    public setYearly(yearly: Boolean): void {
+        this.yearly = yearly;
+    }
+
+    public getYear(): String {
+        return this.year;
+    }
+
+    public setYear(year: String): void {
+        this.year = year;
     }
 
     public getRevenue(): Revenue[] {

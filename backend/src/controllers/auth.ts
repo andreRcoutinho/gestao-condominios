@@ -22,7 +22,6 @@ export async function signUp(req: Request, res: Response) {
     let response = await authServices.signUp(req.body);
 
     if (response instanceof Error) {
-        console.log(response);
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(AUTH_SIGN_UP_REQUEST, AUTH_SIGN_UP_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(AUTH_SIGN_UP_REQUEST, AUTH_SIGN_UP_MESSAGE_SUCCESS, HttpStatus.OK, response));
@@ -37,7 +36,6 @@ export async function signIn(req: Request, res: Response) {
     let response = await authServices.signIn(req.body);
 
     if (response instanceof Error) {
-        console.log(response);
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(AUTH_SIGN_IN_REQUEST, AUTH_SIGN_IN_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(AUTH_SIGN_IN_REQUEST, AUTH_SIGN_IN_MESSAGE_SUCCESS, HttpStatus.OK, response));

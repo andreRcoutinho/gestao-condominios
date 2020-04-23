@@ -80,7 +80,6 @@ export async function show(id: Number) {
 
         return res;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -104,7 +103,6 @@ export async function create(body: any) {
         await supplier.save();
         return supplier;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }

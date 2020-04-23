@@ -9,9 +9,13 @@ export class Typology extends BaseEntity {
     @Column({ name: 'typology' })
     private typology: String;
 
-    constructor(typology: String) {
+    @Column({ name: "permilage" })
+    private permilage: Number
+
+    constructor(typology: String, permilage: Number) {
         super();
         this.typology = typology;
+        this.permilage = permilage;
     }
 
     public getId(): Number {
@@ -28,6 +32,14 @@ export class Typology extends BaseEntity {
 
     public setTypology(typology: String): void {
         this.typology = typology;
+    }
+
+    public getPermilage(): Number {
+        return this.permilage;
+    }
+
+    public setPermilage(permilage: Number): void {
+        this.permilage = permilage;
     }
 
 }

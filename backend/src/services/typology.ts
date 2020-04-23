@@ -41,7 +41,7 @@ export async function create(body: any): Promise<Typology> {
         if (hasTypology)
             throw new Error(api_errors.SERVICE_TYPE_ALREADY_EXISTS);
 
-        let typology: Typology = new Typology(body.typology);
+        let typology: Typology = new Typology(body.typology, body.permilage);
         await typology.save();
         return typology;
     } catch (error) {

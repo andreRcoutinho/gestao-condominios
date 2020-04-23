@@ -17,7 +17,10 @@ export const UNIT_NOT_EXISTS = "Unidade inexistente";
 export const UNIT_ALREADY_EXISTS = "Já existe uma unidade com esse nome na base de dados";
 
 export const INVALID_JSON_BODY = "Invalid JSON Body";
-export const ONLY_ADMIN = ""
+export const NO_ADMIN_PERMISSION = "Sem autorização de administrador para executar a funcionalidade";
+export const INVALID_TOKEN = "Token inválido";
+export const NO_PERMISSION = "Sem autorização para executar a funcionalidade"
+export const INVALID_TOKEN_FORMATT = "Token não tem o formato correto"
 
 
 

@@ -16,7 +16,7 @@
 			Home
 		</v-btn>
 
-		<v-btn v-if="!loggedIn" icon large outlined to="/login" class="mr-3">
+		<v-btn icon large outlined class="mr-3" @click="logout">
 			<v-icon>{{ 'mdi-power' }}</v-icon>
 		</v-btn>
 	</v-app-bar>
@@ -28,6 +28,11 @@ import { authComputed } from '../store/helpers.js';
 export default {
 	computed: {
 		...authComputed,
+	},
+	methods: {
+		logout() {
+			this.$store.dispatch('logout');
+		},
 	},
 };
 </script>

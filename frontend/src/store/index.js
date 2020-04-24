@@ -18,6 +18,10 @@ export default new Vuex.Store({
 			// console.log(userData);
 			// console.log(`Bearer ${userData.token}`);
 		},
+		CLEAR_USER_DATA() {
+			localStorage.removeItem('user');
+			location.reload();
+		},
 	},
 	actions: {
 		login({ commit }, credentials) {
@@ -31,6 +35,9 @@ export default new Vuex.Store({
 				.catch((err) => {
 					console.log(`STORE-LOGIN -> ${err}`);
 				});
+		},
+		logout({ commit }) {
+			commit('CLEAR_USER_DATA');
 		},
 		// print() {
 		// 	return axios.get('//localhost:3333/api/roles').then(({ data, config }) => {

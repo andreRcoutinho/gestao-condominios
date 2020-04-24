@@ -18,6 +18,7 @@
 						prepend-icon="mdi-account-circle"
 						:rules="emailRules"
 						required
+						color="grey"
 					></v-text-field>
 
 					<v-text-field
@@ -27,6 +28,9 @@
 						prepend-icon="mdi-lock"
 						:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
 						@click:append="showPassword = !showPassword"
+						:rules="pwdRules"
+						required
+						color="grey"
 					/>
 
 					<v-card-actions class="justify-center">
@@ -59,6 +63,7 @@ export default {
 					) || 'O email tem que ser válido.',
 			],
 			password: '',
+			pwdRules: [(v) => !!v || 'A password é necessária.'],
 			showPassword: false,
 			formValidity: false,
 		};
@@ -73,6 +78,7 @@ export default {
 				.then(() => {
 					this.$router.push({ name: 'home' });
 				});
+			//this.$store.dispatch('print');
 		},
 	},
 };

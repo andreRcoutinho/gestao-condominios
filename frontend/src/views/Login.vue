@@ -77,7 +77,8 @@ export default {
 				})
 				.then(() => {
 					this.$router.push({ name: 'home' });
-				});
+				})
+				.catch((err) => console.log(`LOGIN.VUE -> ${err}`));
 			//this.$store.dispatch('print');
 		},
 	},

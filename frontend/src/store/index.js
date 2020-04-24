@@ -14,8 +14,9 @@ export default new Vuex.Store({
 			axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
 			state.user = userData.user;
 
-			console.log(userData);
-			console.log(`Bearer ${userData.token}`);
+			//console.log(axios.defaults.headers.common);
+			// console.log(userData);
+			// console.log(`Bearer ${userData.token}`);
 		},
 	},
 	actions: {
@@ -28,7 +29,7 @@ export default new Vuex.Store({
 					commit('SET_USER_DATA', data.data);
 				})
 				.catch((err) => {
-					console.log('afsas' + err);
+					console.log(`STORE-LOGIN -> ${err}`);
 				});
 		},
 		// print() {
@@ -36,6 +37,11 @@ export default new Vuex.Store({
 		// 		console.log({ data, headers: config.headers });
 		// 	});
 		// },
+	},
+	getters: {
+		loggedIn(state) {
+			return !!state.user;
+		},
 	},
 	modules: {},
 });

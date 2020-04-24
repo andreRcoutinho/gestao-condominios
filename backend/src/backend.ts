@@ -20,18 +20,20 @@ import { SeedUnits } from './database/units';
 
 const app = express();
 
-//TO DO 
+//TO DO
 createConnection().then(async (connection) => {
-    console.log('Connected');
-    await SeedTypologies();
-    await SeedRoles();
-    await SeedUnits();
-    console.log('Database seeded....');
+	console.log('Connected');
+	await SeedTypologies();
+	await SeedRoles();
+	await SeedUnits();
+	console.log('Database seeded....');
 });
 
 var corsOptions = {
-    origin: 'http://localhost:8080',
-}
+	origin: 'http://localhost:8080',
+	methods: '*',
+	allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 app.use(cors(corsOptions));
 app.use(express.json());

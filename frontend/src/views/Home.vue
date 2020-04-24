@@ -11,7 +11,7 @@
 				<v-row justify="space-around" class="mt-12">
 					<v-col cols="3">
 						<v-card class="mb-12" color="grey lighten-4" height="200px" raised>
-							{{ item.content }}
+							{{ roles[0] }}
 						</v-card>
 					</v-col>
 					<v-col cols="3">
@@ -51,11 +51,16 @@
 </template>
 
 <script>
+import axios from 'axios';
+
+import { authComputed } from '../store/helpers.js';
+
 import LayoutDefault from '@/layouts/LayoutDefault';
 
 export default {
 	name: 'Home',
 	data: () => ({
+		roles: [],
 		tab: null,
 		months: [
 			{ tab: 'janeiro', content: 'Tab 1 Content' },
@@ -82,6 +87,12 @@ export default {
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
+		axios.get('//localhost:3333/api/roles').then(({ data }) => {
+			this.roles = data.data;
+		});
+	},
+	computed: {
+		...authComputed,
 	},
 };
 </script>

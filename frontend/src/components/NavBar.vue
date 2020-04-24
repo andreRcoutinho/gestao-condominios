@@ -16,12 +16,18 @@
 			Home
 		</v-btn>
 
-		<v-btn icon large outlined to="/login" class="mr-3">
+		<v-btn v-if="!loggedIn" icon large outlined to="/login" class="mr-3">
 			<v-icon>{{ 'mdi-power' }}</v-icon>
 		</v-btn>
 	</v-app-bar>
 </template>
 
 <script>
-export default {};
+import { authComputed } from '../store/helpers.js';
+
+export default {
+	computed: {
+		...authComputed,
+	},
+};
 </script>

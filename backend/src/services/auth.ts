@@ -66,7 +66,7 @@ export async function signIn(body: any) {
             { id: user.getId(), role: user.getRole().getRole_name() },
             SECRET,
             {
-                expiresIn: 86400,
+                expiresIn: "2h",
             }
         );
 

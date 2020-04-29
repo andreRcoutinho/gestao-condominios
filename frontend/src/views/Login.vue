@@ -38,6 +38,15 @@
 							>Entrar</v-btn
 						>
 					</v-card-actions>
+					<v-alert
+						v-if="status"
+						class="mt-7 mb-0"
+						icon="mdi-shield-lock-outline"
+						text
+						type="error"
+					>
+						{{ status }}
+					</v-alert>
 				</v-form>
 			</v-card-text>
 		</v-card>
@@ -66,6 +75,7 @@ export default {
 			pwdRules: [(v) => !!v || 'A password é necessária.'],
 			showPassword: false,
 			formValidity: false,
+			status: null,
 		};
 	},
 	methods: {
@@ -78,7 +88,9 @@ export default {
 				.then(() => {
 					this.$router.push({ name: 'home' });
 				})
-				.catch((err) => console.log(`LOGIN.VUE -> ${err}`));
+				.catch((err) => {
+					this.status = err.response.data.error;
+				});
 			//this.$store.dispatch('print');
 		},
 	},

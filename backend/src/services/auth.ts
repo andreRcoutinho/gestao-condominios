@@ -6,18 +6,15 @@ import jwt from 'jsonwebtoken';
 import { SECRET } from '../config/auth';
 import * as api_errors from '../api/api_errors';
 
-
 async function hasUser(email: String): Promise<boolean> {
     try {
         let hasUser: User = await User.findOne({ where: { email } });
-        if (hasUser)
-            return true;
+        if (hasUser) return true;
         return false;
     } catch (e) {
         return false;
     }
 }
-
 
 export async function signUp(body: any) {
     try {
@@ -32,7 +29,15 @@ export async function signUp(body: any) {
 
         var user_password: UserPassword = new UserPassword(body.password);
 
-        var user: User = new User(body.email, body.first_name, body.last_name, body.IBAN, body.NIF, role, user_password);
+        var user: User = new User(
+            body.email,
+            body.first_name,
+            body.last_name,
+            body.IBAN,
+            body.NIF,
+            role,
+            user_password
+        );
 
         await user_password.save();
 
@@ -52,7 +57,7 @@ export async function signUp(body: any) {
 
 export async function signIn(body: any) {
     try {
-        if (! await hasUser(body.email)) {
+        if (!(await hasUser(body.email))) {
             throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
@@ -71,16 +76,13 @@ export async function signIn(body: any) {
         );
 
         const response = {
-            user: {
-                id: user.getId(),
-                first_name: user.getFirst_name(),
-                last_name: user.getLast_name(),
-                role_name: user.getRole().getRole_name()
-            },
-            token
-        }
+            id: user.getId(),
+            first_name: user.getFirst_name(),
+            last_name: user.getLast_name(),
+            role_name: user.getRole().getRole_name(),
+            token,
+        };
         return response;
-
     } catch (e) {
         return e;
     }

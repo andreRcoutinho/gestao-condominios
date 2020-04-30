@@ -51,46 +51,21 @@ async function createPaymentMap(units_month: Unit[], total_value: Number, paymen
         let reserve_funds: { id, reserve_fund }[] = [];
         let monthly_expenses: { id, monthy_expense }[] = [];
 
-        let total_permilage_month = 0;
-        for (let i = 0; i < units_month.length; i++) {
-            total_permilage_month += Number(units_month[i].getTypology().getPermilage());
-        }
+        //Calculate total permilage per month
+        let total_permilage_month: number = calculateTotalPermilages(units_month);
 
-        let total_permilage = 0;
+        //Calculate total permilage
         let all_units: Unit[] = await Unit.find();
-        for (let i = 0; i < all_units.length; i++) {
-            total_permilage += Number(all_units[i].getTypology().getPermilage());
-        }
+        let total_permilage: number = calculateTotalPermilages(all_units);
 
-        for (let i = 0; i < units_month.length; i++) {
-            let monthly_expense = 0;
-            monthly_expense = Number(units_month[i].getTypology().getPermilage()) / total_permilage_month;
-            monthly_expense = monthly_expense * (Number(total_value) / 12);
-            monthly_expenses.push({
-                id: units_month[i].getId(), monthy_expense: Number(monthly_expense.toFixed(2))
-            });
-        }
+        //Calculate monthly expenses
+        monthly_expenses = calculateMonthlyExpenses(units_month, total_permilage_month, Number(total_value));
 
-        for (let i = 0; i < all_units.length; i++) {
-            let reserve_fund = 0;
-            reserve_fund = Number(all_units[i].getTypology().getPermilage()) / total_permilage;
-            reserve_fund = reserve_fund * ((Number(total_value) * 0.10) / 12);
-            reserve_funds.push({ id: all_units[i].getId(), reserve_fund: Number(reserve_fund.toFixed(2)) });
-        }
+        //Calculate reserve funds
+        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value));
 
-        for (let i = 0; i < reserve_funds.length; i++) {
-            let monthly_expense = 0;
-            for (let k = 0; k < monthly_expenses.length; k++) {
-                if (reserve_funds[i].id == monthly_expenses[k].id) {
-                    monthly_expense = monthly_expenses[k].monthy_expense;
-                }
-            }
-            for (let j = 0; j < months.length; j++) {
-                let value: Number = reserve_funds[i].reserve_fund + monthly_expense;
-                let revenue: Revenue = new Revenue(months[j], payment_map, all_units[i], Number(value.toFixed(2)));
-                await revenue.save();
-            }
-        }
+        //Save
+        await saveMap(reserve_funds, monthly_expenses, payment_map, all_units);
 
         return true;
 
@@ -134,22 +109,6 @@ export async function create(body: any) {
 
         return true;
 
-        /*if (yearly) {
-            for (let i = 0; i < units.length; i++) {
-                const unit = units[i];
-                for (let k = 0; k < months.length; k++) {
-                    //let revenue: Revenue = new Revenue(months[k], payment_map, unit);
-                    //await revenue.save();
-                }
-            }
-        } else {
-            for (let i = 0; i < units.length; i++) {
-                const unit = units[i];
-                //let revenue: Revenue = new Revenue('Prestação Unica', payment_map, unit);
-                //await revenue.save();
-            }
-        }*/
-
     } catch (error) {
         console.log(error);
         return error;
@@ -178,5 +137,53 @@ export async function update(id: Number, body: any) {
     } catch (error) {
         console.log(error);
         return error;
+    }
+}
+
+function calculateTotalPermilages(units: Unit[]): number {
+    let total_permilage_month: number = 0;
+    for (let i = 0; i < units.length; i++) {
+        total_permilage_month += Number(units[i].getTypology().getPermilage());
+    }
+    return total_permilage_month
+}
+
+function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number): { id, monthy_expense }[] {
+    let monthly_expenses: { id, monthy_expense }[] = [];
+    for (let i = 0; i < units.length; i++) {
+        let monthly_expense = 0;
+        monthly_expense = Number(units[i].getTypology().getPermilage()) / total_permilage_month;
+        monthly_expense = monthly_expense * (Number(total_value) / 12);
+        monthly_expenses.push({
+            id: units[i].getId(), monthy_expense: Number(monthly_expense.toFixed(2))
+        });
+    }
+    return monthly_expenses;
+}
+
+function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number): { id, reserve_fund }[] {
+    let reserve_funds: { id, reserve_fund }[] = [];
+    for (let i = 0; i < units.length; i++) {
+        let reserve_fund = 0;
+        reserve_fund = Number(units[i].getTypology().getPermilage()) / total_permilage;
+        reserve_fund = reserve_fund * ((Number(total_value) * 0.10) / 12);
+        reserve_funds.push({ id: units[i].getId(), reserve_fund: Number(reserve_fund.toFixed(2)) });
+    }
+    return reserve_funds;
+}
+
+async function saveMap(reserve_funds: { id, reserve_fund }[], monthly_expenses: { id, monthy_expense }[], payment_map: PaymentMap, units: Unit[]) {
+    for (let i = 0; i < reserve_funds.length; i++) {
+        let monthly_expense = 0;
+        for (let k = 0; k < monthly_expenses.length; k++) {
+            if (reserve_funds[i].id == monthly_expenses[k].id) {
+                monthly_expense = monthly_expenses[k].monthy_expense;
+            }
+        }
+        for (let j = 0; j < months.length; j++) {
+            let value: Number = reserve_funds[i].reserve_fund + monthly_expense;
+            let revenue: Revenue = new Revenue(months[j], payment_map, units[i], Number(value.toFixed(2)));
+            await revenue.save();
+        }
     }
 }

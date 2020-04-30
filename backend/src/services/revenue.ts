@@ -11,7 +11,6 @@ export async function payment_record(body: any) {
         }
 
         let paymnet_map_values: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map } })
-        console.log(paymnet_map_values);
 
         let unit: Unit = await Unit.findOne({ where: { id: body.unit_id } })
         if (!unit) {
@@ -30,10 +29,3 @@ export async function payment_record(body: any) {
         return error;
     }
 }
-
-/**
- * 1º Verificar se existe payment map
- * 2º Verificar se existe apartamento
- * 3º Verificar se existem revenues com o payment map e a unit
- * 4º
- */

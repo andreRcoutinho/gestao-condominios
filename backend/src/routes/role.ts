@@ -5,8 +5,8 @@ import adminMiddleware from '../middlewares/admin';
 
 const routes = Router();
 
-routes.use(authMiddleware);
-routes.use(adminMiddleware);
+//routes.use(authMiddleware);
+//routes.use(adminMiddleware);
 
 routes.get('/', role.index);
 

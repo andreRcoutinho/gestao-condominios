@@ -16,18 +16,18 @@ export class PaymentMapValues extends BaseEntity {
     private end_date: Date;
 
     @Column({ name: 'reserve_fund', type: "decimal" })
-    private reserve_fund: Number;
+    private reverse_fund: Number;
 
     @ManyToOne(type => PaymentMap)
     @JoinColumn()
     private payment_map: PaymentMap;
 
-    constructor(value: Number, start_date: Date, payment_map: PaymentMap) {
+    constructor(value: Number, start_date: Date, payment_map: PaymentMap, reverse_fund: Number) {
         super();
         this.value = value;
         this.start_date = start_date;
         this.payment_map = payment_map;
-        this.reserve_fund = Number(value) * 0.1;
+        this.reverse_fund = reverse_fund;
     }
 
     public getId(): Number {
@@ -62,12 +62,12 @@ export class PaymentMapValues extends BaseEntity {
         this.end_date = end_date;
     }
 
-    public getReserve_fund(): Number {
-        return this.reserve_fund;
+    public getReverse_fund(): Number {
+        return this.reverse_fund;
     }
 
-    public setReserve_fund(reserve_fund: Number): void {
-        this.reserve_fund = reserve_fund;
+    public setReverse_fund(reverse_fund: Number): void {
+        this.reverse_fund = reverse_fund;
     }
 
     public getPayment_map(): PaymentMap {

@@ -11,7 +11,6 @@ export async function SeedTypologies(): Promise<boolean> {
         await typology_shop.save();
 
     } catch (error) {
-        console.log(error);
         return false;
     }
 

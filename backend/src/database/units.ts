@@ -39,7 +39,6 @@ export async function SeedUnits(): Promise<boolean> {
         }
 
     } catch (error) {
-        console.log(error);
         return false;
     };
     return true;

@@ -20,18 +20,22 @@ export class Revenue extends BaseEntity {
     @Column({ name: 'paid' })
     private paid: Boolean;
 
+    @Column({ name: 'value', type: "decimal" })
+    private value: Number;
+
     @ManyToOne(type => Unit, unit => unit.getRevenues)
     private unit: Unit;
 
     @ManyToOne(type => PaymentMap, payment_map => payment_map.getRevenue)
     private payment_map: PaymentMap;
 
-    constructor(month: String, payment_map: PaymentMap, unit: Unit) {
+    constructor(month: String, payment_map: PaymentMap, unit: Unit, value: Number) {
         super();
         this.month = month;
         this.payment_map = payment_map;
         this.unit = unit;
         this.paid = false;
+        this.value = value;
     }
 
     public getId(): Number {
@@ -64,6 +68,14 @@ export class Revenue extends BaseEntity {
 
     public setPaid(paid: Boolean): void {
         this.paid = paid;
+    }
+
+    public getValue(): Number {
+        return this.value;
+    }
+
+    public setValue(value: Number): void {
+        this.value = value;
     }
 
     public getUnits(): Unit {

@@ -11,7 +11,6 @@ export async function index() {
         }
         return expenses;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -24,7 +23,6 @@ export async function show(id: Number) {
         }
         return expense;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -42,7 +40,6 @@ export async function create(body: any) {
 
         return expense;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -67,7 +64,6 @@ export async function update(id: Number, body: any) {
         return expense;
 
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -82,7 +78,6 @@ export async function remove(id: Number) {
         await Expense.remove(expense);
         return true;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }

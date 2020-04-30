@@ -8,7 +8,6 @@ export async function SeedRoles(): Promise<boolean> {
         var role_owner: Role = new Role('Condómino');
         await role_owner.save();
     } catch (error) {
-        console.log(error);
         return false;
     }
 

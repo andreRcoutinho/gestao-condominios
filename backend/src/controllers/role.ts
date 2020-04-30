@@ -12,7 +12,6 @@ export async function index(req: Request, res: Response) {
     let response = await roleService.index();
 
     if (response instanceof Error) {
-        console.log(response);
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(GET_ROLES_REQUEST, GET_ROLES_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(GET_ROLES_REQUEST, GET_ROLES_SUCCESS, HttpStatus.OK, response));

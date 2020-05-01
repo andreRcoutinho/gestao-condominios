@@ -19,22 +19,9 @@ export async function index() {
                 }
                 sup_contacts.push(c);
             });
-            var expenses: Expense[] = await Expense.find({ where: { supplier: supplier } });
-            let sup_expenses: { id, description, value, payment_date, payment_record_date }[] = [];
-            expenses.forEach(expense => {
-                let e = {
-                    id: expense.getId(),
-                    description: expense.getDescription(),
-                    value: expense.getValue(),
-                    payment_date: expense.getPayment_date(),
-                    payment_record_date: expense.getPayment_record_date()
-                }
-                sup_expenses.push(e)
-            })
             let sup = {
                 ...supplier,
                 contacts: sup_contacts,
-                expenses: sup_expenses
             }
             res.push(sup);
         }

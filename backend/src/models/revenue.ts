@@ -9,7 +9,7 @@ export class Revenue extends BaseEntity {
     private id: Number;
 
     @Column({ name: 'month' })
-    private month: String;
+    private month: Number;
 
     @Column({ name: 'payment_date', nullable: true })
     private payment_date: Date;
@@ -23,19 +23,23 @@ export class Revenue extends BaseEntity {
     @Column({ name: 'value', type: "decimal" })
     private value: Number;
 
-    @ManyToOne(type => Unit, unit => unit.getRevenues)
+    @Column({ name: "monthly" })
+    private monthly: Boolean;
+
+    @ManyToOne(type => Unit, unit => unit.getRevenues, { eager: true })
     private unit: Unit;
 
     @ManyToOne(type => PaymentMap, payment_map => payment_map.getRevenue)
     private payment_map: PaymentMap;
 
-    constructor(month: String, payment_map: PaymentMap, unit: Unit, value: Number) {
+    constructor(month: Number, payment_map: PaymentMap, unit: Unit, value: Number, monthly: Boolean) {
         super();
         this.month = month;
         this.payment_map = payment_map;
         this.unit = unit;
         this.paid = false;
         this.value = value;
+        this.monthly = monthly;
     }
 
     public getId(): Number {
@@ -46,11 +50,11 @@ export class Revenue extends BaseEntity {
         this.id = id;
     }
 
-    public getMonth(): String {
+    public getMonth(): Number {
         return this.month;
     }
 
-    public setMonth(month: String): void {
+    public setMonth(month: Number): void {
         this.month = month;
     }
 
@@ -68,6 +72,14 @@ export class Revenue extends BaseEntity {
 
     public setPaid(paid: Boolean): void {
         this.paid = paid;
+    }
+
+    public isMonthly(): Boolean {
+        return this.monthly;
+    }
+
+    public setMonthly(monthly: Boolean): void {
+        this.monthly = monthly;
     }
 
     public getValue(): Number {

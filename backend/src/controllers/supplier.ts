@@ -25,12 +25,12 @@ const SUPPLIER_UPDATE_FAIL: String = 'Failed to update supplier';
 
 export async function create(req: Request, res: Response) {
     if (!supplierRules.createRules(req.body))
-        return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
 
     let response = await supplierService.create(req.body);
 
     if (response instanceof Error) {
-        return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.CREATED, {}, response.message));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.CREATED, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_SUCCESS, HttpStatus.CREATED, true));
     }
@@ -41,7 +41,7 @@ export async function show(req: Request, res: Response) {
     let response = await supplierService.show(Number(req.params.id));
 
     if (response instanceof Error) {
-        return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_NOT_FOUND, HttpStatus.OK, {}, response.message));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_NOT_FOUND, HttpStatus.OK, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
     }
@@ -51,7 +51,7 @@ export async function index(req: Request, res: Response) {
     let response = await supplierService.index();
 
     if (response instanceof Error) {
-        return res.send(new ApiResponse(SUPPLIER_INDEX_REQUEST, SUPPLIER_INDEX_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_INDEX_REQUEST, SUPPLIER_INDEX_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_INDEX_REQUEST, SUPPLIER_INDEX_SUCCESS, HttpStatus.OK, response));
     }
@@ -61,7 +61,7 @@ export async function update(req: Request, res: Response) {
     let response = await supplierService.update(Number(req.params.id), req.body);
 
     if (response instanceof Error) {
-        return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
     }

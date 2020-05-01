@@ -10,7 +10,7 @@ const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (req["role"] === "Administrador") {
         next();
     } else {
-        return res.send(new ApiResponse(REQUEST, REQUEST_FAILED, HttpStatus.UNAUTHORIZED, {}, NO_ADMIN_PERMISSION));
+        return res.status(HttpStatus.UNAUTHORIZED).send(new ApiResponse(REQUEST, REQUEST_FAILED, HttpStatus.UNAUTHORIZED, {}, NO_ADMIN_PERMISSION));
     }
 }
 

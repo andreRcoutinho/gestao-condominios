@@ -12,12 +12,12 @@ const PAYMENT_RECORD_REQUEST_FAIL: String = 'Failed to Payment Record';
 
 export async function payment_record(req: Request, res: Response) {
     if (!revenueRules.paymentRecordRules(req.body)) {
-        return res.send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, INVALID_JSON_BODY))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, INVALID_JSON_BODY))
     }
 
     let response = await revenueService.payment_record(req.body);
     if (response instanceof Error) {
-        return res.send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
     } else {
         return res.send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_SUCCESS, HttpStatus.OK, response))
     }

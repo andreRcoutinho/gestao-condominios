@@ -28,12 +28,12 @@ const PAYMENT_MAP_REMOVE_FAIL: String = 'Failed to remove payment map';
 
 export async function create(req: Request, res: Response) {
     if (!paymentMapRules.createRules(req.body)) {
-        return res.send(new ApiResponse(PAYMENT_MAP_CREATE_REQUEST, PAYMENT_MAP_CREATE_FAIL, HttpStatus.NOT_FOUND, {}, INVALID_JSON_BODY))
+        return res.send(new ApiResponse(PAYMENT_MAP_CREATE_REQUEST, PAYMENT_MAP_CREATE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY))
     }
 
     let response = await paymentMapService.create(req.body);
     if (response instanceof Error) {
-        return res.send(new ApiResponse(PAYMENT_MAP_CREATE_REQUEST, PAYMENT_MAP_CREATE_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_MAP_CREATE_REQUEST, PAYMENT_MAP_CREATE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message))
     } else {
         return res.send(new ApiResponse(PAYMENT_MAP_CREATE_REQUEST, PAYMENT_MAP_CREATE_SUCCESS, HttpStatus.OK, response))
     }

@@ -42,7 +42,34 @@ export async function index() {
 }
 export async function show(id: Number) {
     try {
+        let payment_map: PaymentMap = await PaymentMap.findOne({ where: id });
+        if (!payment_map) {
+            throw new Error('Não existe nenhum mapa de pagamento criado com esse id');
+        }
 
+        let payment_map_values: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map } });
+
+        let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
+
+        let revenues_res: { month, unit_id, paid, value }[] = [];
+
+        for (let i = 0; i < revenues.length; i++) {
+            const revenue = revenues[i];
+            revenues_res.push({
+                month: revenue.getMonth(),
+                unit_id: revenue.getUnits().getUnit(),
+                paid: revenue.isPaid(),
+                value: revenue.getValue()
+            })
+        }
+
+        let response = {
+            payment_map: payment_map,
+            paymnet_map_values: payment_map_values,
+            revenues: revenues_res
+        }
+
+        return response;
     } catch (error) {
         return error;
     }

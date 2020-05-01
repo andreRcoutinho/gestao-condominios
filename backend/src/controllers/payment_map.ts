@@ -54,9 +54,9 @@ export async function show(req: Request, res: Response) {
     let response = await paymentMapService.show(Number(req.params.id));
 
     if (response instanceof Error) {
-        return res.send(new ApiResponse(PAYMENT_MAP_INDEX_REQUEST, PAYMENT_MAP_INDEX_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
+        return res.send(new ApiResponse(PAYMENT_MAP_SHOW_REQUEST, PAYMENT_MAP_SHOW_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
     } else {
-        return res.send(new ApiResponse(PAYMENT_MAP_INDEX_REQUEST, PAYMENT_MAP_INDEX_SUCCESS, HttpStatus.OK, response))
+        return res.send(new ApiResponse(PAYMENT_MAP_SHOW_REQUEST, PAYMENT_MAP_SHOW_SUCCESS, HttpStatus.OK, response))
     }
 }
 

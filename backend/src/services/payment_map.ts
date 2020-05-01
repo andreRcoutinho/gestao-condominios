@@ -19,8 +19,34 @@ const months = [
     12
 ]
 
-export async function index() { }
-export async function show(id: Number) { }
+export async function index() {
+    try {
+        let payment_maps_aux: PaymentMap[] = await PaymentMap.find();
+        if (payment_maps_aux.length === 0) {
+            throw new Error('Ainda não existem mapas criados!')
+        }
+        let payment_maps: { id, name, description }[] = [];
+        for (let i = 0; i < payment_maps_aux.length; i++) {
+            const payment_map = payment_maps_aux[i];
+            payment_maps.push({
+                id: payment_map.getId(),
+                name: payment_map.getName(),
+                description: payment_map.getDescription()
+            });
+        }
+        return payment_maps;
+
+    } catch (error) {
+        return error;
+    }
+}
+export async function show(id: Number) {
+    try {
+
+    } catch (error) {
+        return error;
+    }
+}
 
 /* CREATE REVENUES NORMAL PAYMENT MAP */
 async function createNormalPaymentMap(units: Unit[], total_value: Number, payment_map: PaymentMap): Promise<Boolean> {
@@ -41,7 +67,6 @@ async function createNormalPaymentMap(units: Unit[], total_value: Number, paymen
         return true;
 
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -71,7 +96,6 @@ async function createPaymentMap(units_month: Unit[], total_value: Number, paymen
         return true;
 
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -97,7 +121,6 @@ async function updatePaymentMap(revenues: Revenue[], total_value: Number, units_
 
         return true;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -137,7 +160,6 @@ export async function create(body: any) {
         return true;
 
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -159,7 +181,7 @@ export async function update(id: Number, body: any) {
         await payment_map_values[0].save();
 
         let date = new Date(new Date().getFullYear() + '-' + body.month);
-        let new_payment_map_value = new PaymentMapValues(body.value, date, payment_map, 0);
+        let new_payment_map_value = new PaymentMapValues(body.value, date, payment_map, body.value * 0.10);
         await new_payment_map_value.save();
 
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map: payment_map, month: MoreThan(month) } });
@@ -177,7 +199,6 @@ export async function update(id: Number, body: any) {
         return true;
 
     } catch (error) {
-        console.log(error);
         return error;
     }
 }
@@ -257,7 +278,6 @@ async function updateRevenues(revenues: Revenue[], monthly_expenses: { id, month
         for (let j = 0; j < revenues.length; j++) {
             const revenue = revenues[j];
             if (revenue.getUnits().getId() == reserve_funds[i].id) {
-                console.log('aqui');
                 revenue.setValue(Number(reserve_funds[i].reserve_fund + monthly_expense))
                 await revenue.save();
             }

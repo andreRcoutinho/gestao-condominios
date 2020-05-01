@@ -31,7 +31,15 @@ export async function index(req: Request, res: Response) {
     }
 }
 
-export async function show(req: Request, res: Response) { }
+export async function show(req: Request, res: Response) {
+    let response = await userService.show(Number(req.params.id));
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_SHOW_REQUEST, USER_SHOW_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_SHOW_REQUEST, USER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
 
 export async function update(req: Request, res: Response) { }
 

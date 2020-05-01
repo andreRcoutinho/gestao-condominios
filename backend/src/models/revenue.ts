@@ -14,9 +14,6 @@ export class Revenue extends BaseEntity {
     @Column({ name: 'payment_date', nullable: true })
     private payment_date: Date;
 
-    @Column({ name: 'payment_record_date', nullable: true })
-    private payment_record_date: Date;
-
     @Column({ name: 'paid' })
     private paid: Boolean;
 

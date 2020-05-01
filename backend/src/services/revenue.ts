@@ -10,18 +10,18 @@ export async function payment_record(body: any) {
             throw new Error("Erro mapa de pagamento")
         }
 
-        let paymnet_map_values: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map } })
-
         let unit: Unit = await Unit.findOne({ where: { id: body.unit_id } })
         if (!unit) {
             throw new Error("Erro no apartamento")
         }
 
-        let revenue: Revenue[] = await Revenue.find({ where: { payment_map, unit } });
-        if (revenue.length === 0) {
+        let revenue: Revenue = await Revenue.findOne({ where: { payment_map, unit, month: body.month } });
+        if (!revenue) {
             throw new Error("Não existe nenhuma receita com esses parametros");
         }
-
+        revenue.setPaid(true);
+        revenue.setPayment_date(new Date());
+        revenue.save();
 
         return true;
     } catch (error) {

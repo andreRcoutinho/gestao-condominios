@@ -2,6 +2,7 @@ import { User } from '../models/user';
 import { UserPassword } from '../models/user_password';
 import * as api_errors from '../api/api_errors';
 import { Contact } from '../models/contact';
+import { Unit } from '../models/unit';
 
 
 async function findUser(email: Number): Promise<User> {
@@ -42,7 +43,31 @@ export async function index() {
 
 export async function show(id: Number) {
     try {
+        let user_res: { id, name, email, iban, nif, role_name, units, contacts };
+        let user: User = await User.findOne({ where: { id } });
+        if (!user) {
+            throw new Error('Não existe nenhum utilizador com esse Id');
+        }
 
+        let user_contacts: Contact[] = await Contact.find({ where: { user } })
+        let user_units: Unit[] = user.getUnits();
+        let units: {}[] = [];
+        for (let i = 0; i < user_units.length; i++) {
+            units.push(user_units[i].getUnit());
+        }
+
+        user_res = {
+            id: user.getId(),
+            name: user.getFirst_name() + ' ' + user.getLast_name(),
+            email: user.getEmail(),
+            iban: user.getIBAN(),
+            nif: user.getNIF(),
+            role_name: user.getRole().getRole_name(),
+            units,
+            contacts: user_contacts
+        }
+
+        return user_res;
     } catch (error) {
         return error;
     }

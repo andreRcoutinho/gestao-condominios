@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, request } from "express";
 import * as userService from "../services/user";
 import { ApiResponse } from "../api/api_response";
 import HttpStatus from 'http-status-codes';
@@ -13,14 +13,27 @@ const USER_INDEX_MESSAGE_FAILED: String = "Failed to retrieve all users";
 const USER_SHOW_REQUEST: String = "Get specific user";
 const USER_SHOW_MESSAGE_SUCCESS: String = "Retrieved specific user successfully";
 const USER_SHOW_MESSAGE_FAILED: String = "Failed to retrieve specific user";
+//Update
+const USER_UPDATE_REQUEST: String = "Update user";
+const USER_UPDATE_MESSAGE_SUCCESS: String = "User update successfully";
+const USER_UPDATE_MESSAGE_FAILED: String = "Failed to update user";
 //UpdatePassword
 const USER_UPDATEPASSWORD_REQUEST: String = "Update user password";
 const USER_UPDATEPASSWORD_MESSAGE_SUCCESS: String = "Updated user password successfully";
 const USER_UPDATEPASSWORD_MESSAGE_FAILED: String = "Failed to update user password";
 
-export async function index(req: Request, res: Response) { }
+export async function index(req: Request, res: Response) {
+    let response = await userService.index();
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_INDEX_REQUEST, USER_INDEX_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_INDEX_REQUEST, USER_INDEX_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
 
 export async function show(req: Request, res: Response) { }
+
+export async function update(req: Request, res: Response) { }
 
 export async function updatePassword(req: Request, res: Response) {
     if (!userRules.updatePasswordRules(req.body))

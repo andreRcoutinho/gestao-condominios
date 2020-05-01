@@ -8,7 +8,6 @@ export async function index() {
         if (service_types.length === 0) {
             throw new Error(api_errors.SERVICE_TYPES_EMPTY);
         }
-
         return service_types;
     } catch (error) {
         return error;

@@ -20,7 +20,6 @@ import { SeedUnits } from './database/units';
 
 const app = express();
 
-//TO DO
 createConnection().then(async (connection) => {
     console.log('Connected');
     await SeedTypologies();

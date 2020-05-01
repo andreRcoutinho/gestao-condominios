@@ -5,6 +5,7 @@ import { Unit } from '../models/unit';
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../config/auth';
 import * as api_errors from '../api/api_errors';
+import { Contact } from '../models/contact';
 
 async function hasUser(email: String): Promise<boolean> {
     try {
@@ -49,7 +50,13 @@ export async function signUp(body: any) {
         user.setUnits(units);
         await user.save();
 
-        return user;
+        for (let index = 0; index < body.contacts.length; index++) {
+            const contact = body.contacts[index];
+            let c: Contact = new Contact(contact, user, null);
+            await c.save();
+        }
+
+        return true;
     } catch (e) {
         return e;
     }

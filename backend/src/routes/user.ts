@@ -5,9 +5,12 @@ import adminMiddleware from '../middlewares/admin';
 
 const routes = Router();
 
-/*routes.use(authMiddleware);
-routes.use(adminMiddleware);*/
-
+/*routes.use(authMiddleware);*/
+routes.get('/', user.index);
+routes.get('/:id', user.show);
+/*routes.use(adminMiddleware);*/
+routes.put('/:id', user.update)
 routes.put('/update-password', user.updatePassword);
+routes.delete('/:id')
 
 export default routes;

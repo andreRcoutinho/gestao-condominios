@@ -11,7 +11,7 @@ export function signUpRules(body: any): boolean | void {
         IBAN: "required",
         role_id: "required",
         units_id: "required",
-        phone_numbers: "required",
+        contacts: "required",
     };
 
     var validation = new Validator(body, rules);

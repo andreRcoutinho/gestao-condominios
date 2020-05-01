@@ -45,7 +45,7 @@ export class User extends BaseEntity {
     @JoinColumn()
     private user_password: UserPassword;
 
-    @ManyToMany((type) => Unit)
+    @ManyToMany((type) => Unit, { eager: true })
     @JoinTable()
     private units: Unit[];
 

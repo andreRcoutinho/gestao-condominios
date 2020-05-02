@@ -42,7 +42,7 @@ export async function index() {
 }
 export async function show(id: Number) {
     try {
-        let payment_map: PaymentMap = await PaymentMap.findOne({ where: id });
+        let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {
             throw new Error('Não existe nenhum mapa de pagamento criado com esse id');
         }

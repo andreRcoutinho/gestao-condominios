@@ -23,6 +23,8 @@ export class PaymentMap extends BaseEntity {
     @Column({ name: "year" })
     private year: String;
 
+    //closed
+
     @OneToMany(type => Revenue, revenue => revenue.getPayment_map)
     private revenue: Revenue[];
 

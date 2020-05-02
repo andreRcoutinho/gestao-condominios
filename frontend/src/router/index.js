@@ -22,12 +22,18 @@ const routes = [
 	},
 	{
 		path: '/movimentos',
-		name: 'movimentos',
+		name: 'movements',
 		component: () => import(/* webpackChunkName: "Movements" */ '../views/Movements.vue'),
 		meta: {
 			requiresAuth: true,
 		},
 	},
+	{
+		path: '/contactos',
+		name: 'contacts',
+		component: () => import(/* webpackChunkName: "Contacts" */ '../views/Contacts.vue'),
+	},
+
 	{
 		path: '/404',
 		component: NotFound,

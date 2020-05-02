@@ -6,6 +6,9 @@ import vuetify from './plugins/vuetify';
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
 //import axios from 'axios';
+import moment from 'moment';
+
+Vue.config.productionTip = false;
 
 // register Global Components. These usually take the form of Base{component-name}.vue and are made available in the components directory
 const requireComponent = require.context('./components', false, /Base[A-Z]\w+\.(vue|js)$/);
@@ -18,7 +21,11 @@ requireComponent.keys().forEach((fileName) => {
 	Vue.component(componentName, componentConfig.default || componentConfig);
 });
 
-Vue.config.productionTip = false;
+Vue.filter('formatDate', function(value) {
+	if (value) {
+		return moment(String(value)).format('DD/MM/YYYY [às] hh:mm');
+	}
+});
 
 new Vue({
 	router,

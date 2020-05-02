@@ -22,7 +22,7 @@ const routes = [
 	},
 	{
 		path: '/movimentos',
-		name: 'movimentos',
+		name: 'movements',
 		component: () => import(/* webpackChunkName: "Movements" */ '../views/Movements.vue'),
 		meta: {
 			requiresAuth: true,

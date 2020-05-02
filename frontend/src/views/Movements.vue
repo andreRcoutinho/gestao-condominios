@@ -49,11 +49,11 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="(item, index) in despesas" :key="index">
-										<td>{{ item.supplier }}</td>
-										<td>{{ item.price }}</td>
+									<tr v-for="(item, index) in expenses" :key="index">
+										<td>{{ item.supplier.company_name }}</td>
+										<td>{{ item.value }}</td>
 										<td>{{ item.description }}</td>
-										<td>{{ item.date }}</td>
+										<td>{{ item.payment_date | formatDate }}</td>
 									</tr>
 								</tbody>
 							</template>
@@ -221,6 +221,11 @@
 </template>
 
 <script>
+//TODO - Apresentar receitas
+//TODO - Acabar forms de nova despesa e nova receita
+
+import axios from 'axios';
+
 import LayoutDefault from '@/layouts/LayoutDefault';
 
 export default {
@@ -238,17 +243,13 @@ export default {
 				date: '01/01/01',
 			},
 		],
-		despesas: [
-			{
-				supplier: 'EDP',
-				price: '20€',
-				description: 'Luz',
-				date: '01/01/01',
-			},
-		],
+		expenses: [],
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
+	},
+	mounted() {
+		axios.get('//localhost:3333/api/expenses').then((res) => (this.expenses = res.data.data));
 	},
 };
 </script>

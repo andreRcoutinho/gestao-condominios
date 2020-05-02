@@ -25,7 +25,6 @@ export async function payment_record(body: any) {
 
         return true;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }

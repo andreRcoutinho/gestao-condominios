@@ -35,7 +35,6 @@ export async function index() {
             });
         }
         return payment_maps;
-
     } catch (error) {
         return error;
     }

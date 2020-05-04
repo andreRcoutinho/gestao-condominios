@@ -3,6 +3,7 @@ import { UserPassword } from '../models/user_password';
 import * as api_errors from '../api/api_errors';
 import { Contact } from '../models/contact';
 import { Unit } from '../models/unit';
+import { request } from 'express';
 
 
 async function findUser(email: Number): Promise<User> {
@@ -75,6 +76,14 @@ export async function show(id: Number) {
 
 export async function update(id: Number, body: any) {
     try {
+        let user: User = await User.findOne({ where: { id } });
+        if (!user) {
+            throw new Error('Não existe nenhum utilizador com esse id');
+        }
+
+        await User.update(Number(user.getId()), body);
+
+        return true;
 
     } catch (error) {
         return error;

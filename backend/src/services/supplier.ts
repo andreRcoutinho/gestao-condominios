@@ -57,7 +57,7 @@ export async function show(id: Number) {
                 payment_record_date: expense.getPayment_record_date()
             }
             expenses_res.push(e)
-        })
+        });
 
         let res = {
             ...supplier,

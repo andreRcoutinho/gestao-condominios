@@ -41,7 +41,15 @@ export async function show(req: Request, res: Response) {
     }
 }
 
-export async function update(req: Request, res: Response) { }
+export async function update(req: Request, res: Response) {
+    let response = await userService.update(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
 
 export async function updatePassword(req: Request, res: Response) {
     if (!userRules.updatePasswordRules(req.body))

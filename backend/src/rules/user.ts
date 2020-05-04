@@ -9,3 +9,13 @@ export function updatePasswordRules(body: any): boolean | void {
 
     return !validation.fails();
 }
+
+export function updateRules(body: any): boolean | void {
+    let rules: Rules = {
+        email: "email",
+    };
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}
+

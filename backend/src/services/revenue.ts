@@ -19,6 +19,9 @@ export async function payment_record(body: any) {
         if (!revenue) {
             throw new Error("Não existe nenhuma receita com esses parametros");
         }
+        if (revenue.isPaid()) {
+            throw new Error("A mensalidade indicada já se encontra paga.");
+        }
         revenue.setPaid(true);
         revenue.setPayment_date(new Date());
         revenue.save();

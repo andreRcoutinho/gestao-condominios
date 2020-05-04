@@ -3,7 +3,6 @@ import { UserPassword } from '../models/user_password';
 import * as api_errors from '../api/api_errors';
 import { Contact } from '../models/contact';
 import { Unit } from '../models/unit';
-import { request } from 'express';
 
 
 async function findUser(email: Number): Promise<User> {

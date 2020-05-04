@@ -29,3 +29,13 @@ export function signInRules(body: any): boolean | void {
 
     return !validation.fails();
 }
+
+export function forgotPasswordRules(body: any): boolean | void {
+    let rules = {
+        email: "required|email",
+    };
+
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}

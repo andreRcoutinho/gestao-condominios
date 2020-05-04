@@ -7,6 +7,7 @@ export function showRules(body: any): boolean | void { }
 export function createRules(body: any): boolean | void {
     let rules: Rules = {
         typology: 'required',
+        permilage: 'required'
     };
     var validation = new Validator(body, rules);
     return !validation.fails();

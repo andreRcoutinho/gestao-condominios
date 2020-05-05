@@ -116,24 +116,14 @@ export async function forgotPassword(body: any) {
         user_password.setPassword_reset_token(token);
         await user_password.save();
 
-        console.log(__dirname);
-
-        const html = pug.renderFile("/Users/ruisantos/Git/gestao-condominios/backend/src/email/forgot-password.pug", {
-            token: token
-        })
-
         transporter.sendMail({
             to: body.email,
             from: "lei.gestao.condominios@gmail.com",
             subject: "Recuperar Password",
-            html,
-            text: htmlToText.fromString(html)
-            //html: "<h1>Token:" + token + "</h1>"
+            html: "<h1>Token:" + token + "</h1>"
         });
 
-
         return true;
-
     } catch (error) {
         return error;
     }

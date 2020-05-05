@@ -51,7 +51,7 @@
 								<tbody>
 									<tr v-for="(item, index) in suppliers" :key="index">
 										<td>{{ item.company_name }}</td>
-										<td>{{ ` ${item.first_name} ${item.last_name} ` }}</td>
+										<td>{{ item.name }}</td>
 										<td>{{ item.email }}</td>
 										<td>{{ item.NIF }}</td>
 									</tr>

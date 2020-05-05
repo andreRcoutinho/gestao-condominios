@@ -29,6 +29,11 @@ export async function index() {
     } catch (error) {
         return error;
     }
+			let sup = {
+				...supplier,
+				name: `${supplier.getFirst_name()} ${supplier.getLast_name()}`,
+				contacts: sup_contacts,
+			};
 }
 
 // TO DO ALL EXPENSEVES 

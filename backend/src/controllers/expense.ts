@@ -9,6 +9,7 @@ import HttpStatus from "http-status-codes";
 const EXPENSE_CREATE_REQUEST: String = "Create Expense";
 const EXPENSE_CREATE_MESSAGE_SUCCESS: String = "Expense created successfully";
 const EXPENSE_CREATE_MESSAGE_FAIL: String = "Failed to create the Expense";
+const EXPENSE_CREATE_MESSAGE_SUCCESS: String = 'Despesa registada!';
 //Show
 const EXPENSE_SHOW_REQUEST: String = "Get Expense";
 const EXPENSE_SHOW_MESSAGE_SUCCESS: String = "Retrieved expense successfully";

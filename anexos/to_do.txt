@@ -3,6 +3,8 @@ TO DO
 --  Retorno dos pedidos (Create, Update, Delete)
 ---  Que informação vêm no retorno
 
+--  Fechar Mapas de Pagamento
+
 --  Validações (Questão dos updates)
 ---  Podem ser nulos, mas só podem vir um determinado conjunto de atributos
 
@@ -13,6 +15,14 @@ TO DO
 --  Updates e Deletes
 ---  Deve ser possivel por exemplo remover ou adicionar units a um utilizador
 ---  Ou seja delete e update das relações de um objeto 
+
+--  Adicionar o resto das constantes no api_errors
+
+--  Carregamento e exportação dados através de ficheiros JSON
+
+--  Adicionar restrições quer nas rules quer nos modelos
+
+--  Encriptar o segredo dos token
 
 --  Cascades
 

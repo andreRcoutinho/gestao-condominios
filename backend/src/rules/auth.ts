@@ -14,6 +14,13 @@ export function signUpRules(body: any): boolean | void {
         contacts: "required",
     };
 
+    /*for (const key in rules) {
+        if (rules.hasOwnProperty(key)) {
+            const element = rules[key];
+            console.log(key);
+        }
+    }*/
+
     var validation = new Validator(body, rules);
 
     return !validation.fails();

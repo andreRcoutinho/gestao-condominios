@@ -21,6 +21,7 @@ requireComponent.keys().forEach((fileName) => {
 	Vue.component(componentName, componentConfig.default || componentConfig);
 });
 
+moment.locale('pt');
 Vue.filter('formatDate', function(value) {
 	if (value) {
 		return moment(String(value)).format('DD/MM/YYYY [às] hh:mm');

@@ -18,7 +18,7 @@
 						prepend-icon="mdi-account-circle"
 						:rules="emailRules"
 						required
-						color="grey"
+						color="#949494"
 					></v-text-field>
 
 					<v-text-field
@@ -30,22 +30,27 @@
 						@click:append="showPassword = !showPassword"
 						:rules="pwdRules"
 						required
-						color="grey"
+						color="#949494"
 					/>
 
 					<v-card-actions class="justify-center">
-						<v-btn class="mt-4 mb-4" type="submit" color="secondary" :disabled="!formValidity"
-							>Entrar</v-btn
+						<v-btn
+							class="mt-4 mb-4"
+							type="submit"
+							color="secondary"
+							:disabled="!formValidity"
 						>
+							Entrar
+						</v-btn>
 					</v-card-actions>
 					<v-alert
-						v-if="status"
+						v-if="errorMsg"
 						class="mt-7 mb-0"
 						icon="mdi-shield-lock-outline"
 						text
 						type="error"
 					>
-						{{ status }}
+						{{ errorMsg }}
 					</v-alert>
 				</v-form>
 			</v-card-text>
@@ -75,7 +80,7 @@ export default {
 			pwdRules: [(v) => !!v || 'A password é necessária.'],
 			showPassword: false,
 			formValidity: false,
-			status: null,
+			errorMsg: null,
 		};
 	},
 	methods: {
@@ -89,7 +94,7 @@ export default {
 					this.$router.push({ name: 'home' });
 				})
 				.catch((err) => {
-					this.status = err.response.data.error;
+					this.errorMsg = err.response.data.error;
 				});
 			//this.$store.dispatch('print');
 		},

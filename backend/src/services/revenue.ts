@@ -3,6 +3,18 @@ import { PaymentMapValues } from '../models/payment_map_values';
 import { Revenue } from '../models/revenue';
 import { Unit } from '../models/unit';
 
+export async function index() {
+    try {
+        let revenues: Revenue[] = await Revenue.find({ where: { paid: true } });
+        if (revenues.length === 0) {
+            throw new Error('Ainda não existem receitas registadas!');
+        }
+
+        return revenues;
+    } catch (error) {
+        return error;
+    }
+}
 export async function payment_record(body: any) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id: body.payment_map_id } });

@@ -5,6 +5,11 @@ import * as revenueRules from '../rules/revenue';
 import { ApiResponse } from "../api/api_response";
 import { INVALID_JSON_BODY } from "../api/api_errors";
 
+//Index
+const REVENUE_INDEX_REQUEST: String = 'Get all revenues';
+const REVENUE_INDEX_SUCCESS: String = 'All revenues retrieved successfully';
+const REVENUE_INDEX_FAIL: String = 'Failed to retrieve all revenues';
+
 //Payment Record
 const PAYMENT_RECORD_REQUEST: String = 'Payment Record Request';
 const PAYMENT_RECORD_REQUEST_SUCCESS: String = 'Payment Record successfully';
@@ -20,5 +25,15 @@ export async function payment_record(req: Request, res: Response) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
     } else {
         return res.send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_SUCCESS, HttpStatus.OK, response))
+    }
+}
+
+export async function index(req: Request, res: Response) {
+    let response = await revenueService.index();
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
+    } else {
+        return res.send(new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_SUCCESS, HttpStatus.OK, response))
     }
 }

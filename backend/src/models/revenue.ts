@@ -26,7 +26,7 @@ export class Revenue extends BaseEntity {
     @ManyToOne(type => Unit, unit => unit.getRevenues, { eager: true })
     private unit: Unit;
 
-    @ManyToOne(type => PaymentMap, payment_map => payment_map.getRevenue)
+    @ManyToOne(type => PaymentMap, payment_map => payment_map.getRevenue, { eager: true })
     private payment_map: PaymentMap;
 
     constructor(month: Number, payment_map: PaymentMap, unit: Unit, value: Number, monthly: Boolean) {
@@ -37,6 +37,7 @@ export class Revenue extends BaseEntity {
         this.paid = false;
         this.value = value;
         this.monthly = monthly;
+        this.payment_date = new Date();
     }
 
     public getId(): Number {

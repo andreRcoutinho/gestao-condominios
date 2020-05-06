@@ -86,6 +86,7 @@
 			<!-- NOVO MOVIMENTO -->
 			<v-tab-item>
 				<v-row justify="center">
+					<!-- NOVA RECEITA -->
 					<v-col class="custom_col">
 						<v-dialog v-model="dialog1" persistent max-width="600px">
 							<template v-slot:activator="{ on }" class="text-xs-center">
@@ -98,72 +99,94 @@
 									<span class="headline">Receita</span>
 								</v-card-title>
 								<v-card-text>
-									<v-container>
+									<v-form
+										v-model="formValidity"
+										ref="formRevenue"
+										@submit.prevent="registerNewRevenue"
+									>
 										<v-row>
-											<v-col cols="12" sm="6" md="4">
-												<v-text-field label="Legal first name*" required></v-text-field>
-											</v-col>
-											<v-col cols="12" sm="6" md="4">
-												<v-text-field
-													label="Legal middle name"
-													hint="example of helper text only on focus"
-												></v-text-field>
-											</v-col>
-											<v-col cols="12" sm="6" md="4">
-												<v-text-field
-													label="Legal last name*"
-													hint="example of persistent helper text"
-													persistent-hint
-													required
-												></v-text-field>
-											</v-col>
 											<v-col cols="12">
-												<v-text-field label="Email*" required></v-text-field>
-											</v-col>
-											<v-col cols="12">
-												<v-text-field
-													label="Password*"
-													type="password"
-													required
-												></v-text-field>
-											</v-col>
-											<v-col cols="12" sm="6">
 												<v-select
-													:items="['0-17', '18-29', '30-54', '54+']"
-													label="Age*"
+													v-model="d1Info.paymentMap"
+													:items="paymentMaps"
+													:item-text="text"
+													item-value="id"
+													label="Mapa de Pagamento"
+													color="#949494"
+													item-color="blue"
+													:rules="d1Info.pmRules"
 													required
-												></v-select>
+												>
+												</v-select>
 											</v-col>
-											<v-col cols="12" sm="6">
-												<v-autocomplete
-													:items="[
-														'Skiing',
-														'Ice hockey',
-														'Soccer',
-														'Basketball',
-														'Hockey',
-														'Reading',
-														'Writing',
-														'Coding',
-														'Basejump',
-													]"
-													label="Interests"
-													multiple
-												></v-autocomplete>
+
+											<v-col cols="12">
+												<v-select
+													v-model="d1Info.unit"
+													:items="units"
+													item-text="unit"
+													item-value="id"
+													label="Fração"
+													color="#949494"
+													item-color="blue"
+													:rules="d1Info.unitRules"
+													required
+												>
+												</v-select>
+											</v-col>
+
+											<!-- <v-col cols="12">
+												<v-text-field
+													v-model.number="d1Info.value"
+													label="Valor em €"
+													placeholder="0.00"
+													color="#949494"
+													:rules="d1Info.valueRules"
+													required
+												></v-text-field>
+											</v-col> -->
+
+											<v-col>
+												<v-alert
+													v-if="success"
+													class="mb-3"
+													text
+													type="success"
+													transition="fade-transition"
+												>
+													{{ success }}
+												</v-alert>
+
+												<v-alert
+													v-else-if="errorMsg"
+													class="mb-3"
+													text
+													type="error"
+													transition="fade-transition"
+												>
+													{{ errorMsg }}
+												</v-alert>
 											</v-col>
 										</v-row>
-									</v-container>
-									<small>*indicates required field</small>
+										<v-row>
+											<v-spacer></v-spacer>
+											<v-btn color="blue darken-1" text @click="close1">Close</v-btn>
+											<v-btn
+												color="blue darken-1"
+												text
+												type="submit"
+												:disabled="!formValidity"
+											>
+												Save
+											</v-btn>
+										</v-row>
+									</v-form>
 								</v-card-text>
-								<v-card-actions>
-									<v-spacer></v-spacer>
-									<v-btn color="blue darken-1" text @click="dialog1 = false">Close</v-btn>
-									<v-btn color="blue darken-1" text @click="dialog1 = false">Save</v-btn>
-								</v-card-actions>
 							</v-card>
 						</v-dialog>
 					</v-col>
 
+					<!-- NOVA DESPESA -->
 					<v-col class="custom_col">
 						<v-dialog v-model="dialog2" persistent max-width="600px">
 							<template v-slot:activator="{ on }" class="text-xs-center">
@@ -178,8 +201,8 @@
 								<v-card-text>
 									<v-form
 										v-model="formValidity"
-										ref="formDespesa"
-										@submit.prevent="registerNewSupplier"
+										ref="formExpense"
+										@submit.prevent="registerNewExpense"
 									>
 										<v-row>
 											<v-col cols="12">
@@ -242,7 +265,7 @@
 										</v-row>
 										<v-row>
 											<v-spacer></v-spacer>
-											<v-btn color="blue darken-1" text @click="close">Close</v-btn>
+											<v-btn color="blue darken-1" text @click="close2">Close</v-btn>
 											<v-btn
 												color="blue darken-1"
 												text
@@ -264,7 +287,7 @@
 </template>
 
 <script>
-//TODO - Apresentar receitas
+//TODO - Apresentar receitas (fazer GET no backend)
 //TODO - Acabar form de nova receita
 
 import axios from 'axios';
@@ -278,6 +301,12 @@ export default {
 		tab: null,
 		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
 		dialog1: false,
+		d1Info: {
+			paymentMap: null,
+			pmRules: [(v) => !!v || 'Escolha um mapa de pagamento.'],
+			unit: null,
+			unitRules: [(v) => !!v || 'Escolha uma fração.'],
+		},
 		dialog2: false,
 		d2Info: {
 			supplier: null,
@@ -308,16 +337,11 @@ export default {
 				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
 			],
 		},
-		receitas: [
-			{
-				unit: 'T1',
-				price: '20€',
-				description: 'Obras',
-				date: '01/01/01',
-			},
-		],
+		revenues: [],
+		paymentMaps: [],
 		expenses: [],
 		suppliers: [],
+		units: [],
 		formValidity: false,
 		success: null,
 		errorMsg: null,
@@ -328,9 +352,16 @@ export default {
 	mounted() {
 		axios.get('//localhost:3333/api/expenses').then((res) => (this.expenses = res.data.data));
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
+		axios
+			.get('//localhost:3333/api/payment_map')
+			.then((res) => (this.paymentMaps = res.data.data));
+		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));
+		// TODO IN BACKEND - axios.get('//localhost:3333/api/revenues').then((res) => (this.revenues = res.data.data));
 	},
 	methods: {
-		registerNewSupplier() {
+		text: (item) => item.name + ': ' + item.description,
+
+		registerNewExpense() {
 			axios
 				.post('//localhost:3333/api/expenses', {
 					supplier_id: this.d2Info.supplier,
@@ -345,7 +376,7 @@ export default {
 						this.success = null;
 					}, 3000);
 
-					this.$refs.formDespesa.reset();
+					this.$refs.formExpense.reset();
 
 					console.log(res);
 				})
@@ -356,11 +387,43 @@ export default {
 					}, 3000);
 				});
 		},
-		close() {
-			this.$refs.formDespesa.reset();
+		registerNewRevenue() {
+			axios
+				.post('//localhost:3333/api/revenue', {
+					payment_map_id: this.d1Info.paymentMap,
+					unit_id: this.d1Info.unit,
+					//month: this.d1Info.month,
+					payment_date: moment().format('L LTS'),
+				})
+				.then((res) => {
+					this.success = res.data.message;
+
+					setTimeout(() => {
+						this.success = null;
+					}, 3000);
+
+					this.$refs.formRevenue.reset();
+
+					console.log(res);
+				})
+				.catch((err) => {
+					this.errorMsg = err.response.data.error;
+					setTimeout(() => {
+						this.errorMsg = null;
+					}, 3000);
+				});
+		},
+		close2() {
+			this.$refs.formExpense.reset();
 			this.success = null;
 			this.errorMsg = null;
 			this.dialog2 = false;
+		},
+		close1() {
+			this.$refs.formRevenue.reset();
+			this.success = null;
+			this.errorMsg = null;
+			this.dialog1 = false;
 		},
 	},
 };

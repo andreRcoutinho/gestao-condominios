@@ -36,28 +36,50 @@
 			</v-tab-item>
 			<!-- DESPESAS -->
 			<v-tab-item>
+				<v-row justify="center">
+					<v-col cols="6">
+						<v-text-field
+							v-model="expensesPagination.search"
+							append-icon="mdi-magnify"
+							label="Search"
+							single-line
+							hide-details
+							color="#949494"
+							class="mt-8"
+						></v-text-field>
+					</v-col>
+				</v-row>
 				<v-row justify="space-around">
 					<v-col cols="8">
-						<v-simple-table>
-							<template v-slot:default>
-								<thead>
-									<tr>
-										<th class="text-left">Fornecedor</th>
-										<th class="text-left">Valor</th>
-										<th class="text-left">Tipo de Despesa</th>
-										<th class="text-left">Data de Pagamento</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="(item, index) in expenses" :key="index">
-										<td>{{ item.supplier.company_name }}</td>
-										<td>{{ item.value }}</td>
-										<td>{{ item.description }}</td>
-										<td>{{ item.payment_date | formatDate }}</td>
-									</tr>
-								</tbody>
+						<v-data-table
+							:headers="expensesPagination.headers"
+							:items="expenses"
+							:search="expensesPagination.search"
+							hide-default-footer
+							:page.sync="expensesPagination.page"
+							:items-per-page="expensesPagination.itemsPerPage"
+							class="elevation-1"
+							@page-count="expensesPagination.pageCount = $event"
+							:sort-by="['payment_date']"
+							:sort-desc="[true]"
+							:footer-props="{
+								firstIcon: 'mdi-arrow-collapse-left',
+								lastIcon: 'mdi-arrow-collapse-right',
+								showFirstLastPage: true,
+							}"
+						>
+							<template v-slot:item.payment_date="{ item }">
+								<span>{{ item.payment_date | formatDate }}</span>
 							</template>
-						</v-simple-table>
+						</v-data-table>
+						<div class="text-center pt-3">
+							<v-pagination
+								v-model="expensesPagination.page"
+								:length="expensesPagination.pageCount"
+								:total-visible="7"
+								color="secondary"
+							></v-pagination>
+						</div>
 					</v-col>
 				</v-row>
 			</v-tab-item>
@@ -254,6 +276,7 @@ export default {
 	name: 'Movements',
 	data: () => ({
 		tab: null,
+		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
 		dialog1: false,
 		dialog2: false,
 		d2Info: {
@@ -267,7 +290,24 @@ export default {
 				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
 			],
 		},
-		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
+		expensesPagination: {
+			search: '',
+			sortDesc: true,
+			page: 1,
+			pageCount: 0,
+			itemsPerPage: 10,
+			headers: [
+				{
+					text: 'Fornecedor',
+					value: 'supplier.company_name',
+					sortable: false,
+					align: 'center',
+				},
+				{ text: 'Valor', value: 'value', align: 'center' },
+				{ text: 'Tipo de Despesa', value: 'description', sortable: false, align: 'center' },
+				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
+			],
+		},
 		receitas: [
 			{
 				unit: 'T1',

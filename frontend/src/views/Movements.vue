@@ -15,18 +15,20 @@
 							<template v-slot:default>
 								<thead>
 									<tr>
-										<th class="text-left">Parcela</th>
-										<th class="text-left">Valor</th>
-										<th class="text-left">Tipo de Receita</th>
-										<th class="text-left">Data de Pagamento</th>
+										<th class="text-center">Parcela</th>
+										<th class="text-center">Valor</th>
+										<th class="text-center">Mapa de Pagamento</th>
+										<th class="text-center">Mês Referente</th>
+										<th class="text-center">Data de Pagamento</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="(item, index) in receitas" :key="index">
-										<td>{{ item.unit }}</td>
-										<td>{{ item.price }}</td>
-										<td>{{ item.description }}</td>
-										<td>{{ item.date }}</td>
+									<tr v-for="(item, index) in revenues" :key="index">
+										<td class="text-center">{{ item.unit.unit }}</td>
+										<td class="text-center">{{ item.value }}</td>
+										<td class="text-center">{{ item.payment_map.name }}</td>
+										<td class="text-center">{{ item.month }}</td>
+										<td class="text-center">{{ item.payment_date | formatDate }}</td>
 									</tr>
 								</tbody>
 							</template>
@@ -39,7 +41,7 @@
 				<v-row justify="center">
 					<v-col cols="6">
 						<v-text-field
-							v-model="expensesPagination.search"
+							v-model="expensesTableOptions.search"
 							append-icon="mdi-magnify"
 							label="Search"
 							single-line
@@ -52,14 +54,14 @@
 				<v-row justify="space-around">
 					<v-col cols="8">
 						<v-data-table
-							:headers="expensesPagination.headers"
+							:headers="expensesTableOptions.headers"
 							:items="expenses"
-							:search="expensesPagination.search"
+							:search="expensesTableOptions.search"
 							hide-default-footer
-							:page.sync="expensesPagination.page"
-							:items-per-page="expensesPagination.itemsPerPage"
+							:page.sync="expensesTableOptions.page"
+							:items-per-page="expensesTableOptions.itemsPerPage"
 							class="elevation-1"
-							@page-count="expensesPagination.pageCount = $event"
+							@page-count="expensesTableOptions.pageCount = $event"
 							:sort-by="['payment_date']"
 							:sort-desc="[true]"
 							:footer-props="{
@@ -74,8 +76,8 @@
 						</v-data-table>
 						<div class="text-center pt-3">
 							<v-pagination
-								v-model="expensesPagination.page"
-								:length="expensesPagination.pageCount"
+								v-model="expensesTableOptions.page"
+								:length="expensesTableOptions.pageCount"
 								:total-visible="7"
 								color="secondary"
 							></v-pagination>
@@ -287,7 +289,6 @@
 </template>
 
 <script>
-//TODO - Apresentar receitas (fazer GET no backend)
 //TODO - Acabar form de nova receita
 
 import axios from 'axios';
@@ -302,6 +303,7 @@ export default {
 		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
 		dialog1: false,
 		d1Info: {
+			// ver se paymentMap é anual. se não, mês é 0.
 			paymentMap: null,
 			pmRules: [(v) => !!v || 'Escolha um mapa de pagamento.'],
 			unit: null,
@@ -319,9 +321,8 @@ export default {
 				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
 			],
 		},
-		expensesPagination: {
+		expensesTableOptions: {
 			search: '',
-			sortDesc: true,
 			page: 1,
 			pageCount: 0,
 			itemsPerPage: 10,
@@ -332,6 +333,7 @@ export default {
 					sortable: false,
 					align: 'center',
 				},
+				//TODO - € symbol after
 				{ text: 'Valor', value: 'value', align: 'center' },
 				{ text: 'Tipo de Despesa', value: 'description', sortable: false, align: 'center' },
 				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
@@ -356,7 +358,9 @@ export default {
 			.get('//localhost:3333/api/payment_map')
 			.then((res) => (this.paymentMaps = res.data.data));
 		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));
-		// TODO IN BACKEND - axios.get('//localhost:3333/api/revenues').then((res) => (this.revenues = res.data.data));
+		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
+
+		// TODO -se nao for anual, mandar mes a 0.
 	},
 	methods: {
 		text: (item) => item.name + ': ' + item.description,
@@ -392,7 +396,7 @@ export default {
 				.post('//localhost:3333/api/revenue', {
 					payment_map_id: this.d1Info.paymentMap,
 					unit_id: this.d1Info.unit,
-					//month: this.d1Info.month,
+					// TODO - month: this.d1Info.month,
 					payment_date: moment().format('L LTS'),
 				})
 				.then((res) => {

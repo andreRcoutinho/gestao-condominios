@@ -21,7 +21,6 @@ requireComponent.keys().forEach((fileName) => {
 	Vue.component(componentName, componentConfig.default || componentConfig);
 });
 
-moment.locale('pt');
 Vue.filter('formatDate', function(value) {
 	if (value) {
 		return moment(String(value)).format('DD/MM/YYYY [às] hh:mm');
@@ -38,6 +37,8 @@ new Vue({
 			const userData = JSON.parse(userString);
 			this.$store.commit('SET_USER_DATA', userData);
 		}
+
+		moment.locale('pt');
 
 		// axios.interceptors.response.use(
 		// 	(response) => response,

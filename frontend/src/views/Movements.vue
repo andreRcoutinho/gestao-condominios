@@ -172,14 +172,14 @@
 										</v-row>
 										<v-row>
 											<v-spacer></v-spacer>
-											<v-btn color="blue darken-1" text @click="close1">Close</v-btn>
+											<v-btn color="blue darken-1" text @click="close1">Fechar</v-btn>
 											<v-btn
 												color="blue darken-1"
 												text
 												type="submit"
 												:disabled="!formValidity"
 											>
-												Save
+												Registar
 											</v-btn>
 										</v-row>
 									</v-form>
@@ -267,14 +267,14 @@
 										</v-row>
 										<v-row>
 											<v-spacer></v-spacer>
-											<v-btn color="blue darken-1" text @click="close2">Close</v-btn>
+											<v-btn color="blue darken-1" text @click="close2">Fechar</v-btn>
 											<v-btn
 												color="blue darken-1"
 												text
 												type="submit"
 												:disabled="!formValidity"
 											>
-												Save
+												Registar
 											</v-btn>
 										</v-row>
 									</v-form>

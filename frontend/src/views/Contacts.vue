@@ -7,8 +7,9 @@
 		</v-tabs>
 
 		<v-tabs-items v-model="tab">
-			<!-- CONDOMINOS -->
+			<!-- OWNERS -->
 			<v-tab-item>
+				<!-- SEARCH BAR -->
 				<v-row justify="center">
 					<v-col cols="6">
 						<v-text-field
@@ -22,6 +23,7 @@
 						></v-text-field>
 					</v-col>
 				</v-row>
+				<!-- OWNERS TABLE -->
 				<v-row justify="space-around">
 					<v-col cols="8">
 						<v-data-table
@@ -38,33 +40,86 @@
 							:single-expand="ownersTableOptions.singleExpand"
 							:expanded.sync="ownersTableOptions.expanded"
 							item-key="name"
-							show-expand
 						>
-							<template v-slot:expanded-item="{ headers, item }">
-								<table>
-									<tr>
-										<th>NIF</th>
-										<td>{{ item.NIF }}</td>
-									</tr>
-									<tr>
-										<th>IBAN</th>
-										<td>{{ item.IBAN }}</td>
-									</tr>
-									<tr>
-										<th rowspan="item.contacts.length">Contacto</th>
-										<td v-for="(c, index) in item.contacts" :key="index">
-											{{ c }}
-										</td>
-									</tr>
-									<tr>
-										<th rowspan="item.units.length">Frações</th>
-										<td v-for="(unit, index) in item.units" :key="index">
-											{{ unit }}
-										</td>
-									</tr>
-								</table>
+							<template v-slot:item.actions="props">
+								<v-icon class="mr-2" @click="openOwnerInfo(props.item)">
+									mdi-plus
+								</v-icon>
 							</template>
 						</v-data-table>
+						<v-dialog v-model="ownerRowDlog.show" max-width="600px">
+							<v-card>
+								<v-card-title class="ml-2 pt-5">
+									<span>{{ ownerRowDlog.name }}</span>
+								</v-card-title>
+
+								<v-card-text>
+									<v-row class="ml-6">
+										<v-col cols="6">
+											<v-list-item two-line>
+												<v-list-item-content>
+													<v-list-item-subtitle>IBAN</v-list-item-subtitle>
+													<v-list-item-title>{{
+														ownerRowDlog.IBAN
+													}}</v-list-item-title>
+												</v-list-item-content>
+											</v-list-item>
+										</v-col>
+										<v-col cols="6">
+											<v-list-item two-line>
+												<v-list-item-content>
+													<v-list-item-subtitle>NIF</v-list-item-subtitle>
+													<v-list-item-title>{{ ownerRowDlog.NIF }}</v-list-item-title>
+												</v-list-item-content>
+											</v-list-item>
+										</v-col>
+										<v-col cols="6">
+											<v-list disabled>
+												<v-subheader class="mb-0">Fração</v-subheader>
+												<v-list-item v-for="(unit, i) in ownerRowDlog.units" :key="i">
+													<v-list-item-icon>
+														<v-icon>mdi-home</v-icon>
+													</v-list-item-icon>
+													<v-list-item-content>
+														<v-list-item-title
+															class="listItem"
+															v-text="ownerRowDlog.units[i]"
+														></v-list-item-title>
+													</v-list-item-content>
+												</v-list-item>
+											</v-list>
+										</v-col>
+										<v-col cols="6">
+											<v-list disabled>
+												<v-subheader>Contacto</v-subheader>
+												<v-list-item
+													v-for="(ctct, i) in ownerRowDlog.contacts"
+													:key="i"
+												>
+													<v-list-item-icon>
+														<v-icon>mdi-phone</v-icon>
+													</v-list-item-icon>
+													<v-list-item-content>
+														<v-list-item-title
+															class="listItem"
+															v-text="ownerRowDlog.contacts[i]"
+														></v-list-item-title>
+													</v-list-item-content>
+												</v-list-item>
+											</v-list>
+										</v-col>
+									</v-row>
+									<v-row class="mr-2">
+										<v-spacer></v-spacer>
+										<v-btn color="blue darken-1" text @click="closeOwnerInfo"
+											>Fechar</v-btn
+										>
+										<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
+										<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
+									</v-row>
+								</v-card-text>
+							</v-card>
+						</v-dialog>
 						<div class="text-center pt-3">
 							<v-pagination
 								v-model="ownersTableOptions.page"
@@ -77,7 +132,7 @@
 				</v-row>
 			</v-tab-item>
 
-			<!-- FORNECEDORES -->
+			<!-- SUPPLIERS -->
 			<v-tab-item>
 				<v-row justify="center">
 					<v-col cols="6">
@@ -108,10 +163,11 @@
 							:single-expand="suppliersTableOptions.singleExpand"
 							:expanded.sync="suppliersTableOptions.expanded"
 							item-key="name"
-							show-expand
 						>
-							<template v-slot:expanded-item="{ headers, item }">
-								<td :colspan="headers.length">More info about {{ item.name }}</td>
+							<template v-slot:item.actions="props">
+								<v-icon class="mr-2" @click="openSupplierInfo(props.item)">
+									mdi-plus
+								</v-icon>
 							</template>
 						</v-data-table>
 						<div class="text-center pt-3">
@@ -125,7 +181,7 @@
 					</v-col>
 				</v-row>
 			</v-tab-item>
-			<!-- NOVO FORNECEDOR -->
+			<!-- NEW SUPPLIER -->
 			<!-- TODO - CRIAR NOVO SERVICE TYPE SE JÁ NAO ESTIVER REGISTADO -->
 			<v-tab-item>
 				<v-row justify="center">
@@ -149,6 +205,15 @@ export default {
 	data: () => ({
 		tab: null,
 		tabs: [{ tab: 'Condóminos' }, { tab: 'Fornecedores' }, { tab: 'Novo Fornecedor' }],
+		ownerRowDlog: {
+			show: false,
+			name: '',
+			email: '',
+			IBAN: '',
+			NIF: '',
+			contacts: [],
+			units: [],
+		},
 		ownersTableOptions: {
 			search: '',
 			page: 1,
@@ -168,10 +233,22 @@ export default {
 					align: 'center',
 				},
 				{
-					text: '',
-					value: 'data-table-expand',
+					text: 'Mais info',
+					value: 'actions',
+					sortable: false,
+					align: 'center',
 				},
 			],
+		},
+		supplierRowDlog: {
+			show: false,
+			name: '',
+			email: '',
+			IBAN: '',
+			NIF: '',
+			contacts: [],
+			units: [],
+			service_types: [],
 		},
 		suppliersTableOptions: {
 			search: '',
@@ -197,8 +274,9 @@ export default {
 					align: 'center',
 				},
 				{
-					text: '',
-					value: 'data-table-expand',
+					text: 'Mais info',
+					value: 'actions',
+					sortable: false,
 				},
 			],
 		},
@@ -212,11 +290,40 @@ export default {
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
 		axios.get('//localhost:3333/api/users/').then((res) => (this.owners = res.data.data));
 	},
+	methods: {
+		openOwnerInfo(item) {
+			Object.assign(this.ownerRowDlog, item);
+			this.ownerRowDlog.show = true;
+			console.log(item);
+		},
+		closeOwnerInfo() {
+			this.ownerRowDlog.show = false;
+		},
+		openSupplierInfo(item) {
+			Object.assign(this.supplierRowDlog, item);
+			this.supplierRowDlog.show = true;
+		},
+		closeSupplierInfo() {
+			this.supplierRowDlog.show = false;
+		},
+	},
 };
 </script>
 
-<style>
+<style scoped>
 .custom_col {
 	flex-grow: 0;
+}
+.listItem {
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+.v-list-item__icon {
+	margin-right: 16px !important;
+}
+.v-subheader {
+	height: 0;
 }
 </style>

@@ -1,5 +1,6 @@
 import { Rules } from "validatorjs";
 import Validator from "validatorjs";
+import { filterBody } from "../middlewares/rules";
 
 export function signUpRules(body: any): boolean | void {
     var rules: Rules = {
@@ -13,14 +14,7 @@ export function signUpRules(body: any): boolean | void {
         units_id: "required",
         contacts: "required",
     };
-
-    /*for (const key in rules) {
-        if (rules.hasOwnProperty(key)) {
-            const element = rules[key];
-            console.log(key);
-        }
-    }*/
-
+    
     var validation = new Validator(body, rules);
 
     return !validation.fails();

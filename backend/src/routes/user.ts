@@ -10,7 +10,7 @@ routes.get('/', user.index);
 routes.get('/:id', user.show);
 /*routes.use(adminMiddleware);*/
 routes.put('/:id', user.update)
-routes.put('/update-password', user.updatePassword);
+routes.post('/update-password', user.updatePassword);
 routes.delete('/:id')
 
 export default routes;

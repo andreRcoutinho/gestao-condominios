@@ -2,7 +2,7 @@ import Validator, { Rules } from "validatorjs";
 
 export function updatePasswordRules(body: any): boolean | void {
     let rules: Rules = {
-        email: "required|email",
+        email: "required",
         new_password: "required",
     };
     var validation = new Validator(body, rules);

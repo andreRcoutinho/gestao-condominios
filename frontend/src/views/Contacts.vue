@@ -37,8 +37,6 @@
 							@page-count="ownersTableOptions.pageCount = $event"
 							:sort-by="['name']"
 							:sort-desc="[false]"
-							:single-expand="ownersTableOptions.singleExpand"
-							:expanded.sync="ownersTableOptions.expanded"
 							item-key="name"
 						>
 							<template v-slot:item.actions="props">
@@ -134,6 +132,7 @@
 
 			<!-- SUPPLIERS -->
 			<v-tab-item>
+				<!-- SEARCH BAR -->
 				<v-row justify="center">
 					<v-col cols="6">
 						<v-text-field
@@ -160,8 +159,6 @@
 							@page-count="suppliersTableOptions.pageCount = $event"
 							:sort-by="['company_name']"
 							:sort-desc="[false]"
-							:single-expand="suppliersTableOptions.singleExpand"
-							:expanded.sync="suppliersTableOptions.expanded"
 							item-key="name"
 						>
 							<template v-slot:item.actions="props">
@@ -170,6 +167,91 @@
 								</v-icon>
 							</template>
 						</v-data-table>
+
+						<v-dialog v-model="supplierRowDlog.show" max-width="600px">
+							<v-card>
+								<v-card-title class="ml-2 pt-5">
+									<span>
+										{{ `${supplierRowDlog.company_name} - ${supplierRowDlog.name}` }}
+									</span>
+								</v-card-title>
+
+								<v-card-text>
+									<v-row class="ml-6">
+										<v-col cols="6">
+											<v-list-item two-line>
+												<v-list-item-content>
+													<v-list-item-subtitle>IBAN</v-list-item-subtitle>
+													<v-list-item-title v-if="supplierRowDlog.IBAN">
+														{{ supplierRowDlog.IBAN }}
+													</v-list-item-title>
+													<v-list-item-title v-else>
+														Não disponível
+													</v-list-item-title>
+												</v-list-item-content>
+											</v-list-item>
+										</v-col>
+										<v-col cols="6">
+											<v-list-item two-line>
+												<v-list-item-content>
+													<v-list-item-subtitle>NIF</v-list-item-subtitle>
+													<v-list-item-title>{{
+														supplierRowDlog.NIF
+													}}</v-list-item-title>
+												</v-list-item-content>
+											</v-list-item>
+										</v-col>
+										<v-col cols="6">
+											<v-list disabled>
+												<v-subheader class="mb-0">Tipo de Serviço</v-subheader>
+												<v-list-item
+													v-for="(st, i) in supplierRowDlog.service_types"
+													:key="i"
+												>
+													<v-list-item-icon>
+														<v-icon>mdi-hammer-wrench</v-icon>
+													</v-list-item-icon>
+													<v-list-item-content>
+														<v-list-item-title
+															class="listItem"
+															v-text="supplierRowDlog.service_types[i].service_type"
+														></v-list-item-title>
+													</v-list-item-content>
+												</v-list-item>
+											</v-list>
+										</v-col>
+										<v-col cols="6">
+											<v-list disabled>
+												<v-subheader>Contacto</v-subheader>
+												<v-list-item
+													v-for="(ctct, i) in supplierRowDlog.contacts"
+													:key="i"
+												>
+													<v-list-item-icon>
+														<v-icon>mdi-phone</v-icon>
+													</v-list-item-icon>
+													<v-list-item-content>
+														<v-list-item-title
+															class="listItem"
+															v-text="supplierRowDlog.contacts[i].phone_number"
+														></v-list-item-title>
+													</v-list-item-content>
+												</v-list-item>
+											</v-list>
+										</v-col>
+									</v-row>
+									<v-row class="mr-2">
+										<v-spacer></v-spacer>
+										<v-btn color="blue darken-1" text @click="closeSupplierInfo">
+											Fechar
+										</v-btn>
+										<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
+										<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
+									</v-row>
+								</v-card-text>
+							</v-card>
+						</v-dialog>
+
 						<div class="text-center pt-3">
 							<v-pagination
 								v-model="suppliersTableOptions.page"
@@ -184,16 +266,55 @@
 			<!-- NEW SUPPLIER -->
 			<!-- TODO - CRIAR NOVO SERVICE TYPE SE JÁ NAO ESTIVER REGISTADO -->
 			<v-tab-item>
-				<v-row justify="center">
-					<v-col class="custom_col"> </v-col>
-				</v-row>
+				<v-form class="mt-12">
+					<v-container>
+						<v-row justify="center">
+							<v-col cols="5">
+								<v-text-field label="Primeiro Nome" color="secondary"></v-text-field>
+							</v-col>
+							<v-col cols="1"> </v-col>
+							<v-col cols="5">
+								<v-text-field label="Último Nome" color="secondary"></v-text-field>
+							</v-col>
+							<v-col cols="5">
+								<v-text-field label="Email" color="secondary"></v-text-field>
+							</v-col>
+							<v-col cols="1"> </v-col>
+							<v-col cols="5">
+								<v-text-field label="Empresa" color="secondary"></v-text-field>
+							</v-col>
+							<v-col cols="5">
+								<v-text-field label="NIF" color="secondary"></v-text-field>
+							</v-col>
+							<v-col cols="1"> </v-col>
+							<v-col cols="5">
+								<v-text-field label="IBAN" color="secondary"></v-text-field>
+							</v-col>
+							<v-col cols="5">
+								<v-text-field label="Contacto" color="secondary"> </v-text-field>
+							</v-col>
+							<v-col cols="1"> </v-col>
+							<v-col cols="5">
+								<v-select
+									v-model="newSupplierInfo.service_type"
+									:items="service_types"
+									label="Tipo de Serviço"
+									item-text="service_type"
+									item-value="id"
+									color="secondary"
+									item-color="blue"
+									required
+								></v-select>
+							</v-col>
+						</v-row>
+					</v-container>
+				</v-form>
 			</v-tab-item>
 		</v-tabs-items>
 	</div>
 </template>
 
 <script>
-// TODO - Apresentar + info de cada contacto
 // TODO - Form de novo contacto de fornecedor
 
 import axios from 'axios';
@@ -280,8 +401,19 @@ export default {
 				},
 			],
 		},
+		newSupplierInfo: {
+			firstName: null,
+			lastName: null,
+			email: null,
+			companyName: null,
+			NIF: null,
+			IBAN: null,
+			contacts: [],
+			service_type: [],
+		},
 		owners: [],
 		suppliers: [],
+		service_types: [],
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
@@ -289,6 +421,9 @@ export default {
 	mounted() {
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
 		axios.get('//localhost:3333/api/users/').then((res) => (this.owners = res.data.data));
+		axios
+			.get('//localhost:3333/api/service-types/')
+			.then((res) => (this.service_types = res.data.data));
 	},
 	methods: {
 		openOwnerInfo(item) {

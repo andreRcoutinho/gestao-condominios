@@ -9,8 +9,23 @@ export async function index() {
         if (revenues.length === 0) {
             throw new Error('Ainda não existem receitas registadas!');
         }
+        let revenues_res: { id, month?, payment_map_id, payment_map_name, unit_id, unit, value, payment_date }[] = [];
+        for (let i = 0; i < revenues.length; i++) {
+            let revenue = {
+                id: revenues[i].getId(),
+                month: revenues[i].getMonth(),
+                payment_map_id: revenues[i].getPayment_map().getId(),
+                payment_map_name: revenues[i].getPayment_map().getName(),
+                unit_id: revenues[i].getUnits().getId(),
+                unit: revenues[i].getUnits().getUnit(),
+                value: revenues[i].getValue(),
+                payment_date: revenues[i].getPayment_date()
+            }
 
-        return revenues;
+            revenues_res.push(revenue);
+        }
+
+        return revenues_res;
     } catch (error) {
         return error;
     }

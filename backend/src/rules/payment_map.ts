@@ -6,7 +6,8 @@ export function createRules(body: any): boolean | void {
         description: "required",
         value: "required",
         unit_ids: "required",
-        is_yearly: "required"
+        is_yearly: "required",
+        year: "required"
     }
     var validation = new Validator(body, rules);
 

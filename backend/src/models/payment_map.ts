@@ -23,7 +23,8 @@ export class PaymentMap extends BaseEntity {
     @Column({ name: "year" })
     private year: String;
 
-    //closed
+    @Column({ name: "closed" })
+    private closed: Boolean;
 
     @OneToMany(type => Revenue, revenue => revenue.getPayment_map)
     private revenue: Revenue[];
@@ -38,6 +39,7 @@ export class PaymentMap extends BaseEntity {
         this.record_date = new Date();
         this.yearly = yearly;
         this.year = year;
+        this.closed = false;
     }
 
     public getId(): Number {
@@ -78,6 +80,14 @@ export class PaymentMap extends BaseEntity {
 
     public setYearly(yearly: Boolean): void {
         this.yearly = yearly;
+    }
+
+    public isClosed(): Boolean {
+        return this.closed;
+    }
+
+    public setClosed(closed: Boolean): void {
+        this.closed = closed;
     }
 
     public getYear(): String {

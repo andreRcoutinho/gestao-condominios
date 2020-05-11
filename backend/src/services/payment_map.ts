@@ -157,9 +157,12 @@ export async function create(body: any) {
         let yearly: Boolean = false;
 
         if (body.is_yearly == true) {
-            let hasPaymentMap: PaymentMap[] = await PaymentMap.find({ where: { yearly: body.is_yearly, year: current_date.getFullYear().toString() } });
+            if (!body.year) {
+                throw new Error("Para ser um mapa anual deve indicar o ano!");
+            }
+            let hasPaymentMap: PaymentMap[] = await PaymentMap.find({ where: { yearly: body.is_yearly, year: body.year } });
             if (hasPaymentMap.length >= 1) {
-                throw new Error('Já existe um mapa anual criado para o corrente ano');
+                throw new Error('Já existe um mapa anual criado para o ano indicado');
             }
             yearly = true;
         }
@@ -169,7 +172,7 @@ export async function create(body: any) {
             throw new Error('Não existem apartamentos com esses ids.')
         }
 
-        let payment_map: PaymentMap = new PaymentMap(body.name, body.description, yearly, current_date.getFullYear().toString());
+        let payment_map: PaymentMap = new PaymentMap(body.name, body.description, yearly, body.year);
         await payment_map.save();
 
 
@@ -222,6 +225,32 @@ export async function update(id: Number, body: any) {
             }
         }
         await updatePaymentMap(revenues, body.value, units_monthly);
+        return true;
+
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function closePaymentMap(id: Number) {
+    try {
+        //Verificar se o mapa existe
+        let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
+        if (!payment_map) {
+            throw new Error('Não existe nenhum mapa de pagamento com esse id');
+        }
+
+        //Verificar se todas as revenues do mapa estão pagas
+        let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
+        for (let i = 0; i < revenues.length; i++) {
+            if (revenues[i].isPaid() === false) {
+                throw new Error("Ainda falta efetuar pagamentos referente a esse mapa");
+            }
+        }
+
+        //Fechar o mapa
+        payment_map.setClosed(true);
+        payment_map.save();
         return true;
 
     } catch (error) {

@@ -3,7 +3,7 @@ TO DO
 --  Retorno dos pedidos (Create, Update, Delete)
 ---  Que informação vêm no retorno
 
---  Fechar Mapas de Pagamento
+--  Fechar Mapas de Pagamento ✅
 
 --  Validações (Questão dos updates)
 ---  Podem ser nulos, mas só podem vir um determinado conjunto de atributos
@@ -13,6 +13,8 @@ TO DO
 ----  Acontece quando um admin cria um novo user ✅
 
 --  Reset Password ✅
+
+--  Pagar vários meses ao mesmo tempo ✅
 
 --  Updates e Deletes
 ---  Deve ser possivel por exemplo remover ou adicionar units a um utilizador

@@ -15,6 +15,7 @@ export async function index() {
         return error;
     }
 }
+
 export async function payment_record(body: any) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id: body.payment_map_id } });
@@ -27,16 +28,13 @@ export async function payment_record(body: any) {
             throw new Error("Erro no apartamento")
         }
 
-        let revenue: Revenue = await Revenue.findOne({ where: { payment_map, unit, month: body.month } });
-        if (!revenue) {
-            throw new Error("Não existe nenhuma receita com esses parametros");
+        for (let i = 0; i < body.months.length; i++) {
+            const month = body.months[i];
+            let revenue: Revenue = await Revenue.findOne({ where: { payment_map, unit, month } });
+            revenue.setPaid(true);
+            revenue.setPayment_date(new Date());
+            await revenue.save();
         }
-        if (revenue.isPaid()) {
-            throw new Error("A mensalidade indicada já se encontra paga.");
-        }
-        revenue.setPaid(true);
-        revenue.setPayment_date(new Date());
-        revenue.save();
 
         return true;
     } catch (error) {

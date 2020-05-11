@@ -39,6 +39,7 @@ export async function index() {
         return error;
     }
 }
+
 export async function show(id: Number) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
@@ -50,13 +51,14 @@ export async function show(id: Number) {
 
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
 
-        let revenues_res: { month, unit_id, paid, value }[] = [];
+        let revenues_res: { month, unit_id, unit, paid, value }[] = [];
 
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
             revenues_res.push({
                 month: revenue.getMonth(),
-                unit_id: revenue.getUnits().getUnit(),
+                unit_id: revenue.getUnits().getId(),
+                unit: revenue.getUnits().getUnit(),
                 paid: revenue.isPaid(),
                 value: revenue.getValue()
             })

@@ -3,6 +3,8 @@ import { PaymentMapValues } from '../models/payment_map_values';
 import { Unit } from '../models/unit';
 import { Revenue } from '../models/revenue';
 import { MoreThan } from 'typeorm';
+import * as api_errors from '../api/api_errors';
+
 
 const months = [
     1,
@@ -23,7 +25,7 @@ export async function index() {
     try {
         let payment_maps_aux: PaymentMap[] = await PaymentMap.find();
         if (payment_maps_aux.length === 0) {
-            throw new Error('Ainda não existem mapas criados!')
+            throw new Error(api_errors.NO_PAYMENT_MAPS)
         }
         let payment_maps: { id, name, description }[] = [];
         for (let i = 0; i < payment_maps_aux.length; i++) {
@@ -44,7 +46,7 @@ export async function show(id: Number) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {
-            throw new Error('Não existe nenhum mapa de pagamento criado com esse id');
+            throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS);
         }
 
         let payment_map_values: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map } });
@@ -159,19 +161,16 @@ export async function create(body: any) {
         let yearly: Boolean = false;
 
         if (body.is_yearly == true) {
-            if (!body.year) {
-                throw new Error("Para ser um mapa anual deve indicar o ano!");
-            }
             let hasPaymentMap: PaymentMap[] = await PaymentMap.find({ where: { yearly: body.is_yearly, year: body.year } });
             if (hasPaymentMap.length >= 1) {
-                throw new Error('Já existe um mapa anual criado para o ano indicado');
+                throw new Error(api_errors.ANNUAL_PAYMENT_MAP_ALREADY_EXISTS);
             }
             yearly = true;
         }
 
         let units: Unit[] = await Unit.findByIds(body.unit_ids);
         if (units.length === 0) {
-            throw new Error('Não existem apartamentos com esses ids.')
+            throw new Error(api_errors.UNIT_NOT_EXISTS)
         }
 
         let payment_map: PaymentMap = new PaymentMap(body.name, body.description, yearly, body.year);
@@ -179,7 +178,7 @@ export async function create(body: any) {
 
 
         if (yearly) {
-            let payment_map_values: PaymentMapValues = new PaymentMapValues(body.value, new Date(new Date().getFullYear() + "-01"), payment_map, body.value * 0.10);
+            let payment_map_values: PaymentMapValues = new PaymentMapValues(body.value, new Date(new Date().getFullYear() + '-01'), payment_map, body.value * 0.10);
             await payment_map_values.save();
             await createPaymentMap(units, body.value, payment_map);
         } else {
@@ -199,16 +198,16 @@ export async function update(id: Number, body: any) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {
-            throw new Error('Não existe nenhum Mapa de Pagamento com esse id');
+            throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS);
         }
 
         if (body.month <= 2 && body.month >= 12) {
-            throw new Error('O valor do mês não está correto, deve ser um valor entre 2 e 12');
+            throw new Error(api_errors.MONTH_VALUE_INCORRECT);
         }
 
         let payment_map_values: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map, end_date: null } });
         let month = body.month - 1;
-        payment_map_values[0].setEnd_date(new Date(new Date().getFullYear() + "-" + month));
+        payment_map_values[0].setEnd_date(new Date(new Date().getFullYear() + '-' + month));
         await payment_map_values[0].save();
 
         let date = new Date(new Date().getFullYear() + '-' + body.month);
@@ -239,14 +238,14 @@ export async function closePaymentMap(id: Number) {
         //Verificar se o mapa existe
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {
-            throw new Error('Não existe nenhum mapa de pagamento com esse id');
+            throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS);
         }
 
         //Verificar se todas as revenues do mapa estão pagas
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
         for (let i = 0; i < revenues.length; i++) {
             if (revenues[i].isPaid() === false) {
-                throw new Error("Ainda falta efetuar pagamentos referente a esse mapa");
+                throw new Error(api_errors.PAYMENT_MAP_INCOMPLETE);
             }
         }
 

@@ -1,13 +1,13 @@
 import { PaymentMap } from '../models/payment_map';
-import { PaymentMapValues } from '../models/payment_map_values';
 import { Revenue } from '../models/revenue';
 import { Unit } from '../models/unit';
+import * as api_errors from '../api/api_errors';
 
 export async function index() {
     try {
         let revenues: Revenue[] = await Revenue.find({ where: { paid: true } });
         if (revenues.length === 0) {
-            throw new Error('Ainda não existem receitas registadas!');
+            throw new Error(api_errors.NO_REVENUE_REGISTERED);
         }
         let revenues_res: { id, month?, payment_map_id, payment_map_name, unit_id, unit, value, payment_date }[] = [];
         for (let i = 0; i < revenues.length; i++) {
@@ -35,12 +35,12 @@ export async function payment_record(body: any) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id: body.payment_map_id } });
         if (!payment_map) {
-            throw new Error("Erro mapa de pagamento")
+            throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS)
         }
 
         let unit: Unit = await Unit.findOne({ where: { id: body.unit_id } })
         if (!unit) {
-            throw new Error("Erro no apartamento")
+            throw new Error(api_errors.UNIT_NOT_EXISTS)
         }
 
         for (let i = 0; i < body.months.length; i++) {

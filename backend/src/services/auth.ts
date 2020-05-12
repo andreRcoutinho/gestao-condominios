@@ -31,7 +31,7 @@ export async function signUp(body: any) {
             throw new Error(api_errors.ROLE_NOT_EXISTS);
         }
 
-        let password: String = "lei2020";
+        let password: String = 'lei2020';
 
         if (body.password) {
             password = body.password
@@ -87,7 +87,7 @@ export async function signIn(body: any) {
             { id: user.getId(), role: user.getRole().getRole_name() },
             SECRET,
             {
-                expiresIn: "2h",
+                expiresIn: '2h',
             }
         );
 
@@ -108,7 +108,7 @@ export async function forgotPassword(body: any) {
     try {
         let user: User = await User.findOne({ where: { email: body.email } });
         if (!user) {
-            throw new Error('Não existe nenhum utilizador com esse endereço de email');
+            throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
         const token = crypto.randomBytes(20).toString('hex');
@@ -123,8 +123,8 @@ export async function forgotPassword(body: any) {
 
         transporter.sendMail({
             to: body.email,
-            from: "lei.gestao.condominios@gmail.com",
-            subject: "Recuperar Password",
+            from: 'lei.gestao.condominios@gmail.com',
+            subject: 'Recuperar Password',
             html: forgot_password(token, user.getEmail())
 
         });
@@ -139,17 +139,17 @@ export async function resetPassword(body: any) {
     try {
         let user: User = await User.findOne({ where: { email: body.email } });
         if (!user) {
-            throw new Error('Não existe nenhum utilizador com esse endereço de email');
+            throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
         let user_password: UserPassword = user.getUser_password();
         if (body.token != user_password.getPassword_reset_token()) {
-            throw new Error('Token inválido');
+            throw new Error(api_errors.INVALID_TOKEN);
         }
 
         let now = new Date();
         if (now > user_password.getPassword_expire_date()) {
-            throw new Error('Token expirado! Por favor tente novamente');
+            throw new Error(api_errors.TOKEN_EXPIRED);
         }
 
         user_password.update_password(body.password);

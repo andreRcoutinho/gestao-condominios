@@ -125,7 +125,7 @@ export async function forgotPassword(body: any) {
             to: body.email,
             from: "lei.gestao.condominios@gmail.com",
             subject: "Recuperar Password",
-            html: forgot_password(token)
+            html: forgot_password(token, user.getEmail())
 
         });
 

@@ -7,8 +7,7 @@ export const ROLE_NOT_EXISTS = 'Tipo de utilizador inexistente';
 
 export const SERVICE_TYPES_EMPTY = 'Ainda não existem tipos de serviços na base de dados';
 export const SERVICE_TYPE_NOT_EXISTS = 'Tipo de serviço inexistente';
-export const SERVICE_TYPE_ALREADY_EXISTS =
-	'Já existe um tipo de serviço com esse nome na base de dados';
+export const SERVICE_TYPE_ALREADY_EXISTS = 'Já existe um tipo de serviço com esse nome na base de dados';
 
 export const TYPOLOGIES_EMPTY = 'Ainda não existem tipologias na base de dados';
 export const TYPOLOGY_NOT_EXISTS = 'Tipologia inexistente';
@@ -18,8 +17,7 @@ export const UNIT_NOT_EXISTS = 'Unidade inexistente';
 export const UNIT_ALREADY_EXISTS = 'Já existe uma unidade com esse nome na base de dados';
 
 export const INVALID_JSON_BODY = 'Invalid JSON Body';
-export const NO_ADMIN_PERMISSION =
-	'Sem autorização de administrador para executar a funcionalidade';
+export const NO_ADMIN_PERMISSION = 'Sem autorização de administrador para executar a funcionalidade';
 export const INVALID_TOKEN = 'Token inválido';
 export const NO_PERMISSION = 'Sem autorização para executar a funcionalidade';
 export const INVALID_TOKEN_FORMATT = 'Token não tem o formato correto';

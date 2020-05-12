@@ -14,13 +14,13 @@ TO DO
 
 --  Reset Password ✅
 
---  Pagar vários meses ao mesmo tempo ✅
+--  Pagar vários meses ao mesmo tempo ✅ 
 
 --  Updates e Deletes
 ---  Deve ser possivel por exemplo remover ou adicionar units a um utilizador
 ---  Ou seja delete e update das relações de um objeto 
 
---  Adicionar o resto das constantes no api_errors
+--  Adicionar o resto das constantes no api_errors ✅
 
 --  Carregamento e exportação dados através de ficheiros JSON
 

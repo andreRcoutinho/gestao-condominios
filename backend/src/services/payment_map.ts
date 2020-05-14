@@ -42,7 +42,7 @@ export async function index() {
     }
 }
 
-export async function show(id: Number) {
+export async function show(id: Number, year?: String) {
     try {
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {

@@ -1,7 +1,7 @@
 import { PaymentMap } from '../models/payment_map';
 import { Revenue } from '../models/revenue';
 import { Expense } from '../models/expense';
-import { Like, MoreThan, LessThan } from 'typeorm';
+import { MoreThan, LessThan } from 'typeorm';
 
 export async function monthlyData(month: Number, year: String) {
     try {
@@ -60,6 +60,8 @@ export async function monthlyData(month: Number, year: String) {
         return error;
     }
 }
+
+export async function simPaymentMap() { }
 
 function existsTypologyName(typology_values: { name: String, value: Number }[], name: String): boolean {
     for (let i = 0; i < typology_values.length; i++) {

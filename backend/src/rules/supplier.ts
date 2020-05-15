@@ -8,7 +8,7 @@ export function createRules(body: any): boolean | void {
         //IBAN: 'required',
         //NIF: 'required',
         company_name: 'required',
-        //service_types: 'required',
+        service_types: 'required',
         contacts: 'required'
     }
     var validation = new Validator(body, rules);

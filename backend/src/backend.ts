@@ -14,6 +14,7 @@ import supplier from './routes/supplier';
 import expense from './routes/expense';
 import payment_map from './routes/payment_map';
 import revenue from './routes/revenue';
+import others from './routes/others';
 import { SeedTypologies } from './database/typologies';
 import { SeedRoles } from './database/roles';
 import { SeedUnits } from './database/units';
@@ -50,5 +51,6 @@ app.use('/api/suppliers', supplier);
 app.use('/api/expenses', expense);
 app.use('/api/payment_map', payment_map);
 app.use('/api/revenue', revenue);
+app.use('/api/others', others);
 
 app.listen(3333);

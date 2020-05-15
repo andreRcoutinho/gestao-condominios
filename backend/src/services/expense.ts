@@ -7,7 +7,7 @@ export async function index() {
     try {
         let expenses: Expense[] = await Expense.find();
         if (expenses.length === 0) {
-            throw new Error('Não existem despesas ainda.')
+            throw new Error(api_errors.NO_EXPENSES_REGISTERED)
         }
         return expenses;
     } catch (error) {
@@ -19,7 +19,7 @@ export async function show(id: Number) {
     try {
         let expense: Expense = await Expense.findOne({ where: { id } });
         if (!expense) {
-            throw new Error('Não existe nenhuma despesa com esse id.')
+            throw new Error(api_errors.EXPENSE_NOT_EXISTS)
         }
         return expense;
     } catch (error) {
@@ -31,7 +31,7 @@ export async function create(body: any) {
     try {
         let supplier: Supplier = await Supplier.findOne({ where: { id: body.supplier_id } });
         if (!supplier) {
-            throw new Error('Não existe nenhum supplier com esse id')
+            throw new Error(api_errors.SUPPLIER_NOT_EXISTS)
         }
 
         let expense: Expense = new Expense(body.value, body.description, body.payment_date, supplier);
@@ -48,12 +48,12 @@ export async function update(id: Number, body: any) {
     try {
         let expense: Expense = await Expense.findOne({ where: { id } });
         if (!expense) {
-            throw new Error('Não existe nenhuma despesa com esse id.')
+            throw new Error(api_errors.EXPENSE_NOT_EXISTS)
         }
         if (body.supplier_id) {
             let supplier: Supplier = await Supplier.findOne({ where: { id: body.supplier_id } })
             if (!supplier) {
-                throw new Error("Não existe nenhum fornecedor com esse id");
+                throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
             }
             expense.setSupplier(supplier);
             delete body.supplier_id;
@@ -72,7 +72,7 @@ export async function remove(id: Number) {
     try {
         let expense: Expense = await Expense.findOne({ where: { id } });
         if (!expense) {
-            throw new Error('Não existe nenhuma despesa com esse id.')
+            throw new Error(api_errors.EXPENSE_NOT_EXISTS)
         }
 
         await Expense.remove(expense);

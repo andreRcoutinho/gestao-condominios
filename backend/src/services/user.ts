@@ -46,7 +46,7 @@ export async function show(id: Number) {
         let user_res: { id; name; email; iban; nif; role_name; units; contacts };
         let user: User = await User.findOne({ where: { id } });
         if (!user) {
-            throw new Error('Não existe nenhum utilizador com esse Id');
+            throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
         let user_contacts: Contact[] = await Contact.find({ where: { user } });
@@ -77,7 +77,7 @@ export async function update(id: Number, body: any) {
     try {
         let user: User = await User.findOne({ where: { id } });
         if (!user) {
-            throw new Error('Não existe nenhum utilizador com esse id');
+            throw new Error(api_errors.USER_NOT_EXISTS);
         }
 
         await User.update(Number(user.getId()), body);

@@ -14,7 +14,7 @@ export class Unit extends BaseEntity {
     @ManyToOne(type => Typology, { eager: true, cascade: true })
     private typology: Typology;
 
-    @OneToMany(type => Revenue, revenue => revenue.getUnits)
+    @OneToMany(type => Revenue, revenue => revenue.getUnit)
     private revenues: Revenue[];
 
     constructor(unit: String, typology: Typology) {

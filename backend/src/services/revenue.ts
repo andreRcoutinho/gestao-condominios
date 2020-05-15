@@ -16,8 +16,8 @@ export async function index() {
                 month: revenues[i].getMonth(),
                 payment_map_id: revenues[i].getPayment_map().getId(),
                 payment_map_name: revenues[i].getPayment_map().getName(),
-                unit_id: revenues[i].getUnits().getId(),
-                unit: revenues[i].getUnits().getUnit(),
+                unit_id: revenues[i].getUnit().getId(),
+                unit: revenues[i].getUnit().getUnit(),
                 value: revenues[i].getValue(),
                 payment_date: revenues[i].getPayment_date()
             }

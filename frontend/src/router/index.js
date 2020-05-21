@@ -33,7 +33,11 @@ const routes = [
 		name: 'contacts',
 		component: () => import(/* webpackChunkName: "Contacts" */ '../views/Contacts.vue'),
 	},
-
+	{
+		path: '/mapas',
+		name: 'mapaPagamento',
+		component: () => import(/* webpackChunkName: "PaymentMaps" */ '../views/PaymentMaps.vue'),
+	},
 	{
 		path: '/404',
 		component: NotFound,

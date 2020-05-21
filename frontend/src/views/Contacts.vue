@@ -344,6 +344,7 @@
 											<v-list-item-subtitle>
 												{{ newSupplierInfo.contacts[i] }}
 											</v-list-item-subtitle>
+											<!-- TODO - remover contacto splice -->
 										</v-list-item-content>
 									</v-list-item>
 								</v-list>
@@ -645,6 +646,8 @@ export default {
 					service_type: this.newSupplierInfo.serviceTypeDialog.serviceType,
 				})
 				.then((res) => {
+					//TODO - serviceTypes.push(res.data.data)
+
 					axios
 						.get('//localhost:3333/api/service-types/')
 						.then((response) => (this.serviceTypes = response.data.data))

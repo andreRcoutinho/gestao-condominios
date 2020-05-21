@@ -47,8 +47,8 @@ export async function show(id: Number, year?: String) {
 			const revenue = revenues[i];
 			revenues_res.push({
 				month: revenue.getMonth(),
-				unit_id: revenue.getUnits().getId(),
-				unit: revenue.getUnits().getUnit(),
+				unit_id: revenue.getUnit().getId(),
+				unit: revenue.getUnit().getUnit(),
 				paid: revenue.isPaid(),
 				value: revenue.getValue(),
 			});
@@ -56,7 +56,7 @@ export async function show(id: Number, year?: String) {
 
 		let response = {
 			payment_map: payment_map,
-			payment_map_values: payment_map_values,
+			paymnet_map_values: payment_map_values,
 			revenues: revenues_res,
 		};
 
@@ -247,7 +247,7 @@ export async function update(id: Number, body: any) {
 
 		let units_monthly: Unit[] = [];
 		for (let i = 0; i < revenues.length; i++) {
-			const unit: Unit = revenues[i].getUnits();
+			const unit: Unit = revenues[i].getUnit();
 			if (revenues[i].isMonthly() === true) {
 				if (!findUnit(units_monthly, unit)) {
 					units_monthly.push(unit);
@@ -384,7 +384,7 @@ async function updateRevenues(
 		}
 		for (let j = 0; j < revenues.length; j++) {
 			const revenue = revenues[j];
-			if (revenue.getUnits().getId() == reserve_funds[i].id) {
+			if (revenue.getUnit().getId() == reserve_funds[i].id) {
 				revenue.setValue(Number(reserve_funds[i].reserve_fund + monthly_expense));
 				await revenue.save();
 			}

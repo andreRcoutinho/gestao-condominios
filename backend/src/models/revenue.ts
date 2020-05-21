@@ -88,7 +88,7 @@ export class Revenue extends BaseEntity {
         this.value = value;
     }
 
-    public getUnits(): Unit {
+    public getUnit(): Unit {
         return this.unit;
     }
 

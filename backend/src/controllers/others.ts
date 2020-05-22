@@ -15,7 +15,7 @@ export async function monthlyData(req: Request, res: Response) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(MONTHLY_DATA_REQUEST, MONTHLY_DATA_INVALID, HttpStatus.NOT_FOUND, {}, "Invalid or nonexistent year or month"))
     }
 
-    let response = await othersService.monthlyData(req.query.month, req.query.year);
+    let response = await othersService.monthlyData(Number(req.query.month), req.query.year.toString());
 
     if (response instanceof Error) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(MONTHLY_DATA_REQUEST, MONTHLY_DATE_FAIL, HttpStatus.NOT_FOUND, {}, response.message))

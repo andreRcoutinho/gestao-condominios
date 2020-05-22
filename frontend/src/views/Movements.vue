@@ -109,16 +109,16 @@
 									>
 										<v-row>
 											<v-col cols="12">
+												<!-- onChange carregar unidades do mapa selecionado: https://stackoverflow.com/questions/51157816/how-to-call-a-function-on-selection-change-in-v-select -->
 												<v-select
 													v-model="d1Info.paymentMap"
 													:items="paymentMaps"
 													:item-text="payMapText"
-													item-value="id"
 													label="Mapa de Pagamento"
 													color="#949494"
-													item-color="blue"
-													:rules="d1Info.pmRules"
+													item-color="secondary"
 													required
+													return-object
 												>
 												</v-select>
 											</v-col>
@@ -131,17 +131,18 @@
 													item-value="id"
 													label="Fração"
 													color="#949494"
-													item-color="blue"
+													item-color="secondary"
 													:rules="d1Info.unitRules"
 													required
 												>
 												</v-select>
 											</v-col>
 
-											<v-col cols="12">
+											<v-col cols="12" v-if="d1Info.paymentMap !== null">
 												<v-row justify="center">
-													<!-- TODO - DATEPICKER ONLY TO ANUAL MAP -->
+													<!-- DATEPICKER ONLY TO ANUAL MAP -->
 													<v-date-picker
+														v-if="d1Info.paymentMap.yearly == true"
 														v-model="d1Info.checkedMonths"
 														type="month"
 														header-color="secondary"
@@ -461,6 +462,7 @@ export default {
 		},
 		close1() {
 			this.$refs.formRevenue.reset();
+			this.d1Info.paymentMap = null;
 			this.success = null;
 			this.errorMsg = null;
 			this.dialog1 = false;

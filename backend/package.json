@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "nodemon",
 		"ts-node": "ts-node src/backend.ts",
-		"start": "rm -r build && npm run build && node ./build/backend.js",
+		"start": "node ./build/backend.js",
 		"build": "tsc"
 	},
 	"keywords": [],

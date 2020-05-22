@@ -11,6 +11,7 @@
 			<v-tab-item>
 				<v-row justify="space-around">
 					<v-col cols="8">
+						<!-- TODO - CHANGE TO DATA TABLE -->
 						<v-simple-table>
 							<template v-slot:default>
 								<thead>
@@ -24,10 +25,10 @@
 								</thead>
 								<tbody>
 									<tr v-for="(item, index) in revenues" :key="index">
-										<td class="text-center">{{ item.unit.unit }}</td>
+										<td class="text-center">{{ item.unit }}</td>
 										<td class="text-center">{{ item.value }}</td>
-										<td class="text-center">{{ item.payment_map.name }}</td>
-										<td class="text-center">{{ item.month }}</td>
+										<td class="text-center">{{ item.payment_map_name }}</td>
+										<td class="text-center">{{ monthNumberToString(item.month) }}</td>
 										<td class="text-center">{{ item.payment_date | formatDate }}</td>
 									</tr>
 								</tbody>
@@ -111,7 +112,7 @@
 												<v-select
 													v-model="d1Info.paymentMap"
 													:items="paymentMaps"
-													:item-text="text"
+													:item-text="payMapText"
 													item-value="id"
 													label="Mapa de Pagamento"
 													color="#949494"
@@ -137,16 +138,20 @@
 												</v-select>
 											</v-col>
 
-											<!-- <v-col cols="12">
-												<v-text-field
-													v-model.number="d1Info.value"
-													label="Valor em €"
-													placeholder="0.00"
-													color="#949494"
-													:rules="d1Info.valueRules"
-													required
-												></v-text-field>
-											</v-col> -->
+											<v-col cols="12">
+												<v-row justify="center">
+													<!-- TODO - DATEPICKER ONLY TO ANUAL MAP -->
+													<v-date-picker
+														v-model="d1Info.checkedMonths"
+														type="month"
+														header-color="secondary"
+														multiple
+														no-title
+														:min="d1Info.beginYear"
+														:max="d1Info.endYear"
+													></v-date-picker>
+												</v-row>
+											</v-col>
 
 											<v-col>
 												<v-alert
@@ -289,8 +294,6 @@
 </template>
 
 <script>
-//TODO - Acabar form de nova receita
-
 import axios from 'axios';
 import moment from 'moment';
 
@@ -303,11 +306,28 @@ export default {
 		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
 		dialog1: false,
 		d1Info: {
-			// ver se paymentMap é anual. se não, mês é 0.
 			paymentMap: null,
 			pmRules: [(v) => !!v || 'Escolha um mapa de pagamento.'],
+			// TODO - UNITS SHOULD LOAD DEPENDING ON THE CHOSEN PAYMENT MAP
 			unit: null,
 			unitRules: [(v) => !!v || 'Escolha uma fração.'],
+			checkedMonths: [],
+			months: [
+				'janeiro',
+				'fevereiro',
+				'março',
+				'abril',
+				'maio',
+				'junho',
+				'julho',
+				'agosto',
+				'setembro',
+				'outubro',
+				'novembro',
+				'dezembro',
+			],
+			beginYear: `${new Date().getFullYear().toString()}-01`,
+			endYear: `${new Date().getFullYear().toString()}-12`,
 		},
 		dialog2: false,
 		d2Info: {
@@ -359,12 +379,19 @@ export default {
 			.then((res) => (this.paymentMaps = res.data.data));
 		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));
 		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
-
-		// TODO -se nao for anual, mandar mes a 0.
 	},
 	methods: {
-		text: (item) => item.name + ': ' + item.description,
-
+		monthNumberToString(monthNumber) {
+			let months = this.d1Info.months;
+			let correctMonth = '';
+			for (let i = 0; i < months.length; i++) {
+				if (months.indexOf(months[i]) === monthNumber - 1) {
+					correctMonth = months[i];
+				}
+			}
+			return correctMonth;
+		},
+		payMapText: (item) => item.name + ': ' + item.description,
 		registerNewExpense() {
 			axios
 				.post('//localhost:3333/api/expenses', {
@@ -392,11 +419,20 @@ export default {
 				});
 		},
 		registerNewRevenue() {
+			let formatedMonths = this.d1Info.checkedMonths.map((elem) => {
+				return +elem.slice(5, 7);
+			});
+
+			//se payment_map selecionado não for anual, mês vai a 0
+			if (formatedMonths.length === 0) {
+				formatedMonths = 0;
+			}
+
 			axios
 				.post('//localhost:3333/api/revenue', {
 					payment_map_id: this.d1Info.paymentMap,
 					unit_id: this.d1Info.unit,
-					// TODO - month: this.d1Info.month,
+					months: formatedMonths,
 					payment_date: moment().format('L LTS'),
 				})
 				.then((res) => {

@@ -13,7 +13,10 @@
 		<v-spacer></v-spacer>
 
 		<v-btn text tile to="/home" class="mr-5">
-			Home
+			{{ activeUser.first_name }}
+			{{ activeUser.last_name }}
+			<br />
+			{{ activeUser.role_name }}
 		</v-btn>
 
 		<v-btn icon large outlined class="mr-3" @click="logout">
@@ -28,6 +31,9 @@ import { authComputed } from '../store/helpers.js';
 export default {
 	computed: {
 		...authComputed,
+		activeUser() {
+			return this.$store.state.user;
+		},
 	},
 	methods: {
 		logout() {

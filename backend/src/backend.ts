@@ -25,7 +25,7 @@ createConnection().then(async (connection) => {
 	console.log('Connected');
 	await SeedTypologies();
 	await SeedRoles();
-	await SeedUnits();
+	//await SeedUnits();
 	console.log('Database seeded....');
 });
 

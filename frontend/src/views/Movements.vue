@@ -119,6 +119,7 @@
 													item-color="secondary"
 													required
 													return-object
+													@change="loadUnits"
 												>
 												</v-select>
 											</v-col>
@@ -126,7 +127,7 @@
 											<v-col cols="12">
 												<v-select
 													v-model="d1Info.unit"
-													:items="units"
+													:items="d1Info.paymentMapUnits[0]"
 													item-text="unit"
 													item-value="id"
 													label="Fração"
@@ -329,6 +330,7 @@ export default {
 			],
 			beginYear: `${new Date().getFullYear().toString()}-01`,
 			endYear: `${new Date().getFullYear().toString()}-12`,
+			paymentMapUnits: [],
 		},
 		dialog2: false,
 		d2Info: {
@@ -364,7 +366,6 @@ export default {
 		paymentMaps: [],
 		expenses: [],
 		suppliers: [],
-		units: [],
 		formValidity: false,
 		success: null,
 		errorMsg: null,
@@ -378,22 +379,48 @@ export default {
 		axios
 			.get('//localhost:3333/api/payment_map')
 			.then((res) => (this.paymentMaps = res.data.data));
-		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));
 		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
 	},
 	methods: {
-		monthNumberToString(monthNumber) {
+		loadUnits: function() {
+			if (this.d1Info.paymentMapUnits.length > 0) {
+				this.d1Info.paymentMapUnits = [];
+			}
+
+			let selectedMap = this.d1Info.paymentMap;
+			if (selectedMap !== null) {
+				axios.get(`//localhost:3333/api/payment_map/${selectedMap.id}`).then((res) => {
+					let revenues = res.data.data.revenues;
+					// a partir da res de revenues, constroi um obj com pares id-unit
+					let units = revenues.map((revObj) => {
+						return { unit_id: revObj.unit_id, unit: revObj.unit };
+					});
+
+					// elimina os ids duplicados do obj criado anteriormente
+					let uniqueUnits = [];
+					units.forEach(function(uObj) {
+						var i = uniqueUnits.findIndex((x) => x.id == uObj.unit_id);
+						if (i <= -1) {
+							uniqueUnits.push({ id: uObj.unit_id, unit: uObj.unit });
+						}
+					});
+
+					this.d1Info.paymentMapUnits.push(uniqueUnits);
+				});
+			}
+		},
+		monthNumberToString: function(monthNumber) {
 			let months = this.d1Info.months;
 			let correctMonth = '';
-			for (let i = 0; i < months.length; i++) {
-				if (months.indexOf(months[i]) === monthNumber - 1) {
-					correctMonth = months[i];
+			months.forEach((m) => {
+				if (months.indexOf(m) === monthNumber - 1) {
+					correctMonth = m;
 				}
-			}
+			});
 			return correctMonth;
 		},
 		payMapText: (item) => item.name + ': ' + item.description,
-		registerNewExpense() {
+		registerNewExpense: function() {
 			axios
 				.post('//localhost:3333/api/expenses', {
 					supplier_id: this.d2Info.supplier,
@@ -419,7 +446,7 @@ export default {
 					}, 3000);
 				});
 		},
-		registerNewRevenue() {
+		registerNewRevenue: function() {
 			let formatedMonths = this.d1Info.checkedMonths.map((elem) => {
 				return +elem.slice(5, 7);
 			});
@@ -431,7 +458,7 @@ export default {
 
 			axios
 				.post('//localhost:3333/api/revenue', {
-					payment_map_id: this.d1Info.paymentMap,
+					payment_map_id: this.d1Info.paymentMap.id,
 					unit_id: this.d1Info.unit,
 					months: formatedMonths,
 					payment_date: moment().format('L LTS'),
@@ -444,7 +471,8 @@ export default {
 					}, 3000);
 
 					this.$refs.formRevenue.reset();
-
+					this.d1Info.checkedMonths = [];
+					this.d1Info.paymentMap = null;
 					console.log(res);
 				})
 				.catch((err) => {
@@ -454,15 +482,16 @@ export default {
 					}, 3000);
 				});
 		},
-		close2() {
+		close2: function() {
 			this.$refs.formExpense.reset();
 			this.success = null;
 			this.errorMsg = null;
 			this.dialog2 = false;
 		},
-		close1() {
+		close1: function() {
 			this.$refs.formRevenue.reset();
 			this.d1Info.paymentMap = null;
+			this.d1Info.checkedMonths = [];
 			this.success = null;
 			this.errorMsg = null;
 			this.dialog1 = false;

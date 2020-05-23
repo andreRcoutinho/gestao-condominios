@@ -10,6 +10,10 @@
 			<!-- RECEITAS ANUAL -->
 			<v-tab-item>
 				<v-row justify="space-around" class="mt-12">
+					<!-- <v-col cols="2">
+						{{ paymentMapAnualRevenues }}
+					</v-col> -->
+					<!-- TODO - PAYMENT MAP LOADING BUT NOT SHOWING ALL UNITS -->
 					<v-col cols="10">
 						<v-data-table
 							:headers="headers"

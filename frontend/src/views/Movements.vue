@@ -310,7 +310,6 @@ export default {
 		d1Info: {
 			paymentMap: null,
 			pmRules: [(v) => !!v || 'Escolha um mapa de pagamento.'],
-			// TODO - UNITS SHOULD LOAD DEPENDING ON THE CHOSEN PAYMENT MAP
 			unit: null,
 			unitRules: [(v) => !!v || 'Escolha uma fração.'],
 			checkedMonths: [],

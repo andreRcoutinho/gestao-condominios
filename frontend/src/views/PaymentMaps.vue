@@ -9,16 +9,15 @@
 		<v-tabs-items v-model="tab">
 			<!-- RECEITAS ANUAL -->
 			<v-tab-item>
-				<v-row justify="space-around" class="mt-12">
-					<!-- <v-col cols="2">
-						{{ paymentMapAnualRevenues }}
-					</v-col> -->
-					<!-- TODO - PAYMENT MAP LOADING BUT NOT SHOWING ALL UNITS -->
+				<v-row justify="space-around" class="mt-2">
 					<v-col cols="10">
 						<v-data-table
-							:headers="headers"
-							:items="paymentMapAnualRevenues"
+							:headers="anualPaymentMapTable.headers"
+							:items="anualPaymentMapTable.paymentMapAnualRevenues"
 							hide-default-footer
+							:page.sync="anualPaymentMapTable.page"
+							@page-count="anualPaymentMapTable.pageCount = $event"
+							:items-per-page="anualPaymentMapTable.itemsPerPage"
 						>
 							<template v-slot:item="props">
 								<tr>
@@ -40,6 +39,14 @@
 								</tr>
 							</template>
 						</v-data-table>
+						<div class="text-center pt-3">
+							<v-pagination
+								v-model="anualPaymentMapTable.page"
+								:length="anualPaymentMapTable.pageCount"
+								:total-visible="5"
+								color="secondary"
+							></v-pagination>
+						</div>
 					</v-col>
 				</v-row>
 			</v-tab-item>
@@ -62,15 +69,20 @@ export default {
 	data: () => ({
 		tab: null,
 		tabs: [{ tab: 'Mensalidades' }, { tab: 'Outros' }, { tab: 'Novo Mapa' }],
+		anualPaymentMapTable: {
+			headers: [{ text: '', value: 'unit', sortable: false }],
+			page: 1,
+			pageCount: 0,
+			itemsPerPage: 13,
+			paymentMapAnualRevenues: [],
+		},
 
 		units: [],
-		paymentMapAnualRevenues: [],
 		months: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
-		headers: [{ text: '', value: 'unit', sortable: false }],
 	}),
 	mounted() {
 		this.months.forEach((m) => {
-			this.headers.push({
+			this.anualPaymentMapTable.headers.push({
 				text: m,
 				align: 'center',
 				sortable: false,
@@ -82,7 +94,7 @@ export default {
 			let revenuesArray = res.data.data.revenues;
 
 			for (let i = 0; i < revenuesArray.length; i++) {
-				let initialArray = this.paymentMapAnualRevenues.filter(
+				let initialArray = this.anualPaymentMapTable.paymentMapAnualRevenues.filter(
 					(rev) => rev.unit === revenuesArray[i].unit
 				);
 
@@ -99,10 +111,12 @@ export default {
 					months.sort((a, b) => {
 						return a.month - b.month;
 					});
-					this.paymentMapAnualRevenues.push({ unit: revenuesArray[i].unit, months: months });
+					this.anualPaymentMapTable.paymentMapAnualRevenues.push({
+						unit: revenuesArray[i].unit,
+						months: months,
+					});
 				}
 			}
-			console.log(this.paymentMapAnualRevenues);
 		});
 
 		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));

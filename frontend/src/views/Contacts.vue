@@ -203,9 +203,9 @@
 										</v-col>
 										<v-col cols="6">
 											<v-list disabled>
-												<v-subheader class="mb-0">Tipo de Serviço</v-subheader>
+												<v-subheader>Tipo de Serviço</v-subheader>
 												<v-list-item
-													v-for="(st, i) in supplierRowDlog.serviceTypes"
+													v-for="(st, i) in supplierRowDlog.service_types"
 													:key="i"
 												>
 													<v-list-item-icon>
@@ -214,7 +214,7 @@
 													<v-list-item-content>
 														<v-list-item-title
 															class="listItem"
-															v-text="supplierRowDlog.serviceTypes[i].service_type"
+															v-text="supplierRowDlog.service_types[i].service_type"
 														></v-list-item-title>
 													</v-list-item-content>
 												</v-list-item>
@@ -335,7 +335,7 @@
 									@keydown.enter="addContactToArray"
 								>
 								</v-text-field>
-								<v-list dense disabled>
+								<v-list dense>
 									<v-list-item v-for="(c, i) in newSupplierInfo.contacts" :key="i">
 										<v-list-item-icon>
 											<v-icon small>mdi-phone</v-icon>
@@ -344,8 +344,12 @@
 											<v-list-item-subtitle>
 												{{ newSupplierInfo.contacts[i] }}
 											</v-list-item-subtitle>
-											<!-- TODO - remover contacto splice -->
 										</v-list-item-content>
+										<v-list-item-action class="my-0">
+											<v-btn x-small icon @click="newSupplierInfo.contacts.splice(i, 1)">
+												<v-icon>mdi-delete</v-icon>
+											</v-btn>
+										</v-list-item-action>
 									</v-list-item>
 								</v-list>
 							</v-col>
@@ -524,15 +528,9 @@ export default {
 				},
 			],
 		},
+		// objeto é mapeado através da função openSupplierInfo
 		supplierRowDlog: {
 			show: false,
-			name: '',
-			email: '',
-			IBAN: '',
-			NIF: '',
-			contacts: [],
-			units: [],
-			serviceTypes: [],
 		},
 		suppliersTableOptions: {
 			search: '',
@@ -628,6 +626,7 @@ export default {
 		openSupplierInfo(item) {
 			Object.assign(this.supplierRowDlog, item);
 			this.supplierRowDlog.show = true;
+			console.log(item);
 		},
 		closeSupplierInfo() {
 			this.supplierRowDlog.show = false;
@@ -646,14 +645,7 @@ export default {
 					service_type: this.newSupplierInfo.serviceTypeDialog.serviceType,
 				})
 				.then((res) => {
-					//TODO - serviceTypes.push(res.data.data)
-
-					axios
-						.get('//localhost:3333/api/service-types/')
-						.then((response) => (this.serviceTypes = response.data.data))
-						.catch((error) => {
-							console.log(error);
-						});
+					this.serviceTypes.push(res.data.data);
 
 					this.newSupplierInfo.serviceTypeDialog.success = res.data.message;
 

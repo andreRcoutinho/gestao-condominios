@@ -12,7 +12,7 @@
 		</div>
 		<v-spacer></v-spacer>
 
-		<v-btn text tile to="/home" class="mr-5">
+		<v-btn text tile to="" class="mr-5">
 			{{ activeUser.first_name }}
 			{{ activeUser.last_name }}
 			<br />

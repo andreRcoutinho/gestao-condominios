@@ -13,7 +13,7 @@ export async function index() {
 		if (payment_maps_aux.length === 0) {
 			throw new Error(api_errors.NO_PAYMENT_MAPS);
 		}
-		let payment_maps: { id; name; description; yearly }[] = [];
+		let payment_maps: { id; name; description; yearly; year }[] = [];
 		for (let i = 0; i < payment_maps_aux.length; i++) {
 			const payment_map = payment_maps_aux[i];
 			payment_maps.push({
@@ -21,6 +21,7 @@ export async function index() {
 				name: payment_map.getName(),
 				description: payment_map.getDescription(),
 				yearly: payment_map.getYearly(),
+				year: payment_map.getYear(),
 			});
 		}
 		return payment_maps;

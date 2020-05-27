@@ -23,7 +23,7 @@ requireComponent.keys().forEach((fileName) => {
 
 Vue.filter('formatDate', function(value) {
 	if (value) {
-		return moment(String(value)).format('DD/MM/YYYY [às] HH:mm');
+		return moment(String(value)).format('DD/MM/YYYY');
 	}
 });
 

@@ -9,31 +9,51 @@
 		<v-tabs-items v-model="tab">
 			<!-- RECEITAS -->
 			<v-tab-item>
+				<v-row justify="center">
+					<v-col cols="6">
+						<v-text-field
+							v-model="revenuesTableOptions.search"
+							append-icon="mdi-magnify"
+							label="Search"
+							single-line
+							hide-details
+							color="#949494"
+							class="mt-8"
+						></v-text-field>
+					</v-col>
+				</v-row>
 				<v-row justify="space-around">
 					<v-col cols="8">
-						<!-- TODO - CHANGE TO DATA TABLE -->
-						<v-simple-table>
-							<template v-slot:default>
-								<thead>
-									<tr>
-										<th class="text-center">Parcela</th>
-										<th class="text-center">Valor</th>
-										<th class="text-center">Mapa de Pagamento</th>
-										<th class="text-center">Mês Referente</th>
-										<th class="text-center">Data de Pagamento</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="(item, index) in revenues" :key="index">
-										<td class="text-center">{{ item.unit }}</td>
-										<td class="text-center">{{ item.value }}</td>
-										<td class="text-center">{{ item.payment_map_name }}</td>
-										<td class="text-center">{{ monthNumberToString(item.month) }}</td>
-										<td class="text-center">{{ item.payment_date | formatDate }}</td>
-									</tr>
-								</tbody>
+						<v-data-table
+							:headers="revenuesTableOptions.headers"
+							:items="revenues"
+							:search="revenuesTableOptions.search"
+							hide-default-footer
+							:page.sync="revenuesTableOptions.page"
+							:items-per-page="revenuesTableOptions.itemsPerPage"
+							class="elevation-1"
+							@page-count="revenuesTableOptions.pageCount = $event"
+							:sort-by="['payment_date']"
+							:sort-desc="[true]"
+						>
+							<template v-slot:item.payment_date="{ item }">
+								<span>{{ item.payment_date | formatDate }}</span>
 							</template>
-						</v-simple-table>
+							<template v-slot:item.month="{ item }">
+								<span>{{ monthNumberToString(item.month) }}</span>
+							</template>
+							<template v-slot:item.value="{ item }">
+								<span>{{ item.value }} €</span>
+							</template>
+						</v-data-table>
+						<div class="text-center pt-3">
+							<v-pagination
+								v-model="revenuesTableOptions.page"
+								:length="revenuesTableOptions.pageCount"
+								:total-visible="7"
+								color="secondary"
+							></v-pagination>
+						</div>
 					</v-col>
 				</v-row>
 			</v-tab-item>
@@ -74,6 +94,9 @@
 							<template v-slot:item.payment_date="{ item }">
 								<span>{{ item.payment_date | formatDate }}</span>
 							</template>
+							<template v-slot:item.value="{ item }">
+								<span>{{ item.value }} €</span>
+							</template>
 						</v-data-table>
 						<div class="text-center pt-3">
 							<v-pagination
@@ -109,7 +132,6 @@
 									>
 										<v-row>
 											<v-col cols="12">
-												<!-- onChange carregar unidades do mapa selecionado: https://stackoverflow.com/questions/51157816/how-to-call-a-function-on-selection-change-in-v-select -->
 												<v-select
 													v-model="d1Info.paymentMap"
 													:items="paymentMaps"
@@ -119,7 +141,7 @@
 													item-color="secondary"
 													required
 													return-object
-													@change="loadUnits"
+													@change="loadPMapInfo"
 												>
 												</v-select>
 											</v-col>
@@ -327,8 +349,8 @@ export default {
 				'novembro',
 				'dezembro',
 			],
-			beginYear: `${new Date().getFullYear().toString()}-01`,
-			endYear: `${new Date().getFullYear().toString()}-12`,
+			beginYear: '',
+			endYear: '',
 			paymentMapUnits: [],
 		},
 		dialog2: false,
@@ -343,6 +365,29 @@ export default {
 				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
 			],
 		},
+		revenuesTableOptions: {
+			search: '',
+			page: 1,
+			pageCount: 0,
+			itemsPerPage: 10,
+			headers: [
+				{
+					text: 'Parcela',
+					value: 'unit',
+					sortable: false,
+					align: 'center',
+				},
+				{ text: 'Valor', value: 'value', align: 'center' },
+				{
+					text: 'Mapa de Pagamento',
+					value: 'payment_map_name',
+					sortable: false,
+					align: 'center',
+				},
+				{ text: 'Mês Referente', value: 'month', align: 'center' },
+				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
+			],
+		},
 		expensesTableOptions: {
 			search: '',
 			page: 1,
@@ -355,7 +400,6 @@ export default {
 					sortable: false,
 					align: 'center',
 				},
-				//TODO - € symbol after
 				{ text: 'Valor', value: 'value', align: 'center' },
 				{ text: 'Tipo de Despesa', value: 'description', sortable: false, align: 'center' },
 				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
@@ -381,13 +425,18 @@ export default {
 		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
 	},
 	methods: {
-		loadUnits: function() {
+		/* loadPMapInfo: atualiza as opções no form de registo de nova Receita, mediante o mapa escolhido */
+		loadPMapInfo: function() {
 			if (this.d1Info.paymentMapUnits.length > 0) {
 				this.d1Info.paymentMapUnits = [];
 			}
 
 			let selectedMap = this.d1Info.paymentMap;
 			if (selectedMap !== null) {
+				// define o limite de meses a escolher no v-date-picker
+				this.d1Info.beginYear = `${selectedMap.year}-01`;
+				this.d1Info.endYear = `${selectedMap.year}-12`;
+
 				axios.get(`//localhost:3333/api/payment_map/${selectedMap.id}`).then((res) => {
 					let revenues = res.data.data.revenues;
 					// a partir da res de revenues, constroi um obj com pares id-unit
@@ -403,7 +452,7 @@ export default {
 							uniqueUnits.push({ id: uObj.unit_id, unit: uObj.unit });
 						}
 					});
-
+					// carrega o v-select com as units
 					this.d1Info.paymentMapUnits.push(uniqueUnits);
 				});
 			}
@@ -425,7 +474,7 @@ export default {
 					supplier_id: this.d2Info.supplier,
 					value: this.d2Info.value,
 					description: this.d2Info.desc,
-					payment_date: moment().format('L LTS'),
+					payment_date: moment().format('YYYY-MM-DD'),
 				})
 				.then((res) => {
 					this.success = res.data.message;

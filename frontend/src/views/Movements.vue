@@ -9,8 +9,8 @@
 		<v-tabs-items v-model="tab">
 			<!-- RECEITAS -->
 			<v-tab-item>
-				<v-row justify="center">
-					<v-col cols="6">
+				<v-row justify="center" align="end" class="mt-8">
+					<v-col cols="5">
 						<v-text-field
 							v-model="revenuesTableOptions.search"
 							append-icon="mdi-magnify"
@@ -18,8 +18,16 @@
 							single-line
 							hide-details
 							color="#949494"
-							class="mt-8"
 						></v-text-field>
+					</v-col>
+					<v-col cols="1" class="pb-1">
+						<v-row justify="center">
+							<v-btn icon @click="saveFile(revenues, 'receitas')">
+								<v-icon>
+									mdi-download
+								</v-icon>
+							</v-btn>
+						</v-row>
 					</v-col>
 				</v-row>
 				<v-row justify="space-around">
@@ -59,8 +67,8 @@
 			</v-tab-item>
 			<!-- DESPESAS -->
 			<v-tab-item>
-				<v-row justify="center">
-					<v-col cols="6">
+				<v-row justify="center" align="end" class="mt-8">
+					<v-col cols="5">
 						<v-text-field
 							v-model="expensesTableOptions.search"
 							append-icon="mdi-magnify"
@@ -70,6 +78,15 @@
 							color="#949494"
 							class="mt-8"
 						></v-text-field>
+					</v-col>
+					<v-col cols="1" class="pb-1">
+						<v-row justify="center">
+							<v-btn icon @click="saveFile(expenses, 'despesas')">
+								<v-icon>
+									mdi-download
+								</v-icon>
+							</v-btn>
+						</v-row>
 					</v-col>
 				</v-row>
 				<v-row justify="space-around">
@@ -425,6 +442,16 @@ export default {
 		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
 	},
 	methods: {
+		saveFile: function(data, filename) {
+			const jsonData = JSON.stringify(data, null, '\t');
+			const blob = new Blob([jsonData], { type: 'application/json' });
+			const a = document.createElement('a');
+			a.download = `${filename}.json`;
+			a.href = window.URL.createObjectURL(blob);
+			a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+			document.body.appendChild(a);
+			a.click();
+		},
 		/* loadPMapInfo: atualiza as opções no form de registo de nova Receita, mediante o mapa escolhido */
 		loadPMapInfo: function() {
 			if (this.d1Info.paymentMapUnits.length > 0) {

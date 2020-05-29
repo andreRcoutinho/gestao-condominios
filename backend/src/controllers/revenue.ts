@@ -16,63 +16,46 @@ const PAYMENT_RECORD_REQUEST_SUCCESS: String = 'Movimento registado!';
 const PAYMENT_RECORD_REQUEST_FAIL: String = 'Ocorreu um erro! Tente novamente.';
 
 export async function payment_record(req: Request, res: Response) {
-	if (!revenueRules.paymentRecordRules(req.body)) {
-		return res
-			.status(HttpStatus.BAD_REQUEST)
-			.send(
-				new ApiResponse(
-					PAYMENT_RECORD_REQUEST,
-					PAYMENT_RECORD_REQUEST_FAIL,
-					HttpStatus.NOT_FOUND,
-					{},
-					PAYMENT_RECORD_REQUEST_FAIL
-				)
-			);
-	}
+    if (!revenueRules.paymentRecordRules(req.body)) {
+        return res
+            .status(HttpStatus.BAD_REQUEST)
+            .send(
+                new ApiResponse(
+                    PAYMENT_RECORD_REQUEST,
+                    PAYMENT_RECORD_REQUEST_FAIL,
+                    HttpStatus.NOT_FOUND,
+                    {},
+                    PAYMENT_RECORD_REQUEST_FAIL
+                )
+            );
+    }
 
-	let response = await revenueService.payment_record(req.body);
-	if (response instanceof Error) {
-		return res
-			.status(HttpStatus.BAD_REQUEST)
-			.send(
-				new ApiResponse(
-					PAYMENT_RECORD_REQUEST,
-					PAYMENT_RECORD_REQUEST_FAIL,
-					HttpStatus.NOT_FOUND,
-					{},
-					response.message
-				)
-			);
-	} else {
-		return res.send(
-			new ApiResponse(
-				PAYMENT_RECORD_REQUEST,
-				PAYMENT_RECORD_REQUEST_SUCCESS,
-				HttpStatus.OK,
-				response
-			)
-		);
-	}
+    let response = await revenueService.payment_record(req.body);
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_SUCCESS, HttpStatus.OK, response));
+    }
 }
 
 export async function index(req: Request, res: Response) {
-	let response = await revenueService.index();
+    let response = await revenueService.index();
 
-	if (response instanceof Error) {
-		return res
-			.status(HttpStatus.BAD_REQUEST)
-			.send(
-				new ApiResponse(
-					REVENUE_INDEX_REQUEST,
-					REVENUE_INDEX_FAIL,
-					HttpStatus.NOT_FOUND,
-					{},
-					response.message
-				)
-			);
-	} else {
-		return res.send(
-			new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_SUCCESS, HttpStatus.OK, response)
-		);
-	}
+    if (response instanceof Error) {
+        return res
+            .status(HttpStatus.BAD_REQUEST)
+            .send(
+                new ApiResponse(
+                    REVENUE_INDEX_REQUEST,
+                    REVENUE_INDEX_FAIL,
+                    HttpStatus.NOT_FOUND,
+                    {},
+                    response.message
+                )
+            );
+    } else {
+        return res.send(
+            new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_SUCCESS, HttpStatus.OK, response)
+        );
+    }
 }

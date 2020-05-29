@@ -6,9 +6,7 @@ export function updatePasswordRules(body: any): boolean | void {
         email: "required",
         new_password: "required",
     };
-    console.log(body);
     filterBody(body, rules);
-    console.log(body);
     var validation = new Validator(body, rules);
 
     return !validation.fails();

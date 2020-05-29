@@ -65,6 +65,22 @@ export async function show(req: Request, res: Response) {
     }
 }
 
+export async function getAnualPaymentMap(req: Request, res: Response) {
+    let response;
+
+    if (req.query.year) {
+        response = await paymentMapService.getAnualPaymentMap(req.query.year.toString());
+    } else {
+        response = await paymentMapService.getAnualPaymentMap();
+    }
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_MAP_UPDATE_REQUEST, PAYMENT_MAP_UPDATE_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
+    } else {
+        return res.send(new ApiResponse(PAYMENT_MAP_UPDATE_REQUEST, PAYMENT_MAP_UPDATE_SUCCESS, HttpStatus.OK, response))
+    }
+}
+
 export async function update(req: Request, res: Response) {
     let response = await paymentMapService.update(Number(req.params.id), req.body);
 

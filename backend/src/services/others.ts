@@ -17,12 +17,14 @@ export async function monthlyData(month: Number, year: String) {
 
         let total_paid = 0;
         let total_missing = 0;
+        let missing_payment_unit = [];
 
         for (let i = 0; i < revenues.length; i++) {
             if (revenues[i].isPaid()) {
                 total_paid += Number(revenues[i].getValue());
             } else {
                 total_missing += Number(revenues[i].getValue());
+                missing_payment_unit.push(revenues[i].getUnit().getUnit())
             }
         }
 
@@ -39,25 +41,12 @@ export async function monthlyData(month: Number, year: String) {
         let total_spent = 0;
         let expenses: Expense[];
         if (month == 12) {
-            console.log("entrei aqui");
-            /*expenses = await Expense.find({
-                where: {
-                    payment_date: MoreThanOrEqual(new Date(`${year}-${month}-01`)) && LessThan(new Date(`${year}-${Number(month)}-31`))
-                }
-            });*/
             expenses = await Expense.find({
                 where: {
                     payment_date: Between(new Date(`${year}-${month}-01`), new Date(`${year}-${Number(month)}-31`))
                 }
             });
         } else {
-            console.log(new Date(`${year}-${month}-01`));
-            console.log(new Date(`${year}-${Number(month) + 1}-01`));
-            /*expenses = await Expense.find({
-                where: {
-                    payment_date: (MoreThanOrEqual(new Date(`${year}-${month}-01`)) && LessThan(new Date(`${year}-${Number(month) + 1}-01`)))
-                }
-            });*/
             expenses = await Expense.find({
                 where: {
                     payment_date: Between(new Date(`${year}-${month}-01`), new Date(`${year}-${Number(month) + 1}-01`))
@@ -65,7 +54,6 @@ export async function monthlyData(month: Number, year: String) {
             });
         }
 
-        console.log(expenses);
         for (let i = 0; i < expenses.length; i++) {
             total_spent += Number(expenses[i].getValue())
         }
@@ -74,7 +62,8 @@ export async function monthlyData(month: Number, year: String) {
             total_missing,
             total_paid,
             total_spent,
-            typology_values
+            typology_values,
+            missing_payment_unit
         }
 
         return res;

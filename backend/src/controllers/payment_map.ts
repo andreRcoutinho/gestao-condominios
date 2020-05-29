@@ -53,7 +53,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function index(req: Request, res: Response) {
-    let response = await paymentMapService.index();
+    let response = await paymentMapService.index((req.query.year) ? req.query.year.toString() : null);
 
     if (response instanceof Error) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_MAP_INDEX_REQUEST, PAYMENT_MAP_INDEX_FAIL, HttpStatus.NOT_FOUND, {}, response.message))

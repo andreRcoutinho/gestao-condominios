@@ -39,7 +39,7 @@ export async function payment_record(req: Request, res: Response) {
 }
 
 export async function index(req: Request, res: Response) {
-    let response = await revenueService.index();
+    let response = await revenueService.index((req.query.year) ? req.query.year.toString() : null);
 
     if (response instanceof Error) {
         return res

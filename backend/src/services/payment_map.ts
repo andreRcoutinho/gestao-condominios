@@ -7,9 +7,20 @@ import * as api_errors from '../api/api_errors';
 
 const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export async function index() {
+export async function index(year?: String) {
     try {
-        let payment_maps_aux: PaymentMap[] = await PaymentMap.find();
+        let payment_maps_aux: PaymentMap[];
+        if (year !== null) {
+            payment_maps_aux = await PaymentMap.find({
+                where: {
+                    year,
+                    yearly: false
+                }
+            });
+        } else {
+            payment_maps_aux = await PaymentMap.find({ where: { yearly: false } });
+        }
+
         if (payment_maps_aux.length === 0) {
             throw new Error(api_errors.NO_PAYMENT_MAPS);
         }

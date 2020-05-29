@@ -1,11 +1,21 @@
 import * as api_errors from '../api/api_errors';
 import { Supplier } from '../models/supplier';
 import { Expense } from '../models/expense';
+import { Between } from 'typeorm';
 
 
-export async function index() {
+export async function index(year?: String) {
     try {
-        let expenses: Expense[] = await Expense.find();
+        let expenses: Expense[];
+        if (year !== null) {
+            expenses = await Expense.find({
+                where: {
+                    payment_date: Between(new Date(`${year}-01-01`), new Date(`${year}-12-31`))
+                }
+            })
+        } else {
+            expenses = await Expense.find();
+        }
         if (expenses.length === 0) {
             throw new Error(api_errors.NO_EXPENSES_REGISTERED)
         }

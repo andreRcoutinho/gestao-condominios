@@ -2,10 +2,22 @@ import { PaymentMap } from '../models/payment_map';
 import { Revenue } from '../models/revenue';
 import { Unit } from '../models/unit';
 import * as api_errors from '../api/api_errors';
+import { Between } from 'typeorm';
 
-export async function index() {
+export async function index(year?: String) {
     try {
-        let revenues: Revenue[] = await Revenue.find({ where: { paid: true } });
+        let revenues: Revenue[];
+        if (year !== null) {
+            revenues = await Revenue.find({
+                where: {
+                    payment_date: Between(new Date(`${year}-01-01`), new Date(`${year}-12-31`)),
+                    paid: true
+                }
+            })
+        } else {
+            revenues = await Revenue.find({ where: { paid: true } });
+        }
+
         if (revenues.length === 0) {
             throw new Error(api_errors.NO_REVENUE_REGISTERED);
         }

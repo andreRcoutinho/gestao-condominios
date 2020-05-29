@@ -19,6 +19,21 @@
 							@page-count="anualPaymentMapTable.pageCount = $event"
 							:items-per-page="anualPaymentMapTable.itemsPerPage"
 						>
+							<template v-slot:top>
+								<v-row justify="center">
+									<v-btn
+										depressed
+										@click="
+											saveFile(anualPaymentMapTable.paymentMapAnualRevenues, 'mapaAnual')
+										"
+									>
+										<v-icon left>
+											mdi-download
+										</v-icon>
+										Download Mapa
+									</v-btn>
+								</v-row>
+							</template>
 							<template v-slot:item="props">
 								<tr>
 									<td class="font-weight-black unitHorizontalHeader">
@@ -67,6 +82,7 @@ import LayoutDefault from '@/layouts/LayoutDefault';
 export default {
 	name: 'PaymentMaps',
 	data: () => ({
+		dialog: false,
 		tab: null,
 		tabs: [{ tab: 'Mensalidades' }, { tab: 'Outros' }, { tab: 'Novo Mapa' }],
 		anualPaymentMapTable: {
@@ -124,7 +140,18 @@ export default {
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},
-	methods: {},
+	methods: {
+		saveFile(data, filename) {
+			const jsonData = JSON.stringify(data, null, '\t');
+			const blob = new Blob([jsonData], { type: 'application/json' });
+			const a = document.createElement('a');
+			a.download = `${filename}.json`;
+			a.href = window.URL.createObjectURL(blob);
+			a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+			document.body.appendChild(a);
+			a.click();
+		},
+	},
 };
 </script>
 

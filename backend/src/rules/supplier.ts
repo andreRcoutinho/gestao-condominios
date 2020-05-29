@@ -43,3 +43,21 @@ export function deleteContactRules(body: any): boolean | void {
 
     return !validation.fails();
 }
+
+export function addServiceTypeRules(body: any): boolean | void {
+    let rules: Rules = {
+        service_type_id: "required",
+    }
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}
+
+export function deleteServiceTypeRules(body: any): boolean | void {
+    let rules: Rules = {
+        service_type_id: "required",
+    }
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}

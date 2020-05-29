@@ -110,13 +110,27 @@ export async function deleteContact(req: Request, res: Response) {
 }
 
 export async function addServiceType(req: Request, res: Response) {
+    if (!supplierRules.addServiceTypeRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
 
-}
+    let response = await supplierService.addServiceTypeSupplier(Number(req.params.id), req.body);
 
-export async function updateServiceType(req: Request, res: Response) {
-
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
+    }
 }
 
 export async function deleteServiceType(req: Request, res: Response) {
+    if (!supplierRules.deleteServiceTypeRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
 
+    let response = await supplierService.deleteServiceTypeSupplier(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
+    }
 }

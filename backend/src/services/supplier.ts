@@ -163,24 +163,54 @@ export async function deleteContact(id: Number, body: any) {
     }
 }
 
-export async function addServiceType() {
+export async function addServiceTypeSupplier(id: Number, body: any) {
     try {
+        let supplier: Supplier = await Supplier.findOne({ where: { id } });
+        if (!supplier) {
+            throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
+        }
 
+        let service_type: ServiceType = await ServiceType.findOne({ where: { id: body.service_type_id } });
+        if (!service_type) {
+            throw new Error(api_errors.SERVICE_TYPE_NOT_EXISTS);
+        }
+
+        let service_types: ServiceType[] = supplier.getService_types();
+        service_types.push(service_type);
+
+        supplier.setService_types(service_types);
+        await supplier.save();
+
+        return true;
     } catch (error) {
         return error;
     }
 }
 
-export async function updateServiceType() {
+export async function deleteServiceTypeSupplier(id: Number, body: any) {
     try {
+        let supplier: Supplier = await Supplier.findOne({ where: { id } });
+        if (!supplier) {
+            throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
+        }
 
-    } catch (error) {
-        return error;
-    }
-}
+        let service_type_remove: ServiceType = await ServiceType.findOne({ where: { id: body.service_type_id } });
+        if (!service_type_remove) {
+            throw new Error(api_errors.SERVICE_TYPE_NOT_EXISTS);
+        }
 
-export async function deleteServiceType() {
-    try {
+        let service_types: ServiceType[] = supplier.getService_types();
+        service_types.filter((service_type, index) => {
+            if (service_type.getId() === service_type_remove.getId()) {
+                delete service_types[index]
+            }
+        });
+
+        console.log(service_types);
+        supplier.setService_types(service_types);
+        await supplier.save();
+
+        return true;
 
     } catch (error) {
         return error;

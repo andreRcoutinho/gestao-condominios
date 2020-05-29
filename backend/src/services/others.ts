@@ -73,8 +73,6 @@ export async function monthlyData(month: Number, year: String) {
     }
 }
 
-export async function simPaymentMap() { }
-
 function existsTypologyName(typology_values: { name: String, value: Number }[], name: String): boolean {
     for (let i = 0; i < typology_values.length; i++) {
         if (typology_values[i].name === name) {

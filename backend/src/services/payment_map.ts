@@ -145,17 +145,13 @@ async function createNormalPaymentMap(
     }
 }
 
-async function createPaymentMap(
-    units_month: Unit[],
-    total_value: Number,
-    payment_map: PaymentMap
-): Promise<Boolean> {
+async function createPaymentMap(units_month: Unit[], total_value: Number, payment_map: PaymentMap, isSimulation: Boolean): Promise<Boolean | {}> {
     try {
         let reserve_funds: { id; reserve_fund }[] = [];
         let monthly_expenses: { id; monthy_expense }[] = [];
 
         //Calculate total permilage per month
-        let total_permilage_month: number = calculateTotalPermilages(units_month);
+        let total_permilage_monthly: number = calculateTotalPermilages(units_month);
 
         //Calculate total permilage
         let all_units: Unit[] = await Unit.find();
@@ -164,7 +160,7 @@ async function createPaymentMap(
         //Calculate monthly expenses
         monthly_expenses = calculateMonthlyExpenses(
             units_month,
-            total_permilage_month,
+            total_permilage_monthly,
             Number(total_value)
         );
 
@@ -172,7 +168,16 @@ async function createPaymentMap(
         reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value));
 
         //Save
-        await saveMap(reserve_funds, monthly_expenses, payment_map, all_units);
+        if (isSimulation) {
+            return {
+                reserve_funds,
+                monthly_expenses,
+                total_permilage,
+                total_permilage_monthly
+            }
+        } else {
+            await saveMap(reserve_funds, monthly_expenses, payment_map, all_units);
+        }
 
         return true;
     } catch (error) {
@@ -192,12 +197,12 @@ async function updatePaymentMap(
         let all_units: Unit[] = await Unit.find();
         let total_permilage: number = calculateTotalPermilages(all_units);
 
-        let total_permilage_month: number = calculateTotalPermilages(units_monthly);
+        let total_permilage_monthly: number = calculateTotalPermilages(units_monthly);
 
         //Calculate monthly expenses
         monthly_expenses = calculateMonthlyExpenses(
             units_monthly,
-            total_permilage_month,
+            total_permilage_monthly,
             Number(total_value)
         );
 
@@ -243,7 +248,7 @@ export async function create(body: any) {
                 body.value * 0.1
             );
             await payment_map_values.save();
-            await createPaymentMap(units, body.value, payment_map);
+            await createPaymentMap(units, body.value, payment_map, false);
         } else {
             let payment_map_values: PaymentMapValues = new PaymentMapValues(
                 body.value,
@@ -329,6 +334,24 @@ export async function closePaymentMap(id: Number) {
         payment_map.save();
         return true;
     } catch (error) {
+        return error;
+    }
+}
+
+export async function simulate(body: any) {
+    try {
+        let units: Unit[] = await Unit.findByIds(body.unit_ids);
+        if (units.length === 0) {
+            throw new Error(api_errors.UNIT_NOT_EXISTS);
+        }
+
+        let payment_map: PaymentMap = new PaymentMap(body.name, body.description, true, body.year);
+
+        let res = await createPaymentMap(units, body.value, payment_map, true);
+
+        return res;
+    } catch (error) {
+        console.log(error);
         return error;
     }
 }

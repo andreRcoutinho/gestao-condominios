@@ -24,7 +24,3 @@ export async function monthlyData(req: Request, res: Response) {
     }
 
 }
-
-export async function simPaymentMap(req: Request, res: Response) {
-    return res.send('TO DO')
-}

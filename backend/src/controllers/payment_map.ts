@@ -21,6 +21,10 @@ const ANUAL_PAYMENT_MAP_SHOW_FAIL: String = 'Failed to retrieve anual payment ma
 const PAYMENT_MAP_CREATE_REQUEST: String = 'Create payment map';
 const PAYMENT_MAP_CREATE_SUCCESS: String = 'Payment map created successfully';
 const PAYMENT_MAP_CREATE_FAIL: String = 'Failed to create payment map';
+//Simulate
+const PAYMENT_MAP_SIMULATE_REQUEST: String = 'Simulate anual payment map';
+const PAYMENT_MAP_SIMULATE_SUCCESS: String = 'Anual payment map simulated successfully';
+const PAYMENT_MAP_SIMULATE_FAIL: String = 'Failed to simulate anual payment map';
 //Update
 const PAYMENT_MAP_UPDATE_REQUEST: String = 'Update payment map';
 const PAYMENT_MAP_UPDATE_SUCCESS: String = 'Payment map updated successfully';
@@ -30,7 +34,7 @@ const PAYMENT_MAP_REMOVE_REQUEST: String = 'Remove payment map';
 const PAYMENT_MAP_REMOVE_SUCCESS: String = 'Payment map removed successfully';
 const PAYMENT_MAP_REMOVE_FAIL: String = 'Failed to remove payment map';
 
-//Remove
+//Close
 const CLOSE_PAYMENT_MAP_REQUEST: String = 'Close payment map';
 const CLOSE_PAYMENT_MAP_SUCCESS: String = 'Payment map closed successfully';
 const CLOSE_PAYMENT_MAP_FAIL: String = 'Failed to close payment map';
@@ -97,5 +101,19 @@ export async function close(req: Request, res: Response) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(CLOSE_PAYMENT_MAP_REQUEST, CLOSE_PAYMENT_MAP_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
     } else {
         return res.send(new ApiResponse(CLOSE_PAYMENT_MAP_REQUEST, CLOSE_PAYMENT_MAP_SUCCESS, HttpStatus.OK, response))
+    }
+}
+
+export async function simulate(req: Request, res: Response) {
+    if (!paymentMapRules.createRules(req.body)) {
+        return res.send(new ApiResponse(PAYMENT_MAP_SIMULATE_REQUEST, PAYMENT_MAP_SIMULATE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY))
+    }
+
+    let response = await paymentMapService.simulate(req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_MAP_SIMULATE_REQUEST, PAYMENT_MAP_SIMULATE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message))
+    } else {
+        return res.send(new ApiResponse(PAYMENT_MAP_SIMULATE_REQUEST, PAYMENT_MAP_SIMULATE_SUCCESS, HttpStatus.OK, response))
     }
 }

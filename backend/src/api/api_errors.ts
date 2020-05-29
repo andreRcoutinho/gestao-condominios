@@ -21,7 +21,9 @@ export const NO_REVENUE_REGISTERED = 'Ainda não existem receitas registadas!';
 export const NO_EXPENSES_REGISTERED = 'Ainda não existem despesas registadas.';
 export const EXPENSE_NOT_EXISTS = 'Despesa inexistente';
 
-export const SUPPLIER_NOT_EXISTS = 'Fornecedor inexistente'
+export const SUPPLIER_NOT_EXISTS = 'Fornecedor inexistente';
+
+export const CONTACT_NOT_EXISTS = 'Contacto inexistente';
 
 export const PAYMENT_MAP_NOT_EXISTS = 'Mapa de Pagamento inexistente';
 export const NO_PAYMENT_MAPS = 'Ainda não existem mapas criados!';

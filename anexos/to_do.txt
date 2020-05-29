@@ -16,7 +16,7 @@ TO DO
 
 --  Pagar vários meses ao mesmo tempo Done 
 
---  Updates e Deletes
+--  Updates e Deletes (Supplier Done, Falta utilizador(contactos e units e roles))
 ---  Deve ser possivel por exemplo remover ou adicionar units a um utilizador
 ---  Ou seja delete e update das relações de um objeto 
 

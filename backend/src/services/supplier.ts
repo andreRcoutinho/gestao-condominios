@@ -154,7 +154,7 @@ export async function deleteContact(id: Number, body: any) {
 
         let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
         if (!contact) {
-            throw new Error("Não existe nenhum contacto com esse id");
+            throw new Error(api_errors.CONTACT_NOT_EXISTS);
         }
         await Contact.remove(contact);
 

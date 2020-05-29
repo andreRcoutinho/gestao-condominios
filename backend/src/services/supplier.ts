@@ -140,6 +140,9 @@ export async function updateContact(body: any) {
     try {
 
         let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
+        if (!contact) {
+            throw new Error(api_errors.CONTACT_NOT_EXISTS);
+        }
         contact.setPhone_number(body.phone_number);
         await contact.save();
 
@@ -158,6 +161,7 @@ export async function deleteContact(id: Number, body: any) {
         }
         await Contact.remove(contact);
 
+        return true;
     } catch (error) {
         return error;
     }

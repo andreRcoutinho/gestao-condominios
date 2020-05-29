@@ -63,3 +63,87 @@ export async function updatePassword(req: Request, res: Response) {
         return res.send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_SUCCESS, HttpStatus.OK, response));
     }
 }
+
+//TO DO RESPONSE MESSAGESS
+export async function updateRole(req: Request, res: Response) {
+    if (!userRules.updateRoleRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await userService.updateRole(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+//TO DO RESPONSE MESSAGESS
+export async function addContact(req: Request, res: Response) {
+    if (!userRules.addContactRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await userService.addContact(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+//TO DO RESPONSE MESSAGESS
+export async function updateContact(req: Request, res: Response) {
+    if (!userRules.updateContactRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await userService.updateContact(req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+//TO DO RESPONSE MESSAGESS
+export async function deleteContact(req: Request, res: Response) {
+    if (!userRules.deleteContactRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await userService.updateContact(req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+//TO DO RESPONSE MESSAGESS
+export async function addUnit(req: Request, res: Response) {
+    if (!userRules.addUnitRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await userService.addUnit(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+//TO DO RESPONSE MESSAGESS
+export async function deleteUnit(req: Request, res: Response) {
+    if (!userRules.deleteUnitRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATEPASSWORD_REQUEST, USER_UPDATEPASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await userService.deleteUnit(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(USER_UPDATE_REQUEST, USER_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}

@@ -3,6 +3,7 @@ import { UserPassword } from '../models/user_password';
 import * as api_errors from '../api/api_errors';
 import { Contact } from '../models/contact';
 import { Unit } from '../models/unit';
+import { Role } from '../models/role';
 
 async function findUser(email: Number): Promise<User> {
     let user: User = await User.findOne({ where: { email } });
@@ -101,6 +102,129 @@ export async function updatePassword(body: any) {
         await user_password.save();
 
         return {};
+    } catch (error) {
+        return error;
+    }
+}
+
+// Testar
+export async function updateRole(id: Number, body: any) {
+    try {
+        let user: User = await User.findOne({ where: { id } });
+        if (!user) {
+            throw new Error(api_errors.USER_NOT_EXISTS);
+        }
+
+        let role: Role = await Role.findOne({ where: { id: body.role_id } })
+        if (!role) {
+            throw new Error(api_errors.ROLE_NOT_EXISTS);
+        }
+
+        user.setRole(role);
+        await user.save();
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+// Testar
+export async function addContact(id: Number, body: any) {
+    try {
+        let user: User = await User.findOne({ where: { id } });
+        if (!user) {
+            throw new Error(api_errors.USER_NOT_EXISTS);
+        }
+
+        let contact: Contact = new Contact(body.phone_number, user, null);
+        await contact.save();
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+// Testar
+export async function updateContact(body: any) {
+    try {
+        let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
+        if (!contact) {
+            throw new Error(api_errors.CONTACT_NOT_EXISTS);
+        }
+        contact.setPhone_number(body.phone_number);
+        await contact.save();
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+// Testar
+export async function deleteContact(id: Number, body: any) {
+    try {
+        let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
+        if (!contact) {
+            throw new Error(api_errors.CONTACT_NOT_EXISTS);
+        }
+        await Contact.remove(contact);
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+// Testar
+export async function addUnit(id: Number, body: any) {
+    try {
+        let user: User = await User.findOne({ where: { id } });
+        if (!user) {
+            throw new Error(api_errors.USER_NOT_EXISTS);
+        }
+
+        let unit: Unit = await Unit.findOne({ where: { id: body.unit_id } });
+        if (!unit) {
+            throw new Error(api_errors.UNIT_NOT_EXISTS);
+        }
+
+        let units: Unit[] = user.getUnits();
+        units.push(unit);
+
+        user.setUnits(units);
+        await user.save();
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+// Testar
+export async function deleteUnit(id: Number, body: any) {
+    try {
+        let user: User = await User.findOne({ where: { id } });
+        if (!user) {
+            throw new Error(api_errors.USER_NOT_EXISTS);
+        }
+
+        let unit_remove: Unit = await Unit.findOne({ where: { id: body.unit_id } });
+        if (!unit_remove) {
+            throw new Error(api_errors.UNIT_NOT_EXISTS);
+        }
+
+        let units: Unit[] = user.getUnits();
+        units.filter((unit, index) => {
+            if (unit.getId() === unit_remove.getId()) {
+                delete units[index]
+            }
+        });
+
+        user.setUnits(units);
+        await user.save();
+
+        return true;
     } catch (error) {
         return error;
     }

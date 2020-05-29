@@ -9,6 +9,12 @@ const routes = Router();
 routes.get('/', user.index);
 routes.get('/:id', user.show);
 /*routes.use(adminMiddleware);*/
+routes.put('/:id/update-role', user.updateRole);
+routes.put('/:id/add-contact', user.addContact);
+routes.put('/:id/delete-contact', user.deleteContact);
+routes.put('/:id/update-contact', user.updateContact);
+routes.put('/:id/add-unit', user.addUnit);
+routes.put('/:id/delete-unit', user.deleteUnit);
 routes.put('/:id', user.update)
 routes.post('/update-password', user.updatePassword);
 routes.delete('/:id')

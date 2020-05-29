@@ -13,6 +13,10 @@ const PAYMENT_MAP_INDEX_FAIL: String = 'Failed to retrieve all payment maps';
 const PAYMENT_MAP_SHOW_REQUEST: String = 'Get payment map';
 const PAYMENT_MAP_SHOW_SUCCESS: String = 'Payment map retrieved successfully';
 const PAYMENT_MAP_SHOW_FAIL: String = 'Failed to retrieve payment map';
+//Show Anual Payment Map
+const ANUAL_PAYMENT_MAP_SHOW_REQUEST: String = 'Get anual payment map';
+const ANUAL_PAYMENT_MAP_SHOW_SUCCESS: String = 'Anual Payment map retrieved successfully';
+const ANUAL_PAYMENT_MAP_SHOW_FAIL: String = 'Failed to retrieve anual payment map';
 //Create
 const PAYMENT_MAP_CREATE_REQUEST: String = 'Create payment map';
 const PAYMENT_MAP_CREATE_SUCCESS: String = 'Payment map created successfully';
@@ -66,18 +70,13 @@ export async function show(req: Request, res: Response) {
 }
 
 export async function getAnualPaymentMap(req: Request, res: Response) {
-    let response;
 
-    if (req.query.year) {
-        response = await paymentMapService.getAnualPaymentMap(req.query.year.toString());
-    } else {
-        response = await paymentMapService.getAnualPaymentMap();
-    }
+    let response = await paymentMapService.getAnualPaymentMap((req.query.year) ? req.query.year.toString() : null);
 
     if (response instanceof Error) {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_MAP_UPDATE_REQUEST, PAYMENT_MAP_UPDATE_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(ANUAL_PAYMENT_MAP_SHOW_REQUEST, ANUAL_PAYMENT_MAP_SHOW_FAIL, HttpStatus.NOT_FOUND, {}, response.message))
     } else {
-        return res.send(new ApiResponse(PAYMENT_MAP_UPDATE_REQUEST, PAYMENT_MAP_UPDATE_SUCCESS, HttpStatus.OK, response))
+        return res.send(new ApiResponse(ANUAL_PAYMENT_MAP_SHOW_REQUEST, ANUAL_PAYMENT_MAP_SHOW_SUCCESS, HttpStatus.OK, response))
     }
 }
 

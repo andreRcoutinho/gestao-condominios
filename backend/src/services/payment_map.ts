@@ -71,7 +71,7 @@ export async function show(id: Number, year?: String) {
 export async function getAnualPaymentMap(year?: String) {
     try {
         let payment_map: PaymentMap;
-        if (year) {
+        if (year !== null) {
             payment_map = await PaymentMap.findOne({ where: { yearly: true, year } });
         } else {
             let year: number = new Date().getFullYear();
@@ -109,7 +109,6 @@ export async function getAnualPaymentMap(year?: String) {
 
         return response;
     } catch (error) {
-        console.log(error);
         return error;
     }
 }

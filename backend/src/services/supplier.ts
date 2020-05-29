@@ -206,7 +206,6 @@ export async function deleteServiceTypeSupplier(id: Number, body: any) {
             }
         });
 
-        console.log(service_types);
         supplier.setService_types(service_types);
         await supplier.save();
 

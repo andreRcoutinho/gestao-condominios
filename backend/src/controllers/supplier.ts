@@ -83,6 +83,7 @@ export async function addContact(req: Request, res: Response) {
     }
 }
 
+// TO DO RESPONSE MESSAGES
 export async function updateContact(req: Request, res: Response) {
     if (!supplierRules.updateContactRules(req.body))
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
@@ -96,6 +97,7 @@ export async function updateContact(req: Request, res: Response) {
     }
 }
 
+// TO DO RESPONSE MESSAGES
 export async function deleteContact(req: Request, res: Response) {
     if (!supplierRules.deleteContactRules(req.body))
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
@@ -109,6 +111,7 @@ export async function deleteContact(req: Request, res: Response) {
     }
 }
 
+// TO DO RESPONSE MESSAGES
 export async function addServiceType(req: Request, res: Response) {
     if (!supplierRules.addServiceTypeRules(req.body))
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
@@ -122,6 +125,7 @@ export async function addServiceType(req: Request, res: Response) {
     }
 }
 
+// TO DO RESPONSE MESSAGES
 export async function deleteServiceType(req: Request, res: Response) {
     if (!supplierRules.deleteServiceTypeRules(req.body))
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));

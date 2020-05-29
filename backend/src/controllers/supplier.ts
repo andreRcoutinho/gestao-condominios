@@ -66,3 +66,57 @@ export async function update(req: Request, res: Response) {
         return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
     }
 }
+
+
+// TO DO RESPONSE MESSAGES
+export async function addContact(req: Request, res: Response) {
+
+    if (!supplierRules.addContactRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await supplierService.addContact(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
+    }
+}
+
+export async function updateContact(req: Request, res: Response) {
+    if (!supplierRules.updateContactRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await supplierService.updateContact(req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
+    }
+}
+
+export async function deleteContact(req: Request, res: Response) {
+    if (!supplierRules.deleteContactRules(req.body))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_CREATE_REQUEST, SUPPLIER_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
+
+    let response = await supplierService.deleteContact(Number(req.params.id), req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, true));
+    }
+}
+
+export async function addServiceType(req: Request, res: Response) {
+
+}
+
+export async function updateServiceType(req: Request, res: Response) {
+
+}
+
+export async function deleteServiceType(req: Request, res: Response) {
+
+}

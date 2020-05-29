@@ -119,3 +119,70 @@ export async function update(id: Number, body: any) {
 
 //TO DO
 export async function remove() { }
+
+export async function addContact(id: Number, body: any) {
+    try {
+        let supplier: Supplier = await Supplier.findOne({ where: { id } });
+        if (!supplier) {
+            throw new Error(api_errors.SUPPLIER_NOT_EXISTS)
+        }
+
+        let contact: Contact = new Contact(body.phone_number, null, supplier);
+        await contact.save();
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function updateContact(body: any) {
+    try {
+
+        let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
+        contact.setPhone_number(body.phone_number);
+        await contact.save();
+
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function deleteContact(id: Number, body: any) {
+    try {
+
+        let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
+        if (!contact) {
+            throw new Error("Não existe nenhum contacto com esse id");
+        }
+        await Contact.remove(contact);
+
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function addServiceType() {
+    try {
+
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function updateServiceType() {
+    try {
+
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function deleteServiceType() {
+    try {
+
+    } catch (error) {
+        return error;
+    }
+}

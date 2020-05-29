@@ -26,11 +26,11 @@ TO DO
 
 --  Adicionar restrições quer nas rules quer nos modelos
 
---  Encriptar o segredo dos token
+--  Encriptar o segredo dos token Done
 
---  Cascades
+--  Cascades 
 
---  Pedido para simulação de mapas
+--  Pedido para simulação de mapas Done
 
 --  Docker com Docker Compose
 

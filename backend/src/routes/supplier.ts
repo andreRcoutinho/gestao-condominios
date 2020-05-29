@@ -11,6 +11,9 @@ const routes = Router();
 routes.get('/', supplier.index);
 routes.get('/:id', supplier.show);
 routes.post('/', supplier.create);
+routes.put('/:id/add-contact', supplier.addContact);
+routes.put('/:id/update-contact', supplier.updateContact);
+routes.put('/:id/delete-contact', supplier.deleteContact);
 routes.put('/:id', supplier.update);
 
 export default routes;

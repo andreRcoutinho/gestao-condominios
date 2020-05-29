@@ -15,3 +15,31 @@ export function createRules(body: any): boolean | void {
 
     return !validation.fails();
 }
+
+export function addContactRules(body: any): boolean | void {
+    let rules: Rules = {
+        phone_number: "required"
+    }
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}
+
+export function updateContactRules(body: any): boolean | void {
+    let rules: Rules = {
+        contact_id: "required",
+        phone_number: "required"
+    }
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}
+
+export function deleteContactRules(body: any): boolean | void {
+    let rules: Rules = {
+        contact_id: "required",
+    }
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
+}

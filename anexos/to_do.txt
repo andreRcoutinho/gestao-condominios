@@ -2,6 +2,8 @@ TO DO
 
 --  Retorno dos pedidos (Create, Update, Delete)
 ---  Que informação vêm no retorno
+---- revenue
+---- supplier
 
 --  Validações (Questão dos updates) Done
 ---  Podem ser nulos, mas só podem vir um determinado conjunto de atributos Done (Falta testar de forma geral)
@@ -13,6 +15,8 @@ TO DO
 --  Cascades 
 
 --  Docker com Docker Compose
+
+-- Swagger
 
 --  Refactoring geral em todo o código 
 

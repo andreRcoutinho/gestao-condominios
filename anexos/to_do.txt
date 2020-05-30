@@ -2,7 +2,6 @@ TO DO
 
 --  Retorno dos pedidos (Create, Update, Delete)
 ---  Que informação vêm no retorno
----- revenue
 ---- supplier
 
 --  Validações (Questão dos updates) Done

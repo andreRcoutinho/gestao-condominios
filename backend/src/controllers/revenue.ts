@@ -17,17 +17,7 @@ const PAYMENT_RECORD_REQUEST_FAIL: String = 'Ocorreu um erro! Tente novamente.';
 
 export async function payment_record(req: Request, res: Response) {
     if (!revenueRules.paymentRecordRules(req.body)) {
-        return res
-            .status(HttpStatus.BAD_REQUEST)
-            .send(
-                new ApiResponse(
-                    PAYMENT_RECORD_REQUEST,
-                    PAYMENT_RECORD_REQUEST_FAIL,
-                    HttpStatus.NOT_FOUND,
-                    {},
-                    PAYMENT_RECORD_REQUEST_FAIL
-                )
-            );
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_RECORD_REQUEST, PAYMENT_RECORD_REQUEST_FAIL, HttpStatus.NOT_FOUND, {}, PAYMENT_RECORD_REQUEST_FAIL));
     }
 
     let response = await revenueService.payment_record(req.body);
@@ -42,20 +32,8 @@ export async function index(req: Request, res: Response) {
     let response = await revenueService.index((req.query.year) ? req.query.year.toString() : null);
 
     if (response instanceof Error) {
-        return res
-            .status(HttpStatus.BAD_REQUEST)
-            .send(
-                new ApiResponse(
-                    REVENUE_INDEX_REQUEST,
-                    REVENUE_INDEX_FAIL,
-                    HttpStatus.NOT_FOUND,
-                    {},
-                    response.message
-                )
-            );
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_FAIL, HttpStatus.NOT_FOUND, {}, response.message));
     } else {
-        return res.send(
-            new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_SUCCESS, HttpStatus.OK, response)
-        );
+        return res.send(new ApiResponse(REVENUE_INDEX_REQUEST, REVENUE_INDEX_SUCCESS, HttpStatus.OK, response));
     }
 }

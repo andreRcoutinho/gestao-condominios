@@ -106,7 +106,7 @@ export default {
 			});
 		});
 
-		axios.get('//localhost:3333/api/payment_map/1').then((res) => {
+		axios.get('//localhost:3333/api/payment_map/anual').then((res) => {
 			let revenuesArray = res.data.data.revenues;
 
 			for (let i = 0; i < revenuesArray.length; i++) {

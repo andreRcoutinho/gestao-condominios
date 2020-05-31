@@ -436,9 +436,14 @@ export default {
 	mounted() {
 		axios.get('//localhost:3333/api/expenses').then((res) => (this.expenses = res.data.data));
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
-		axios
-			.get('//localhost:3333/api/payment_map')
-			.then((res) => (this.paymentMaps = res.data.data));
+		axios.get('//localhost:3333/api/payment_map').then((res) => {
+			let data = res.data.data;
+			data.forEach((payMap) => {
+				if (payMap.closed !== true) {
+					this.paymentMaps.push(payMap);
+				}
+			});
+		});
 		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
 	},
 	methods: {

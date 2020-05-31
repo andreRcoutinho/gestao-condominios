@@ -1,48 +1,89 @@
 <template>
 	<div>
 		<v-tabs v-model="tab" centered color="black">
-			<v-tab v-for="(m, index) in months" :key="index">
-				{{ m.tab }}
+			<v-tab v-for="(m, index) in months" :key="index" @click="getData(index)">
+				{{ m }}
 			</v-tab>
 		</v-tabs>
 
 		<v-tabs-items v-model="tab">
-			<v-tab-item v-for="item in months" :key="item.tab">
-				<v-row justify="space-around" class="mt-12">
+			<v-tab-item v-for="item in months" :key="item">
+				<v-row id="height"> </v-row>
+				<v-row justify="space-around" class="my-10">
 					<v-col cols="3">
-						<v-card class="mb-12" color="grey lighten-4" height="200px" raised>
-							{{ roles[0] }}
+						<v-card class="mb-12 text-center" color="primary" height="200px" raised>
+							<v-row justify="center">
+								<v-card-title class="mt-6 secondary--text display-1">
+									Rendas pagas
+								</v-card-title>
+							</v-row>
+							<v-card-subtitle class="display-1">
+								{{ totals.total_paid | formatDecimals }} €
+							</v-card-subtitle>
 						</v-card>
 					</v-col>
 					<v-col cols="3">
-						<v-card class="mb-12" color="grey lighten-4" height="200px" raised>
-							{{ item.content }}
+						<v-card class="mb-12 text-center" color="primary" height="200px" raised>
+							<v-row justify="center">
+								<v-card-title class="mt-6 secondary--text display-1">
+									Rendas em falta
+								</v-card-title>
+							</v-row>
+							<v-card-subtitle class="display-1">
+								{{ totals.total_missing | formatDecimals }} €
+							</v-card-subtitle>
 						</v-card>
 					</v-col>
 					<v-col cols="3">
-						<v-card class="mb-12" color="grey lighten-4" height="200px" raised>
-							{{ item.content }}
+						<v-card class="mb-12 text-center" color="primary" height="200px" raised>
+							<v-row justify="center">
+								<v-card-title class="mt-6 secondary--text display-1"
+									>Total gasto</v-card-title
+								>
+							</v-row>
+							<v-card-subtitle class="display-1">
+								{{ totals.total_spent | formatDecimals }} €
+							</v-card-subtitle>
 						</v-card>
 					</v-col>
 				</v-row>
 				<v-row justify="space-around">
-					<v-col cols="8">
-						<v-simple-table>
-							<template v-slot:default>
-								<thead>
-									<tr>
-										<th class="text-left">Tipologia</th>
-										<th class="text-left">Valor</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="item in typo" :key="item.name">
-										<td>{{ item.name }}</td>
-										<td>{{ item.price }}</td>
-									</tr>
-								</tbody>
-							</template>
+					<v-col cols="4">
+						<v-simple-table class="elevation-1">
+							<thead>
+								<tr>
+									<th class="text-left">Tipologia</th>
+									<th class="text-center">Valor</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(item, index) in totals.typology_values" :key="index">
+									<td class="text-left">{{ item.name }}</td>
+									<td class="text-center">{{ item.value }} €</td>
+								</tr>
+							</tbody>
 						</v-simple-table>
+					</v-col>
+					<v-col cols="4">
+						<v-card max-width="450px" shaped>
+							<v-card-title class="justify-center secondary--text title">
+								<v-icon left>mdi-home</v-icon>Por pagar
+							</v-card-title>
+							<v-row justify="center">
+								<v-list class="column_wrapper mb-2">
+									<v-list-item
+										v-for="(item, index) in totals.missing_payment_unit"
+										:key="index"
+									>
+										<v-list-item-content>
+											<v-chip class="justify-center" outlined color="secondary">{{
+												item
+											}}</v-chip>
+										</v-list-item-content>
+									</v-list-item>
+								</v-list>
+							</v-row>
+						</v-card>
 					</v-col>
 				</v-row>
 			</v-tab-item>
@@ -63,33 +104,46 @@ export default {
 		roles: [],
 		tab: null,
 		months: [
-			{ tab: 'janeiro', content: 'Tab 1 Content' },
-			{ tab: 'fevereiro', content: 'Tab 2 Content' },
-			{ tab: 'março', content: 'Tab 3 Content' },
-			{ tab: 'abril', content: 'Tab 4 Content' },
-			{ tab: 'maio', content: 'Tab 5 Content' },
-			{ tab: 'junho', content: 'Tab 6 Content' },
-			{ tab: 'julho', content: 'Tab 7 Content' },
-			{ tab: 'agosto', content: 'Tab 8 Content' },
-			{ tab: 'setembro', content: 'Tab 9 Content' },
-			{ tab: 'outubro', content: 'Tab 10 Content' },
-			{ tab: 'novembro', content: '11content' },
-			{ tab: 'dezembro', content: '12content' },
+			'janeiro',
+			'fevereiro',
+			'março',
+			'abril',
+			'maio',
+			'junho',
+			'julho',
+			'agosto',
+			'setembro',
+			'outubro',
+			'novembro',
+			'dezembro',
 		],
-		typo: [
-			{ name: 'T1', price: '20€' },
-			{ name: 'T2', price: '20€' },
-			{ name: 'T3', price: '20€' },
-			{ name: 'T4', price: '20€' },
-			{ name: 'T4 Duplex', price: '20€' },
-			{ name: 'Loja', price: '20€' },
-		],
+		totals: {},
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 		axios.get('//localhost:3333/api/roles').then(({ data }) => {
 			this.roles = data.data;
 		});
+	},
+	methods: {
+		getData(tab) {
+			axios
+				.get(
+					`//localhost:3333/api/others/monthly-data?year=${new Date()
+						.getFullYear()
+						.toString()}&month=${tab + 1}`
+				)
+				.then((res) => (this.totals = res.data.data));
+		},
+	},
+	mounted() {
+		axios
+			.get(
+				`//localhost:3333/api/others/monthly-data?year=${new Date()
+					.getFullYear()
+					.toString()}&month=1`
+			)
+			.then((res) => (this.totals = res.data.data));
 	},
 	computed: {
 		...authComputed,
@@ -105,4 +159,12 @@ export default {
 	min-height: 88vh;
 	background-color: #ffffff;
 } */
+
+#height {
+	min-height: 45px;
+}
+
+.column_wrapper {
+	column-count: 3;
+}
 </style>

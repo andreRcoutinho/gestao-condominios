@@ -27,6 +27,15 @@ Vue.filter('formatDate', function(value) {
 	}
 });
 
+Vue.filter('formatDecimals', function(value) {
+	if (value === 0) {
+		return `0.00`;
+	}
+	if (value) {
+		return value.toFixed(2);
+	}
+});
+
 new Vue({
 	router,
 	store,

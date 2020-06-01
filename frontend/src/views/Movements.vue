@@ -10,6 +10,43 @@
 			<!-- RECEITAS -->
 			<v-tab-item>
 				<v-row justify="center" align="end" class="mt-8">
+					<v-col cols="1" class="pb-1">
+						<v-menu
+							ref="revenuesDateMenu"
+							v-model="showRevsPicker"
+							:close-on-content-click="true"
+							transition="slide-y-transition"
+							offset-y
+							auto
+							min-width="290px"
+							:return-value.sync="revsSelectedDate"
+						>
+							<template v-slot:activator="{ on }">
+								<v-row justify="start">
+									<v-btn icon v-on="on">
+										<v-icon color="secondary">mdi-calendar</v-icon>
+									</v-btn>
+								</v-row>
+							</template>
+							<v-date-picker
+								ref="revenuesYearPicker"
+								v-model="revsSelectedDate"
+								@input="save('revenues')"
+								reactive
+								no-title
+								color="secondary"
+								min="2018"
+								:max="new Date().toISOString().substring(0, 7)"
+							>
+							</v-date-picker>
+						</v-menu>
+						<!-- <v-overlay :value="overlay" opacity="0.75">
+							<v-row class="display-1 font-weight-black">
+								{{ selectDateErrorMsg }}
+								<v-icon right x-large @click="overlay = false">mdi-close</v-icon>
+							</v-row>
+						</v-overlay> -->
+					</v-col>
 					<v-col cols="5">
 						<v-text-field
 							v-model="revenuesTableOptions.search"
@@ -17,13 +54,13 @@
 							label="Search"
 							single-line
 							hide-details
-							color="#949494"
+							color="secondary"
 						></v-text-field>
 					</v-col>
 					<v-col cols="1" class="pb-1">
-						<v-row justify="center">
+						<v-row justify="end">
 							<v-btn icon @click="saveFile(revenues, 'receitas')">
-								<v-icon>
+								<v-icon color="secondary">
 									mdi-download
 								</v-icon>
 							</v-btn>
@@ -44,6 +81,7 @@
 							:sort-by="['payment_date']"
 							:sort-desc="[true]"
 						>
+							<!-- no-data-text="Não existem receitas registadas!" -->
 							<template v-slot:item.payment_date="{ item }">
 								<span>{{ item.payment_date | formatDate }}</span>
 							</template>
@@ -68,6 +106,43 @@
 			<!-- DESPESAS -->
 			<v-tab-item>
 				<v-row justify="center" align="end" class="mt-8">
+					<v-col cols="1" class="pb-1">
+						<v-menu
+							ref="expensesDateMenu"
+							v-model="showExpsPicker"
+							:close-on-content-click="true"
+							transition="slide-y-transition"
+							offset-y
+							auto
+							min-width="290px"
+							:return-value.sync="expsSelectedDate"
+						>
+							<template v-slot:activator="{ on }">
+								<v-row justify="start">
+									<v-btn icon v-on="on">
+										<v-icon color="secondary">mdi-calendar</v-icon>
+									</v-btn>
+								</v-row>
+							</template>
+							<v-date-picker
+								ref="expensesYearPicker"
+								v-model="expsSelectedDate"
+								@input="save('expenses')"
+								reactive
+								no-title
+								color="secondary"
+								min="2018"
+								:max="new Date().toISOString().substring(0, 7)"
+							>
+							</v-date-picker>
+						</v-menu>
+						<!-- <v-overlay :value="overlay" opacity="0.75">
+							<v-row class="display-1 font-weight-black">
+								{{ selectDateErrorMsg }}
+								<v-icon right x-large @click="overlay = false">mdi-close</v-icon>
+							</v-row>
+						</v-overlay> -->
+					</v-col>
 					<v-col cols="5">
 						<v-text-field
 							v-model="expensesTableOptions.search"
@@ -75,14 +150,14 @@
 							label="Search"
 							single-line
 							hide-details
-							color="#949494"
+							color="secondary"
 							class="mt-8"
 						></v-text-field>
 					</v-col>
 					<v-col cols="1" class="pb-1">
-						<v-row justify="center">
+						<v-row justify="end">
 							<v-btn icon @click="saveFile(expenses, 'despesas')">
-								<v-icon>
+								<v-icon color="secondary">
 									mdi-download
 								</v-icon>
 							</v-btn>
@@ -345,6 +420,10 @@ export default {
 	data: () => ({
 		tab: null,
 		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
+		revsSelectedDate: null,
+		showRevsPicker: '',
+		expsSelectedDate: null,
+		showExpsPicker: '',
 		dialog1: false,
 		d1Info: {
 			paymentMap: null,
@@ -429,24 +508,68 @@ export default {
 		formValidity: false,
 		success: null,
 		errorMsg: null,
+		// selectDateErrorMsg: null,
+		//	overlay: false,
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},
+	watch: {
+		showRevsPicker(val) {
+			val && this.$nextTick(() => (this.$refs.revenuesYearPicker.activePicker = 'YEAR'));
+		},
+		showExpsPicker(val) {
+			val && this.$nextTick(() => (this.$refs.expensesYearPicker.activePicker = 'YEAR'));
+		},
+	},
 	mounted() {
-		axios.get('//localhost:3333/api/expenses').then((res) => (this.expenses = res.data.data));
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
 		axios.get('//localhost:3333/api/payment_map').then((res) => {
 			let data = res.data.data;
 			data.forEach((payMap) => {
+				// allow movements only with open payment maps
 				if (payMap.closed !== true) {
 					this.paymentMaps.push(payMap);
 				}
 			});
 		});
-		axios.get('//localhost:3333/api/revenue').then((res) => (this.revenues = res.data.data));
+		axios
+			.get(`//localhost:3333/api/revenue?year=${new Date().toISOString().substr(0, 4)}`)
+			.then((res) => (this.revenues = res.data.data));
+		axios
+			.get(`//localhost:3333/api/expenses?year=${new Date().toISOString().substr(0, 4)}`)
+			.then((res) => (this.expenses = res.data.data));
 	},
 	methods: {
+		save(origin) {
+			if (origin === 'revenues') {
+				axios
+					.get(`//localhost:3333/api/revenue?year=${this.revsSelectedDate.substr(0, 4)}`)
+					.then((res) => (this.revenues = res.data.data))
+					.catch((err) => {
+						console.log(err.response.data.error);
+						this.revenues = [];
+						// this.selectDateErrorMsg = err.response.data.error;
+						// this.overlay = !this.overlay;
+					});
+
+				this.$refs.revenuesYearPicker.activePicker = 'YEAR';
+				this.showRevsPicker = false;
+			} else if (origin === 'expenses') {
+				axios
+					.get(`//localhost:3333/api/expenses?year=${this.expsSelectedDate.substr(0, 4)}`)
+					.then((res) => (this.expenses = res.data.data))
+					.catch((err) => {
+						console.log(err.response.data.error);
+						this.expenses = [];
+						// this.selectDateErrorMsg = err.response.data.error;
+						// this.overlay = !this.overlay;
+					});
+
+				this.$refs.expensesYearPicker.activePicker = 'YEAR';
+				this.showExpsPicker = false;
+			}
+		},
 		saveFile: function(data, filename) {
 			const jsonData = JSON.stringify(data, null, '\t');
 			const blob = new Blob([jsonData], { type: 'application/json' });
@@ -517,7 +640,7 @@ export default {
 
 					this.$refs.formExpense.reset();
 
-					console.log(res);
+					// console.log(res);
 				})
 				.catch((err) => {
 					this.errorMsg = err.response.data.error;
@@ -553,7 +676,7 @@ export default {
 					this.$refs.formRevenue.reset();
 					this.d1Info.checkedMonths = [];
 					this.d1Info.paymentMap = null;
-					console.log(res);
+					// console.log(res);
 				})
 				.catch((err) => {
 					this.errorMsg = err.response.data.error;

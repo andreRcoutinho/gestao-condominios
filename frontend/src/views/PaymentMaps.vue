@@ -21,17 +21,56 @@
 						>
 							<template v-slot:top>
 								<v-row justify="center">
-									<v-btn
-										depressed
-										@click="
-											saveFile(anualPaymentMapTable.paymentMapAnualRevenues, 'mapaAnual')
-										"
-									>
-										<v-icon left>
-											mdi-download
-										</v-icon>
-										Download Mapa
-									</v-btn>
+									<v-col cols="3" class="pb-1">
+										<v-menu
+											ref="anualMapDateMenu"
+											v-model="showAnualMapPicker"
+											:close-on-content-click="true"
+											transition="slide-y-transition"
+											offset-y
+											auto
+											min-width="290px"
+											:return-value.sync="anualMapSelectedDate"
+										>
+											<template v-slot:activator="{ on }">
+												<v-row justify="start">
+													<v-btn depressed v-on="on">
+														Escolher ano
+														<v-icon right color="secondary">mdi-calendar</v-icon>
+													</v-btn>
+												</v-row>
+											</template>
+											<v-date-picker
+												ref="anualMapYearPicker"
+												v-model="anualMapSelectedDate"
+												@input="save('anualMap')"
+												reactive
+												no-title
+												color="secondary"
+												min="2018"
+												:max="new Date().toISOString().substring(0, 7)"
+											>
+											</v-date-picker>
+										</v-menu>
+									</v-col>
+									<v-col cols="9">
+										<v-row justify="end">
+											<v-btn
+												depressed
+												@click="
+													saveFile(
+														anualPaymentMapTable.paymentMapAnualRevenues,
+														'mapaAnual'
+													)
+												"
+											>
+												<v-icon left color="secondary">
+													mdi-download
+												</v-icon>
+												Transferir Dados Anuais
+											</v-btn>
+										</v-row>
+									</v-col>
 								</v-row>
 							</template>
 							<template v-slot:item="props">
@@ -85,6 +124,9 @@ export default {
 		dialog: false,
 		tab: null,
 		tabs: [{ tab: 'Mensalidades' }, { tab: 'Outros' }, { tab: 'Novo Mapa' }],
+		anualMapSelectedDate: null,
+		showAnualMapPicker: '',
+		// selectDateErrorMsg: null,
 		anualPaymentMapTable: {
 			headers: [{ text: '', value: 'unit', sortable: false }],
 			page: 1,
@@ -96,6 +138,11 @@ export default {
 		units: [],
 		months: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
 	}),
+	watch: {
+		showAnualMapPicker(val) {
+			val && this.$nextTick(() => (this.$refs.anualMapYearPicker.activePicker = 'YEAR'));
+		},
+	},
 	mounted() {
 		this.months.forEach((m) => {
 			this.anualPaymentMapTable.headers.push({
@@ -106,34 +153,38 @@ export default {
 			});
 		});
 
-		axios.get('//localhost:3333/api/payment_map/anual').then((res) => {
-			let revenuesArray = res.data.data.revenues;
+		axios
+			.get(
+				`//localhost:3333/api/payment_map/anual?year=${new Date().toISOString().substr(0, 4)}`
+			)
+			.then((res) => {
+				let revenuesArray = res.data.data.revenues;
 
-			for (let i = 0; i < revenuesArray.length; i++) {
-				let initialArray = this.anualPaymentMapTable.paymentMapAnualRevenues.filter(
-					(rev) => rev.unit === revenuesArray[i].unit
-				);
-
-				if (initialArray.length === 0) {
-					let months = [];
-
-					let monthDataPerUnit = revenuesArray.filter(
+				for (let i = 0; i < revenuesArray.length; i++) {
+					let initialArray = this.anualPaymentMapTable.paymentMapAnualRevenues.filter(
 						(rev) => rev.unit === revenuesArray[i].unit
 					);
-					monthDataPerUnit.forEach((el) => {
-						months.push({ month: el.month, value: el.value, paid: el.paid });
-					});
-					//console.log(monthDataPerUnit);
-					months.sort((a, b) => {
-						return a.month - b.month;
-					});
-					this.anualPaymentMapTable.paymentMapAnualRevenues.push({
-						unit: revenuesArray[i].unit,
-						months: months,
-					});
+
+					if (initialArray.length === 0) {
+						let months = [];
+
+						let monthDataPerUnit = revenuesArray.filter(
+							(rev) => rev.unit === revenuesArray[i].unit
+						);
+						monthDataPerUnit.forEach((el) => {
+							months.push({ month: el.month, value: el.value, paid: el.paid });
+						});
+						//console.log(monthDataPerUnit);
+						months.sort((a, b) => {
+							return a.month - b.month;
+						});
+						this.anualPaymentMapTable.paymentMapAnualRevenues.push({
+							unit: revenuesArray[i].unit,
+							months: months,
+						});
+					}
 				}
-			}
-		});
+			});
 
 		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));
 	},
@@ -141,6 +192,54 @@ export default {
 		this.$emit('update:layout', LayoutDefault);
 	},
 	methods: {
+		save(origin) {
+			if (origin === 'anualMap') {
+				axios
+					.get(
+						`//localhost:3333/api/payment_map/anual?year=${this.anualMapSelectedDate.substr(
+							0,
+							4
+						)}`
+					)
+					.then((res) => {
+						let revenuesArray = res.data.data.revenues;
+
+						for (let i = 0; i < revenuesArray.length; i++) {
+							let initialArray = this.anualPaymentMapTable.paymentMapAnualRevenues.filter(
+								(rev) => rev.unit === revenuesArray[i].unit
+							);
+
+							if (initialArray.length === 0) {
+								let months = [];
+
+								let monthDataPerUnit = revenuesArray.filter(
+									(rev) => rev.unit === revenuesArray[i].unit
+								);
+								monthDataPerUnit.forEach((el) => {
+									months.push({ month: el.month, value: el.value, paid: el.paid });
+								});
+								//console.log(monthDataPerUnit);
+								months.sort((a, b) => {
+									return a.month - b.month;
+								});
+								this.anualPaymentMapTable.paymentMapAnualRevenues.push({
+									unit: revenuesArray[i].unit,
+									months: months,
+								});
+							}
+						}
+					})
+					.catch((err) => {
+						console.log(err.response.data.error);
+						this.anualPaymentMapTable.paymentMapAnualRevenues = [];
+						// this.selectDateErrorMsg = err.response.data.error;
+						// this.overlay = !this.overlay;
+					});
+
+				this.$refs.anualMapYearPicker.activePicker = 'YEAR';
+				this.showAnualMapPicker = false;
+			}
+		},
 		saveFile(data, filename) {
 			const jsonData = JSON.stringify(data, null, '\t');
 			const blob = new Blob([jsonData], { type: 'application/json' });

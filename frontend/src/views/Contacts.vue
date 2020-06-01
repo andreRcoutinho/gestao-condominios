@@ -18,13 +18,13 @@
 							label="Search"
 							single-line
 							hide-details
-							color="#949494"
+							color="secondary"
 						></v-text-field>
 					</v-col>
 					<v-col cols="1" class="pb-1">
 						<v-row justify="center">
 							<v-btn icon @click="saveFile(owners, 'condominos')">
-								<v-icon>
+								<v-icon color="secondary">
 									mdi-download
 								</v-icon>
 							</v-btn>
@@ -149,13 +149,13 @@
 							label="Search"
 							single-line
 							hide-details
-							color="#949494"
+							color="secondary"
 						></v-text-field>
 					</v-col>
 					<v-col cols="1" class="pb-1">
 						<v-row justify="center">
 							<v-btn icon @click="saveFile(suppliers, 'fornecedores')">
-								<v-icon>
+								<v-icon color="secondary">
 									mdi-download
 								</v-icon>
 							</v-btn>

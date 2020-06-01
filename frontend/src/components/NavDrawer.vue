@@ -1,5 +1,5 @@
 <template>
-	<v-navigation-drawer app clipped absolute permanent color="secondary" width="333">
+	<v-navigation-drawer app clipped fixed permanent color="secondary" width="333">
 		<v-list flat class="mt-4">
 			<v-list-item
 				v-for="item in items"

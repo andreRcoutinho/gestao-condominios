@@ -31,7 +31,7 @@
 							<v-date-picker
 								ref="revenuesYearPicker"
 								v-model="revsSelectedDate"
-								@input="save('revenues')"
+								@input="showInfoByYear('revenues')"
 								reactive
 								no-title
 								color="secondary"
@@ -127,7 +127,7 @@
 							<v-date-picker
 								ref="expensesYearPicker"
 								v-model="expsSelectedDate"
-								@input="save('expenses')"
+								@input="showInfoByYear('expenses')"
 								reactive
 								no-title
 								color="secondary"
@@ -293,9 +293,11 @@
 										</v-row>
 										<v-row>
 											<v-spacer></v-spacer>
-											<v-btn color="blue darken-1" text @click="close1">Fechar</v-btn>
+											<v-btn color="red" text @click="closeRegisterNewMvmt(true)"
+												>Fechar</v-btn
+											>
 											<v-btn
-												color="blue darken-1"
+												color="secondary"
 												text
 												type="submit"
 												:disabled="!formValidity"
@@ -388,9 +390,11 @@
 										</v-row>
 										<v-row>
 											<v-spacer></v-spacer>
-											<v-btn color="blue darken-1" text @click="close2">Fechar</v-btn>
+											<v-btn color="red" text @click="closeRegisterNewMvmt(false)"
+												>Fechar</v-btn
+											>
 											<v-btn
-												color="blue darken-1"
+												color="secondary"
 												text
 												type="submit"
 												:disabled="!formValidity"
@@ -508,8 +512,6 @@ export default {
 		formValidity: false,
 		success: null,
 		errorMsg: null,
-		// selectDateErrorMsg: null,
-		//	overlay: false,
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
@@ -541,7 +543,7 @@ export default {
 			.then((res) => (this.expenses = res.data.data));
 	},
 	methods: {
-		save(origin) {
+		showInfoByYear: function(origin) {
 			if (origin === 'revenues') {
 				axios
 					.get(`//localhost:3333/api/revenue?year=${this.revsSelectedDate.substr(0, 4)}`)
@@ -549,8 +551,6 @@ export default {
 					.catch((err) => {
 						console.log(err.response.data.error);
 						this.revenues = [];
-						// this.selectDateErrorMsg = err.response.data.error;
-						// this.overlay = !this.overlay;
 					});
 
 				this.$refs.revenuesYearPicker.activePicker = 'YEAR';
@@ -562,8 +562,6 @@ export default {
 					.catch((err) => {
 						console.log(err.response.data.error);
 						this.expenses = [];
-						// this.selectDateErrorMsg = err.response.data.error;
-						// this.overlay = !this.overlay;
 					});
 
 				this.$refs.expensesYearPicker.activePicker = 'YEAR';
@@ -685,19 +683,20 @@ export default {
 					}, 3000);
 				});
 		},
-		close2: function() {
-			this.$refs.formExpense.reset();
-			this.success = null;
-			this.errorMsg = null;
-			this.dialog2 = false;
-		},
-		close1: function() {
-			this.$refs.formRevenue.reset();
-			this.d1Info.paymentMap = null;
-			this.d1Info.checkedMonths = [];
-			this.success = null;
-			this.errorMsg = null;
-			this.dialog1 = false;
+		closeRegisterNewMvmt: function(revenue) {
+			if (revenue) {
+				this.$refs.formRevenue.reset();
+				this.d1Info.paymentMap = null;
+				this.d1Info.checkedMonths = [];
+				this.success = null;
+				this.errorMsg = null;
+				this.dialog1 = false;
+			} else {
+				this.$refs.formExpense.reset();
+				this.success = null;
+				this.errorMsg = null;
+				this.dialog2 = false;
+			}
 		},
 	},
 };

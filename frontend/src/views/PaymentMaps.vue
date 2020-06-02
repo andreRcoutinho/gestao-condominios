@@ -172,11 +172,9 @@
 
 <script>
 import axios from 'axios';
-// import moment from 'moment';
+import { Parser, transforms } from 'json2csv';
 
 import LayoutDefault from '@/layouts/LayoutDefault';
-
-import { Parser, transforms } from 'json2csv';
 
 export default {
 	name: 'PaymentMaps',
@@ -294,7 +292,7 @@ export default {
 						})
 						.catch((err) => {
 							console.log(err.response.data.error);
-							this.infoToDownload.revenues = [];
+							this.infoToDownload = [];
 						});
 
 					this.$refs.anualMapDownloadYearPicker.activePicker = 'YEAR';
@@ -325,6 +323,8 @@ export default {
 		 * json - true if it is, false if CSV
 		 */
 		saveFile: function(data, filename, json) {
+			this.downloadAnualMapInfoMenu = false;
+
 			if (json) {
 				const jsonData = JSON.stringify(data, null, '\t');
 				const blob = new Blob([jsonData], { type: 'application/json' });

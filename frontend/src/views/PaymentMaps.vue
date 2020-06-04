@@ -253,7 +253,7 @@ export default {
 
 			// inject info about payment map into this.anualPaymentMapTable.paymentMapAnualInfo
 			paymentMapObj.generalInfo = pMapInfo.payment_map;
-			paymentMapObj.generalValues = pMapInfo.paymnet_map_values;
+			paymentMapObj.generalValues = pMapInfo.payment_map_values;
 
 			for (let i = 0; i < pMapInfo.revenues.length; i++) {
 				let initialArray = paymentMapObj.revenues.filter(
@@ -345,7 +345,7 @@ export default {
 					{ label: 'Fechado', value: 'generalInfo.closed' },
 					{ label: 'idValoresDoMapa', value: 'generalValues.id' },
 					{ label: 'Valor Anual', value: 'generalValues.value' },
-					{ label: 'Fundo de Reserva', value: 'generalValues.reverse_fund' },
+					{ label: 'Fundo de Reserva', value: 'generalValues.reserve_fund' },
 					{ label: 'Data de início', value: 'generalValues.start_date' },
 					{ label: 'Data de fim', value: 'generalValues.end_date' },
 					{ label: 'Fração', value: 'revenues.unit' },

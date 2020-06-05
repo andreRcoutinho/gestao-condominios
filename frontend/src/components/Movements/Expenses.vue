@@ -255,51 +255,34 @@ export default {
 				document.body.appendChild(a);
 				a.click();
 			} else {
-				let fields;
-				let json2csvParser;
-				if (filename === 'receitas') {
-					fields = [
-						{ label: 'ID', value: 'id' },
-						{ label: 'Mês', value: 'month' },
-						{ label: 'ID Mapa de Pagamento', value: 'payment_map_id' },
-						{ label: 'Mapa de Pagamento', value: 'payment_map_name' },
-						{ label: 'ID Fração', value: 'unit_id' },
-						{ label: 'Fração', value: 'unit' },
-						{ label: 'Valor', value: 'value' },
-						{ label: 'Data de Registo de Pagamento', value: 'payment_date' },
-					];
-					json2csvParser = new Parser({ fields });
-				} else if (filename === 'despesas') {
-					fields = [
-						{ label: 'ID', value: 'id' },
-						{ label: 'Descrição', value: 'description' },
-						{ label: 'Valor', value: 'value' },
-						{ label: 'Data de Registo de Pagamento', value: 'payment_date' },
-						{ label: 'Fornecedor - ID', value: 'supplier.id' },
-						// TODO - colocar apenas name depois de mudar res de Expenses
-						{ label: 'Fornecedor - Primeiro Nome', value: 'supplier.first_name' },
-						{ label: 'Fornecedor - Último Nome', value: 'supplier.last_name' },
-						{ label: 'Fornecedor - Email', value: 'supplier.email' },
-						{ label: 'Fornecedor - NIF', value: 'supplier.NIF' },
-						{ label: 'Fornecedor - IBAN', value: 'supplier.IBAN' },
-						{ label: 'Fornecedor - Empresa', value: 'supplier.company_name' },
-						{
-							label: 'Fornecedor - Tipo de Serviço',
-							value: 'supplier.service_types.service_type',
-						},
-					];
-					const { unwind } = transforms;
+				let fields = [
+					{ label: 'ID', value: 'id' },
+					{ label: 'Descrição', value: 'description' },
+					{ label: 'Valor', value: 'value' },
+					{ label: 'Data de Registo de Pagamento', value: 'payment_date' },
+					{ label: 'Fornecedor - ID', value: 'supplier.id' },
+					{ label: 'Fornecedor - Primeiro Nome', value: 'supplier.first_name' },
+					{ label: 'Fornecedor - Último Nome', value: 'supplier.last_name' },
+					{ label: 'Fornecedor - Email', value: 'supplier.email' },
+					{ label: 'Fornecedor - NIF', value: 'supplier.NIF' },
+					{ label: 'Fornecedor - IBAN', value: 'supplier.IBAN' },
+					{ label: 'Fornecedor - Empresa', value: 'supplier.company_name' },
+					{
+						label: 'Fornecedor - Tipo de Serviço',
+						value: 'supplier.service_types.service_type',
+					},
+				];
+				const { unwind } = transforms;
 
-					json2csvParser = new Parser({
-						fields,
-						transforms: [
-							unwind({
-								paths: ['supplier', 'supplier.service_types'],
-								blankOut: true,
-							}),
-						],
-					});
-				}
+				let json2csvParser = new Parser({
+					fields,
+					transforms: [
+						unwind({
+							paths: ['supplier', 'supplier.service_types'],
+							blankOut: true,
+						}),
+					],
+				});
 
 				const csv = json2csvParser.parse(data);
 				const blob = new Blob([csv], { type: 'text/csv' });

@@ -1,0 +1,311 @@
+<template>
+	<div>
+		<v-row justify="center" align="end" class="mt-8">
+			<v-col cols="1" class="pb-1">
+				<v-menu
+					ref="expensesDateMenu"
+					v-model="showExpsPicker"
+					:close-on-content-click="true"
+					transition="slide-y-transition"
+					offset-y
+					auto
+					min-width="290px"
+					:return-value.sync="expsSelectedDate"
+				>
+					<template v-slot:activator="{ on }">
+						<v-row justify="start">
+							<v-btn icon v-on="on">
+								<v-icon color="secondary">mdi-calendar</v-icon>
+							</v-btn>
+						</v-row>
+					</template>
+					<v-date-picker
+						ref="expensesYearPicker"
+						v-model="expsSelectedDate"
+						@input="showInfoByYear()"
+						reactive
+						no-title
+						color="secondary"
+						min="2018"
+						:max="new Date().toISOString().substring(0, 7)"
+					>
+					</v-date-picker>
+				</v-menu>
+			</v-col>
+			<v-col cols="5">
+				<v-text-field
+					v-model="expensesTableOptions.search"
+					append-icon="mdi-magnify"
+					label="Search"
+					single-line
+					hide-details
+					color="secondary"
+					class="mt-8"
+				></v-text-field>
+			</v-col>
+			<v-col cols="1" class="pb-1">
+				<v-row justify="end">
+					<v-menu v-model="downloadAnualExpsInfoMenu" :close-on-content-click="false" offset-y>
+						<template v-slot:activator="{ on }">
+							<v-btn icon v-on="on">
+								<v-icon color="secondary">
+									mdi-download
+								</v-icon>
+							</v-btn>
+						</template>
+
+						<v-card>
+							<v-row>
+								<v-menu
+									v-model="showAnualExpsDownloadPicker"
+									:close-on-content-click="true"
+									transition="slide-y-transition"
+									offset-y
+									min-width="290px"
+									:nudge-right="13"
+									:return-value.sync="anualExpsDownloadSelectedDate"
+								>
+									<template v-slot:activator="{ on }">
+										<v-row justify="center" class="mt-4">
+											<v-btn depressed v-on="on">
+												Escolher ano
+												<v-icon right color="secondary">mdi-calendar</v-icon>
+											</v-btn>
+										</v-row>
+									</template>
+									<v-date-picker
+										ref="anualExpsDownloadYearPicker"
+										v-model="anualExpsDownloadSelectedDate"
+										@input="showInfoByYear(true)"
+										reactive
+										no-title
+										color="secondary"
+										min="2018"
+										:max="new Date().toISOString().substring(0, 7)"
+									>
+									</v-date-picker>
+								</v-menu>
+							</v-row>
+							<v-card-actions>
+								<v-btn text @click="downloadAnualExpsInfoMenu = false" color="red"
+									>Fechar</v-btn
+								>
+								<v-spacer></v-spacer>
+
+								<v-btn
+									color="secondary"
+									text
+									@click="saveFile(expensesToDownload, 'despesas', true)"
+									>JSON</v-btn
+								>
+								<v-btn
+									color="secondary"
+									text
+									@click="saveFile(expensesToDownload, 'despesas', false)"
+									>CSV</v-btn
+								>
+							</v-card-actions>
+						</v-card>
+					</v-menu>
+				</v-row>
+			</v-col>
+		</v-row>
+		<v-row justify="space-around">
+			<v-col cols="8">
+				<v-data-table
+					:headers="expensesTableOptions.headers"
+					:items="expenses"
+					:search="expensesTableOptions.search"
+					hide-default-footer
+					:page.sync="expensesTableOptions.page"
+					:items-per-page="expensesTableOptions.itemsPerPage"
+					class="elevation-1"
+					@page-count="expensesTableOptions.pageCount = $event"
+					:sort-by="['payment_date']"
+					:sort-desc="[true]"
+					:footer-props="{
+						firstIcon: 'mdi-arrow-collapse-left',
+						lastIcon: 'mdi-arrow-collapse-right',
+						showFirstLastPage: true,
+					}"
+				>
+					<template v-slot:item.payment_date="{ item }">
+						<span>{{ item.payment_date | formatDate }}</span>
+					</template>
+					<template v-slot:item.value="{ item }">
+						<span>{{ item.value }} €</span>
+					</template>
+					<template #item.full_name="{ item }">
+						{{ item.supplier.first_name }} {{ item.supplier.last_name }}
+					</template>
+				</v-data-table>
+				<div class="text-center pt-3">
+					<v-pagination
+						v-model="expensesTableOptions.page"
+						:length="expensesTableOptions.pageCount"
+						:total-visible="7"
+						color="secondary"
+					></v-pagination>
+				</div>
+			</v-col>
+		</v-row>
+	</div>
+</template>
+
+<script>
+import axios from 'axios';
+import { Parser, transforms } from 'json2csv';
+
+export default {
+	name: 'Expenses',
+	data: () => ({
+		expsSelectedDate: null,
+		showExpsPicker: '',
+
+		downloadAnualExpsInfoMenu: false,
+		anualExpsDownloadSelectedDate: null,
+		showAnualExpsDownloadPicker: '',
+		expensesToDownload: [],
+
+		expensesTableOptions: {
+			search: '',
+			page: 1,
+			pageCount: 0,
+			itemsPerPage: 10,
+			headers: [
+				{
+					text: 'Empresa',
+					value: 'supplier.company_name',
+					align: 'center',
+				},
+				{
+					text: 'Fornecedor',
+					value: 'full_name',
+					align: 'center',
+				},
+				{ text: 'Valor', value: 'value', align: 'center' },
+				{ text: 'Tipo de Despesa', value: 'description', sortable: false, align: 'center' },
+				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
+			],
+		},
+		expenses: [],
+	}),
+
+	mounted() {
+		axios
+			.get(`//localhost:3333/api/expenses?year=${new Date().toISOString().substr(0, 4)}`)
+			.then((res) => (this.expenses = res.data.data));
+	},
+
+	watch: {
+		showExpsPicker(val) {
+			val && this.$nextTick(() => (this.$refs.expensesYearPicker.activePicker = 'YEAR'));
+		},
+
+		showAnualExpsDownloadPicker(val) {
+			val &&
+				this.$nextTick(() => (this.$refs.anualExpsDownloadYearPicker.activePicker = 'YEAR'));
+		},
+	},
+
+	methods: {
+		showInfoByYear: function(toDownload) {
+			if (toDownload) {
+				let year = this.anualExpsDownloadSelectedDate.substr(0, 4);
+				axios
+					.get(`//localhost:3333/api/expenses?year=${year}`)
+					.then((res) => (this.expensesToDownload = res.data.data))
+					.catch((err) => {
+						console.log(err.response.data.error);
+						this.expensesToDownload = [];
+					});
+
+				this.$refs.anualExpsDownloadYearPicker.activePicker = 'YEAR';
+				this.showAnualExpsDownloadPicker = false;
+			} else {
+				axios
+					.get(`//localhost:3333/api/expenses?year=${this.expsSelectedDate.substr(0, 4)}`)
+					.then((res) => (this.expenses = res.data.data))
+					.catch((err) => {
+						console.log(err.response.data.error);
+						this.expenses = [];
+					});
+
+				this.$refs.expensesYearPicker.activePicker = 'YEAR';
+				this.showExpsPicker = false;
+			}
+		},
+		saveFile: function(data, filename, json) {
+			this.downloadAnualExpsInfoMenu = false;
+
+			if (json) {
+				const jsonData = JSON.stringify(data, null, '\t');
+				const blob = new Blob([jsonData], { type: 'application/json' });
+				const a = document.createElement('a');
+				a.download = `${filename}.json`;
+				a.href = window.URL.createObjectURL(blob);
+				a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+				document.body.appendChild(a);
+				a.click();
+			} else {
+				let fields;
+				let json2csvParser;
+				if (filename === 'receitas') {
+					fields = [
+						{ label: 'ID', value: 'id' },
+						{ label: 'Mês', value: 'month' },
+						{ label: 'ID Mapa de Pagamento', value: 'payment_map_id' },
+						{ label: 'Mapa de Pagamento', value: 'payment_map_name' },
+						{ label: 'ID Fração', value: 'unit_id' },
+						{ label: 'Fração', value: 'unit' },
+						{ label: 'Valor', value: 'value' },
+						{ label: 'Data de Registo de Pagamento', value: 'payment_date' },
+					];
+					json2csvParser = new Parser({ fields });
+				} else if (filename === 'despesas') {
+					fields = [
+						{ label: 'ID', value: 'id' },
+						{ label: 'Descrição', value: 'description' },
+						{ label: 'Valor', value: 'value' },
+						{ label: 'Data de Registo de Pagamento', value: 'payment_date' },
+						{ label: 'Fornecedor - ID', value: 'supplier.id' },
+						// TODO - colocar apenas name depois de mudar res de Expenses
+						{ label: 'Fornecedor - Primeiro Nome', value: 'supplier.first_name' },
+						{ label: 'Fornecedor - Último Nome', value: 'supplier.last_name' },
+						{ label: 'Fornecedor - Email', value: 'supplier.email' },
+						{ label: 'Fornecedor - NIF', value: 'supplier.NIF' },
+						{ label: 'Fornecedor - IBAN', value: 'supplier.IBAN' },
+						{ label: 'Fornecedor - Empresa', value: 'supplier.company_name' },
+						{
+							label: 'Fornecedor - Tipo de Serviço',
+							value: 'supplier.service_types.service_type',
+						},
+					];
+					const { unwind } = transforms;
+
+					json2csvParser = new Parser({
+						fields,
+						transforms: [
+							unwind({
+								paths: ['supplier', 'supplier.service_types'],
+								blankOut: true,
+							}),
+						],
+					});
+				}
+
+				const csv = json2csvParser.parse(data);
+				const blob = new Blob([csv], { type: 'text/csv' });
+				const a = document.createElement('a');
+				a.download = `${filename}.csv`;
+				a.href = window.URL.createObjectURL(blob);
+				a.dataset.downloadurl = ['text/csv', a.download, a.href].join(':');
+				document.body.appendChild(a);
+				a.click();
+			}
+		},
+	},
+};
+</script>
+
+<style scoped></style>

@@ -18,6 +18,8 @@
 							:page.sync="anualPaymentMapTable.page"
 							@page-count="anualPaymentMapTable.pageCount = $event"
 							:items-per-page="anualPaymentMapTable.itemsPerPage"
+							:sort-by="['unit']"
+							:sort-desc="[false]"
 						>
 							<template v-slot:top>
 								<v-row justify="center">
@@ -179,9 +181,9 @@ import LayoutDefault from '@/layouts/LayoutDefault';
 export default {
 	name: 'PaymentMaps',
 	data: () => ({
-		dialog: false,
 		tab: null,
 		tabs: [{ tab: 'Mensalidades' }, { tab: 'Outros' }, { tab: 'Novo Mapa' }],
+
 		anualMapSelectedDate: null,
 		showAnualMapPicker: '',
 
@@ -193,7 +195,7 @@ export default {
 		},
 
 		anualPaymentMapTable: {
-			headers: [{ text: '', value: 'unit', sortable: false }],
+			headers: [{ text: '', value: 'unit' }],
 			page: 1,
 			pageCount: 0,
 			itemsPerPage: 13,

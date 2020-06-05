@@ -258,6 +258,13 @@ export default {
 				this.showRevsPicker = false;
 			}
 		},
+		/**
+		 * saveFile - downloads all relevant info in both JSON and CSV
+		 *
+		 * data - the data from the response from the API
+		 * filename - name of file to be downloaded
+		 * json - true if it is, false if CSV
+		 */
 		saveFile: function(data, filename, json) {
 			this.downloadAnualRevsInfoMenu = false;
 

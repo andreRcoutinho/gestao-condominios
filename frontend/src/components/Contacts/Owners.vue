@@ -13,12 +13,40 @@
 				></v-text-field>
 			</v-col>
 			<v-col cols="1" class="pb-1">
-				<v-row justify="center">
-					<v-btn icon @click="saveFile(owners, 'condominos')">
-						<v-icon color="secondary">
-							mdi-download
-						</v-icon>
-					</v-btn>
+				<v-row justify="end">
+					<v-menu v-model="downloadOwnersMenu" :close-on-content-click="false" offset-y>
+						<template v-slot:activator="{ on }">
+							<v-btn icon v-on="on">
+								<v-icon color="secondary">
+									mdi-download
+								</v-icon>
+							</v-btn>
+						</template>
+
+						<v-card width="175">
+							<v-container>
+								<v-row justify="center">
+									<v-btn
+										color="secondary"
+										text
+										@click="saveFile(owners, 'condominos', true)"
+										>JSON</v-btn
+									>
+									<v-btn
+										color="secondary"
+										text
+										@click="saveFile(owners, 'condominos', false)"
+										>CSV</v-btn
+									>
+								</v-row>
+								<v-row justify="center" align="end">
+									<v-btn text @click="downloadOwnersMenu = false" color="red">
+										Fechar
+									</v-btn>
+								</v-row>
+							</v-container>
+						</v-card>
+					</v-menu>
 				</v-row>
 			</v-col>
 		</v-row>
@@ -125,10 +153,13 @@
 
 <script>
 import axios from 'axios';
+import { Parser, transforms } from 'json2csv';
 
 export default {
 	name: 'Owners',
 	data: () => ({
+		downloadOwnersMenu: false,
+
 		ownerRowDlog: {
 			show: false,
 			name: '',
@@ -172,15 +203,55 @@ export default {
 		axios.get('//localhost:3333/api/users/').then((res) => (this.owners = res.data.data));
 	},
 	methods: {
-		saveFile(data, filename) {
-			const jsonData = JSON.stringify(data, null, '\t');
-			const blob = new Blob([jsonData], { type: 'application/json' });
-			const a = document.createElement('a');
-			a.download = `${filename}.json`;
-			a.href = window.URL.createObjectURL(blob);
-			a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
-			document.body.appendChild(a);
-			a.click();
+		/**
+		 * saveFile - downloads all relevant info in both JSON and CSV
+		 *
+		 * data - the data from the response from the API
+		 * filename - name of file to be downloaded
+		 * json - true if it is, false if CSV
+		 */
+		saveFile: function(data, filename, json) {
+			if (json) {
+				const jsonData = JSON.stringify(data, null, '\t');
+				const blob = new Blob([jsonData], { type: 'application/json' });
+				const a = document.createElement('a');
+				a.download = `${filename}.json`;
+				a.href = window.URL.createObjectURL(blob);
+				a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+				document.body.appendChild(a);
+				a.click();
+			} else {
+				let fields = [
+					{ label: 'ID', value: 'id' },
+					{ label: 'Nome', value: 'name' },
+					{ label: 'Email', value: 'email' },
+					{ label: 'IBAN', value: 'IBAN' },
+					{ label: 'NIF', value: 'NIF' },
+					{ label: 'Permissões', value: 'role_name' },
+					{ label: 'Fração', value: 'units' },
+					{ label: 'Contacto', value: 'contacts' },
+				];
+				const { unwind } = transforms;
+
+				let json2csvParser = new Parser({
+					fields,
+					transforms: [
+						unwind({
+							paths: ['units', 'contacts'],
+							blankOut: true,
+						}),
+					],
+				});
+
+				const csv = json2csvParser.parse(data);
+				const blob = new Blob([csv], { type: 'text/csv' });
+				const a = document.createElement('a');
+				a.download = `${filename}.csv`;
+				a.href = window.URL.createObjectURL(blob);
+				a.dataset.downloadurl = ['text/csv', a.download, a.href].join(':');
+				document.body.appendChild(a);
+				a.click();
+			}
 		},
 		openOwnerInfo(item) {
 			Object.assign(this.ownerRowDlog, item);
@@ -194,9 +265,6 @@ export default {
 </script>
 
 <style scoped>
-.custom_col {
-	flex-grow: 0;
-}
 .listItem {
 	-webkit-user-select: text;
 	-moz-user-select: text;

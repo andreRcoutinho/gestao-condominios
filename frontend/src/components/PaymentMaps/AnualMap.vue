@@ -133,7 +133,6 @@
 								:key="index"
 								class="text-center contentCell"
 							>
-								<!-- TODO - v-tooltip hover func -->
 								<v-tooltip right transition="slide-x-transition">
 									<template v-slot:activator="{ on, attrs }">
 										<v-icon v-if="m.paid" color="green" v-bind="attrs" v-on="on">

@@ -12,7 +12,9 @@
 				<AnualMap />
 			</v-tab-item>
 			<!-- OUTROS -->
-			<v-tab-item> </v-tab-item>
+			<v-tab-item>
+				<Others />
+			</v-tab-item>
 			<!-- NOVO MAPA -->
 			<v-tab-item> </v-tab-item>
 		</v-tabs-items>
@@ -23,11 +25,13 @@
 import LayoutDefault from '@/layouts/LayoutDefault';
 
 import AnualMap from '@/components/PaymentMaps/AnualMap.vue';
+import Others from '@/components/PaymentMaps/Others.vue';
 
 export default {
 	name: 'PaymentMaps',
 	components: {
 		AnualMap,
+		Others,
 	},
 	data: () => ({
 		tab: null,

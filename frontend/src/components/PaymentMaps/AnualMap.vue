@@ -134,12 +134,17 @@
 								class="text-center contentCell"
 							>
 								<!-- TODO - v-tooltip hover func -->
-								<v-icon v-if="m.paid" color="green">
-									mdi-check-outline
-								</v-icon>
-								<v-icon v-else color="orange">
-									mdi-emoticon-sad-outline
-								</v-icon>
+								<v-tooltip right transition="slide-x-transition">
+									<template v-slot:activator="{ on, attrs }">
+										<v-icon v-if="m.paid" color="green" v-bind="attrs" v-on="on">
+											mdi-check-outline
+										</v-icon>
+										<v-icon v-else color="orange" v-bind="attrs" v-on="on">
+											mdi-emoticon-sad-outline
+										</v-icon>
+									</template>
+									<span>{{ m.value }} €</span>
+								</v-tooltip>
 							</td>
 						</tr>
 					</template>

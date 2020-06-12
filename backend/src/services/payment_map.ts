@@ -71,7 +71,7 @@ export async function show(id: Number, year?: String) {
 
 		let response = {
 			payment_map: payment_map,
-			paymnet_map_values: payment_map_values,
+			payment_map_values: payment_map_values,
 			revenues: revenues_res,
 		};
 
@@ -116,7 +116,7 @@ export async function getAnualPaymentMap(year?: String) {
 
 		let response = {
 			payment_map: payment_map,
-			paymnet_map_values: payment_map_values,
+			payment_map_values: payment_map_values,
 			revenues: revenues_res,
 		};
 

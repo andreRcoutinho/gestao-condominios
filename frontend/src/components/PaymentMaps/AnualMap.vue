@@ -342,7 +342,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['generalValues', 'revenues', 'revenues.months'],
-							blankOut: true,
 						}),
 					],
 				});

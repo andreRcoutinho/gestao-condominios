@@ -238,7 +238,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['units', 'contacts'],
-							blankOut: true,
 						}),
 					],
 				});

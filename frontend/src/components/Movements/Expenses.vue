@@ -279,7 +279,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['supplier', 'supplier.service_types'],
-							blankOut: true,
 						}),
 					],
 				});

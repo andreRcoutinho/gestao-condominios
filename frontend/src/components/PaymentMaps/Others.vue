@@ -385,7 +385,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['payment_map_values', 'revenues'],
-							blankOut: true,
 						}),
 					],
 				});

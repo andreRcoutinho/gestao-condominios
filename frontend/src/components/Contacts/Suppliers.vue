@@ -249,7 +249,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['service_types', 'contacts'],
-							blankOut: true,
 						}),
 					],
 				});

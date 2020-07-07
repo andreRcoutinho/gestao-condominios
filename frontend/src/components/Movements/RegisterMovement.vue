@@ -1,12 +1,13 @@
 <template>
-	<div>
+	<div class="centerBtns">
 		<v-row justify="center">
 			<!-- NOVA RECEITA -->
-			<v-col class="custom_col">
+			<v-col class="custom_col" align-self="center">
 				<v-dialog v-model="dialog1" persistent max-width="600px">
 					<template v-slot:activator="{ on }" class="text-xs-center">
-						<v-btn color="grey" dark v-on="on">
-							<v-icon left>mdi-plus-circle</v-icon>Nova Receita
+						<v-btn color="#bfbfbf" dark v-on="on" height="125px" width="300px">
+							<v-icon left x-large>mdi-plus-circle</v-icon>
+							<span class="ml-4">Nova Receita</span>
 						</v-btn>
 					</template>
 					<v-card>
@@ -104,11 +105,12 @@
 			</v-col>
 
 			<!-- NOVA DESPESA -->
-			<v-col class="custom_col">
+			<v-col class="custom_col" align-self="center">
 				<v-dialog v-model="dialog2" persistent max-width="600px">
 					<template v-slot:activator="{ on }" class="text-xs-center">
-						<v-btn color="grey" dark v-on="on">
-							<v-icon left>mdi-plus-circle</v-icon>Nova Despesa
+						<v-btn color="#bfbfbf" dark v-on="on" height="125px" width="300px">
+							<v-icon left x-large>mdi-plus-circle</v-icon>
+							<span class="ml-4">Nova Despesa</span>
 						</v-btn>
 					</template>
 					<v-card>
@@ -369,6 +371,10 @@ export default {
 </script>
 
 <style scoped>
+.centerBtns {
+	display: flex;
+	height: 80vh;
+}
 .custom_col {
 	flex-grow: 0;
 }

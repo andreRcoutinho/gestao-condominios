@@ -1,0 +1,280 @@
+<template>
+	<div>
+		<v-form
+			v-model="newMapInfo.validity"
+			ref="formNewPayMap"
+			@submit.prevent="registerNewPaymentMap"
+			@keydown.enter.prevent="registerNewPaymentMap"
+			class="mx-4"
+		>
+			<v-container>
+				<v-row justify="center" class="mb-6">
+					<v-switch
+						v-model="switchIsYearly"
+						label="Mapa anual?"
+						color="secondary"
+						inset
+						hide-details
+					>
+					</v-switch>
+				</v-row>
+				<v-divider></v-divider>
+				<v-row justify="center" class="mt-3">
+					<v-col cols="5">
+						<v-text-field
+							v-model="newMapInfo.mapName"
+							:rules="newMapInfo.nameRules"
+							label="Nome do Mapa"
+							color="secondary"
+							required
+						></v-text-field>
+					</v-col>
+					<v-col cols="1"></v-col>
+					<v-col cols="3" align-self="center">
+						<v-text-field
+							v-model.number="newMapInfo.totalValue"
+							label="Valor total em €"
+							placeholder="0.00"
+							color="#949494"
+							:rules="newMapInfo.valueRules"
+							required
+						></v-text-field>
+					</v-col>
+				</v-row>
+				<v-row justify="center" class="mb-3">
+					<v-col cols="5">
+						<v-textarea
+							v-model="newMapInfo.description"
+							hide-details
+							label="Descrição"
+							color="secondary"
+							auto-grow
+							row-height="15px"
+							outlined
+							solo
+							flat
+						></v-textarea>
+					</v-col>
+					<v-col cols="1"></v-col>
+					<v-col cols="3" align-self="center">
+						<v-text-field
+							v-if="!switchIsYearly"
+							v-model.number="newMapInfo.numberOfInstallments"
+							:rules="newMapInfo.numberRules"
+							label="Prestações"
+							type="number"
+							min="0"
+							color="secondary"
+							outlined
+						/>
+						<v-text-field
+							v-else
+							v-model.number="newMapInfo.year"
+							:rules="newMapInfo.numberRules"
+							label="Ano"
+							type="number"
+							:min="nextYear"
+							color="secondary"
+							outlined
+						/>
+					</v-col>
+				</v-row>
+				<v-divider></v-divider>
+
+				<v-row class="mt-3" justify="center">
+					<v-col cols="6" class="text-center">
+						<p class="mb-0 grey--text text--darken-3">
+							Parcelas a considerar:
+						</p>
+						<small class="grey--text text--darken-1"
+							>Parcelas não selecionadas apenas contribuirão para o pagamento do fundo de
+							reserva.</small
+						>
+					</v-col>
+					<v-row justify="center" no-gutters>
+						<v-col v-for="(u, index) in units" :key="'checkbox' + index" cols="3">
+							<v-row justify="center" no-gutters>
+								<v-checkbox
+									v-model="newMapInfo.selectedUnits"
+									:label="u.unit"
+									:value="u.id"
+									dense
+									color="secondary"
+								>
+								</v-checkbox>
+							</v-row>
+						</v-col>
+					</v-row>
+				</v-row>
+				<v-row justify="center">
+					<v-switch
+						v-model="selectAll"
+						label="Selecionar todas as opções"
+						color="secondary"
+						inset
+						class="ml-6"
+					>
+					</v-switch>
+				</v-row>
+				<v-divider></v-divider>
+
+				<v-row class="mt-4" align-content="end">
+					<v-spacer></v-spacer>
+					<v-btn color="red" text @click="clearFields">Cancelar</v-btn>
+					<v-btn color="secondary" text type="submit" :disabled="!newMapInfo.validity">
+						Registar
+					</v-btn>
+				</v-row>
+			</v-container>
+		</v-form>
+	</div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+	name: 'RegisterMap',
+	data: () => ({
+		dialog1: false,
+		dialog2: false,
+		switchIsYearly: null,
+		newMapInfo: {
+			year: +new Date().toISOString().substr(0, 4) + 1,
+			mapName: '',
+			nameRules: [(v) => !!v || 'É necessário indicar um nome.'],
+			description: '',
+			numberOfInstallments: 0,
+			numberRules: [(v) => /^\d+$/.test(v) || 'Só são permitidos números inteiros.'],
+			selectedUnits: [],
+			totalValue: 0,
+			valueRules: [
+				(v) => !!v || 'Introduza uma quantia.',
+				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
+			],
+			validity: false,
+			snackbar: {
+				// 	show: false,
+				message: null,
+				// 	timeout: 3000,
+				// 	success: false,
+				// 	colour: '',
+			},
+		},
+		newAnualMapInfo: {
+			mapName: '',
+			nameRules: [(v) => !!v || 'É necessário indicar um nome.'],
+			description: '',
+			numberOfInstallments: 0,
+			numberRules: [(v) => /^\d+$/.test(v) || 'Só são permitidos números inteiros.'],
+			selectedUnits: [],
+			totalValue: 0,
+			valueRules: [
+				(v) => !!v || 'Introduza uma quantia.',
+				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
+			],
+			validity: false,
+			snackbar: {
+				// 	show: false,
+				message: null,
+				// 	timeout: 3000,
+				// 	success: false,
+				// 	colour: '',
+			},
+		},
+		units: [],
+		nextYear: +new Date().toISOString().substr(0, 4) + 1,
+	}),
+	computed: {
+		selectAll: {
+			set(val) {
+				this.newMapInfo.selectedUnits = [];
+				if (val) {
+					for (let i = 1; i <= this.units.length; i++) {
+						this.newMapInfo.selectedUnits.push(i);
+					}
+				}
+			},
+			get() {
+				return this.newMapInfo.selectedUnits.length === this.units.length;
+			},
+		},
+	},
+	mounted() {
+		axios.get('//localhost:3333/api/units/').then((res) => (this.units = res.data.data));
+	},
+	methods: {
+		print() {
+			console.log(this.switchIsYearly);
+		},
+		registerNewPaymentMap: function() {
+			if (this.switchIsYearly) {
+				axios
+					.post('//localhost:3333/api/payment_map', {
+						//name: this.newMapInfo.mapName,
+						//description: this.newMapInfo.description,
+						//unit_ids: this.newMapInfo.selectedUnits,
+						//year: +(new Date().toISOString().substr(0, 4)) + 1,
+						//is_yearly: true,
+						//value: this.newMapInfo.totalValue,
+					})
+					.then((res) => {
+						this.newMapInfo.snackbar.message = res.data.message;
+						// this.newMapInfo.snackbar.success = true;
+						// this.newMapInfo.snackbar.colour = 'green';
+						this.$refs.formNewAnualPayMap.reset();
+						// this.newMapInfo.snackbar.show = true;
+					})
+					.catch((err) => {
+						this.newMapInfo.snackbar.message = err.response.data.message;
+						// this.newMapInfo.snackbar.success = false;
+						// this.newMapInfo.snackbar.colour = 'red';
+						// this.newMapInfo.snackbar.show = true;
+					});
+			} else {
+				console.log(this.newMapInfo.selectedUnits);
+				console.log(this.newMapInfo.numberOfInstallments);
+
+				this.$refs.formNewNormalPayMap.reset();
+
+				// axios
+				// 	.post('//localhost:3333/api/payment_map', {
+				// 		name: this.newMapInfo.mapName,
+				// 		description: this.newMapInfo.description,
+				// 		installments: this.newMapInfo.numberOfInstallments,
+				// 		unit_ids: this.newMapInfo.selectedUnits,
+				// 		year: new Date().toISOString().substr(0, 4),
+				// 		is_yearly: false,
+				// 		value: this.newMapInfo.totalValue,
+				// 	})
+				// 	.then((res) => {
+				// 		this.newMapInfo.snackbar.message = res.data.message;
+				// 		// this.newMapInfo.snackbar.success = true;
+				// 		// this.newMapInfo.snackbar.colour = 'green';
+				// 		this.$refs.formNewNormalPayMap.reset();
+				// 		//this.newMapInfo.snackbar.show = true;
+				// 	})
+				// 	.catch((err) => {
+				// 		this.newMapInfo.snackbar.message = err.response.data.message;
+				// 		// this.newMapInfo.snackbar.success = false;
+				// 		// this.newMapInfo.snackbar.colour = 'red';
+				// 		// this.newMapInfo.snackbar.show = true;
+				// 	});
+			}
+		},
+		clearFields: function() {
+			this.$refs.formNewPayMap.reset();
+		},
+	},
+};
+</script>
+
+<style scoped>
+.centerBtns {
+	display: flex;
+	height: 80vh;
+}
+.custom_col {
+	flex-grow: 0;
+}
+</style>

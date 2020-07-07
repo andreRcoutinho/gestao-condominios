@@ -16,7 +16,9 @@
 				<Others />
 			</v-tab-item>
 			<!-- NOVO MAPA -->
-			<v-tab-item> </v-tab-item>
+			<v-tab-item>
+				<RegisterMap />
+			</v-tab-item>
 		</v-tabs-items>
 	</div>
 </template>
@@ -26,12 +28,14 @@ import LayoutDefault from '@/layouts/LayoutDefault';
 
 import AnualMap from '@/components/PaymentMaps/AnualMap.vue';
 import Others from '@/components/PaymentMaps/Others.vue';
+import RegisterMap from '@/components/PaymentMaps/RegisterMap.vue';
 
 export default {
 	name: 'PaymentMaps',
 	components: {
 		AnualMap,
 		Others,
+		RegisterMap,
 	},
 	data: () => ({
 		tab: null,

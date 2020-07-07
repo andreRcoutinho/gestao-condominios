@@ -60,7 +60,7 @@
 					hide-default-footer
 					:page.sync="ownersTableOptions.page"
 					:items-per-page="ownersTableOptions.itemsPerPage"
-					class="elevation-1"
+					class="elevation-0"
 					@page-count="ownersTableOptions.pageCount = $event"
 					:sort-by="['name']"
 					:sort-desc="[false]"

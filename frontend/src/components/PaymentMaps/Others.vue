@@ -124,7 +124,7 @@
 					hide-default-footer
 					:page.sync="otherMapsTableOptions.page"
 					:items-per-page="otherMapsTableOptions.itemsPerPage"
-					class="elevation-1"
+					class="elevation-0"
 					@page-count="otherMapsTableOptions.pageCount = $event"
 				>
 					<template v-slot:item.actions="props">

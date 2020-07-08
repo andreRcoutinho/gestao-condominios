@@ -59,7 +59,7 @@
 					hide-default-footer
 					:page.sync="suppliersTableOptions.page"
 					:items-per-page="suppliersTableOptions.itemsPerPage"
-					class="elevation-1"
+					class="elevation-0"
 					@page-count="suppliersTableOptions.pageCount = $event"
 					:sort-by="['company_name']"
 					:sort-desc="[false]"
@@ -249,7 +249,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['service_types', 'contacts'],
-							blankOut: true,
 						}),
 					],
 				});

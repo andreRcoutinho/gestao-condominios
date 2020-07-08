@@ -109,6 +109,7 @@
 				</v-row>
 			</v-col>
 		</v-row>
+		<!-- TABLE -->
 		<v-row justify="space-around">
 			<v-col cols="8">
 				<v-data-table
@@ -118,7 +119,7 @@
 					hide-default-footer
 					:page.sync="revenuesTableOptions.page"
 					:items-per-page="revenuesTableOptions.itemsPerPage"
-					class="elevation-1"
+					class="elevation-0"
 					@page-count="revenuesTableOptions.pageCount = $event"
 					:sort-by="['payment_date']"
 					:sort-desc="[true]"

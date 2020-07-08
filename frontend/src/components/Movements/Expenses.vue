@@ -110,6 +110,7 @@
 				</v-row>
 			</v-col>
 		</v-row>
+		<!-- TABLE -->
 		<v-row justify="space-around">
 			<v-col cols="8">
 				<v-data-table
@@ -119,7 +120,7 @@
 					hide-default-footer
 					:page.sync="expensesTableOptions.page"
 					:items-per-page="expensesTableOptions.itemsPerPage"
-					class="elevation-1"
+					class="elevation-0"
 					@page-count="expensesTableOptions.pageCount = $event"
 					:sort-by="['payment_date']"
 					:sort-desc="[true]"
@@ -279,7 +280,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['supplier', 'supplier.service_types'],
-							blankOut: true,
 						}),
 					],
 				});

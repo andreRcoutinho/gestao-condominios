@@ -187,7 +187,6 @@ export default {
 				revenues: [],
 			},
 		},
-		units: [],
 		months: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
 	}),
 
@@ -217,8 +216,6 @@ export default {
 			.then((res) => {
 				this.transformAPIres(res);
 			});
-
-		axios.get('//localhost:3333/api/units').then((res) => (this.units = res.data.data));
 	},
 
 	created() {},
@@ -345,7 +342,6 @@ export default {
 					transforms: [
 						unwind({
 							paths: ['generalValues', 'revenues', 'revenues.months'],
-							blankOut: true,
 						}),
 					],
 				});

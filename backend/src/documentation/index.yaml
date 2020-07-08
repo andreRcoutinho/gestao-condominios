@@ -1,0 +1,186 @@
+swagger: "2.0"
+info:
+  description: 'This is a sample API server for the "Gestão de Condomínios" backend application.'
+  version: "1.0.0"
+  title: "Gestão de Condomínios"
+
+host: "localhost:3333"
+basePath: "/api"
+
+#API name routes
+tags:
+  - name: "Authentication"
+    description: "Endpoints based on authentication"
+  - name: "Typologies"
+    description: "Endpoints for Typologies"
+  - name: "Roles"
+    description: "Endpoints for User Roles"
+  - name: "Users"
+    description: "Endpoints for the application users"
+  - name: "Units"
+    description: "Endpoints for the apartment units"
+  - name: "Service_types"
+    description: "Endpoints for the types of service given by suppliers"
+  - name: "Suppliers"
+    description: "Endpoints for the service suppliers"
+  - name: "Expenses"
+    description: "Endpoints for expenses"
+  - name: "Payment_map"
+    description: "Endpoints for the payment maps"
+  - name: "Revenue"
+    description: "Endpoints for the revenues"
+
+#Schemes
+schemes:
+  - "https"
+  - "http"
+
+#API routes
+paths:
+  #Authentication
+  /sign-up:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Create a new user in the database"
+      operationId: "signUp"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Authentication object to create a new user"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            role_id:
+              type: integer
+            units_id:
+              type: array
+              items:
+                type: integer
+              example: [1, 2, 3]
+            NIF:
+              type: string
+            IBAN:
+              type: string
+            contacts:
+              type: array
+              items:
+                $ref: "#/definitions/PhoneList"
+      responses:
+        "200":
+          description: "User created"
+        "400":
+          description: "Bad Request"
+
+  /sign-in:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Create login session for user"
+      operationId: "signIn"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Authentication object to create a new user"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+      responses:
+        "200":
+          description: "User logged"
+        "400":
+          description: "Bad Request"
+
+  /forgot-password:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Forgot user password"
+      operationId: "forgotPassword"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Authentication object forget password"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: string
+      responses:
+        "200":
+          description: "Password forgot"
+        "400":
+          description: "Bad Request"
+
+  /reset-password:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Reset a user password"
+      operationId: "resetPassword"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Authentication object reset password"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: string
+            token:
+              type: string
+            password:
+              type: string
+      responses:
+        "200":
+          description: "Password reset"
+        "400":
+          description: "Bad Request"
+
+  #Roles
+  #Users
+  #Units
+  #ServiceTypes
+  #Suppliers
+  #Expenses
+  #PaymentMap
+  #Revenues
+  #Others
+
+definitions:
+  PhoneList:
+    type: object
+    properties: 
+       phone_number: 
+        type: string
+        example: "123456789"

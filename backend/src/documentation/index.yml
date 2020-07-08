@@ -1,0 +1,56 @@
+swagger: "2.0"
+info:
+  description: 'This is a sample API server for the "Gestão de Condomínios" backend application.'
+  version: "1.0.0"
+  title: "Gestão de Condomínios"
+host: "localhost:3333"
+basePath: "/api"
+
+#API name routes
+tags:
+  - name: "Authentication"
+    description: "Endpoints based on authentication"
+  - name: "Typologies"
+    description: "Endpoints for Typologies"
+  - name: "Roles"
+    description: "Endpoints for User Roles"
+  - name: "Users"
+    description: "Endpoints for the application users"
+  - name: "Units"
+    description: "Endpoints for the apartment units"
+  - name: "Service_types"
+    description: "Endpoints for the types of service given by suppliers"
+  - name: "Suppliers"
+    description: "Endpoints for the service suppliers"
+  - name: "Expenses"
+    description: "Endpoints for expenses"
+  - name: "Payment_map"
+    description: "Endpoints for the payment maps"
+  - name: "Revenue"
+    description: "Endpoints for the revenues"
+
+#Schemes
+schemes:
+  - "https"
+  - "http"
+
+#API routes
+paths:
+  #Authentication
+  /sign-up:
+    $ref: ""
+  /sign-in:
+    $ref: ""
+  /forgot-password:
+    $ref: ""
+  /reset-password:
+    $ref: ""
+  #Roles
+  #Users
+  #Units
+  #ServiceTypes
+  #Suppliers
+  #Expenses
+  #PaymentMap
+  #Revenues
+  #Others

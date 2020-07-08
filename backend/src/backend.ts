@@ -18,7 +18,10 @@ import others from './routes/others';
 import { SeedTypologies } from './database/typologies';
 import { SeedRoles } from './database/roles';
 import { SeedUnits } from './database/units';
+import swaggerUi from 'swagger-ui-express';
+import * as YAML from 'yamljs';
 
+const swaggerDocument = YAML.load('./src/documentation/index.yml');
 const app = express();
 
 createConnection().then(async (connection) => {
@@ -41,6 +44,7 @@ app.use(express.json());
 /**
  * Routes
  */
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/api', auth);
 app.use('/api/typologies', typology);
 app.use('/api/roles', role);

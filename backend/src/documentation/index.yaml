@@ -37,7 +37,7 @@ schemes:
 
 #API routes
 paths:
-  #Authentication
+  #Authentication (check responses)
   /sign-up:
     post:
       tags:
@@ -167,14 +167,317 @@ paths:
         "400":
           description: "Bad Request"
 
+  #Typologies
+  /typologies:
+    get:
+      tags:
+      - "Typologies"
+      summary: "Get all typologies"
+      description: "Returns array of typologies"
+      operationId: "getTypologies"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all tipologies successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/TypologiesList"
+        "400":
+          description: "Failed to retrieve all tipologies"
+  /typologies/{id}:
+    get:
+      tags:
+      - "Typologies"
+      summary: "Get typology by id"
+      description: "Return a typology"
+      operationId: "getTypologyById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of typology to return"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Typology"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/Typology"
+        "400":
+          description: "Invalid ID supplied"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                type: object
+              error:
+                type: string
+    post:
+      tags:
+      - "Typologies"
+      summary: "Post new typology"
+      description: "Creates a new typology"
+      operationId: "postTypology"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Typology object to create a new typology"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            typology:
+              type: string
+              example: "T2"
+      responses:
+        "200":
+          description: "Typology"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/Typology"
+        "400":
+          description: "Invalid ID supplied"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+                default: 400
+              data: 
+                type: object
+              error:
+                type: string    
+    #put:
+    #delete:
+
   #Roles
+  /roles:
+    get:
+      tags:
+      - "Roles"
+      summary: "Get all roles"
+      description: "Returns array of roles"
+      operationId: "getRoles"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all roles successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/RolesList"
+        "400":
+          description: "Failed to retrieve all roles"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                type: object
+              error:
+                type: string
+
   #Users
+
   #Units
+  /units:
+    get:
+      tags:
+      - "Units"
+      summary: "Get all units"
+      description: "Returns array of units"
+      operationId: "getUnits"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all units successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/UnitsList"
+        "400":
+          description: "Failed to retrieve all Units"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                type: object
+              error:
+                type: string
+  /units/{id}:
+    get:
+      tags:
+      - "Units"
+      summary: "Get unit by id"
+      description: "Return a unit"
+      operationId: "getUnitById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of unit to return"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Get specific unit"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/Unit"
+        "400":
+          description: "Failed to retrieve specific unit"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                type: object
+              error:
+                type: string
+    put:
+      tags:
+      - "Units"
+      summary: "Edit unit"
+      description: "Edits an existing unit"
+      operationId: "putUnit"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of unit to edit"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Unit object to edit"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            unit:
+              type: string
+      responses:
+        "200":
+          description: "Updated unit successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data: 
+                $ref: "#/definitions/Unit"
+        "400":
+          description: "Failed to update unit"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+                default: 400
+              data: 
+                type: object
+              error:
+                type: string  
+
   #ServiceTypes
+
   #Suppliers
+
   #Expenses
+
   #PaymentMap
+
   #Revenues
+
   #Others
 
 definitions:
@@ -184,3 +487,41 @@ definitions:
        phone_number: 
         type: string
         example: "123456789"
+  Typology:
+      type: object
+      properties:
+        typology:
+          type: string
+        permilage: 
+          type: integer
+        id:
+          type: integer        
+  TypologiesList:
+    type: array
+    items:
+      $ref: "#/definitions/Typology"
+  Role:
+    type: object
+    properties:
+      role_name: 
+        type: string
+      id: 
+        type: integer
+  RolesList:
+    type: array
+    items:
+      $ref: "#/definitions/Role"
+  Unit:
+    type: object
+    properties:
+      unit: 
+        type: string
+      typology:
+        $ref: "#/definitions/Typology"
+      id:
+        type: integer
+  UnitsList:
+    type: array
+    items:
+      $ref: "#/definitions/Unit"
+      

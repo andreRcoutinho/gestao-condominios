@@ -39,6 +39,7 @@ export default {
 				{ title: 'Contactos', icon: 'mdi-card-account-mail', route: '/contactos' },
 				{ title: 'Gestão de Utilizadores', icon: 'mdi-account-group', route: '' },
 				{ title: 'Definições', icon: 'mdi-cog', route: '' },
+				{ title: 'Definições de Utilizador', icon: 'mdi-cog', route: '/definicoes' },
 			],
 		};
 	},

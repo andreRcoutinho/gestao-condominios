@@ -2,9 +2,9 @@
 	<div class="LayoutDefault">
 		<NavDrawer />
 		<NavBar />
-		<v-content class="LayoutDefault__main">
+		<v-main class="LayoutDefault__main">
 			<slot />
-		</v-content>
+		</v-main>
 	</div>
 </template>
 

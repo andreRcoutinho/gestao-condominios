@@ -1,8 +1,8 @@
 <template>
 	<div class="LayoutAuth">
-		<v-content class="LayoutAuth__main">
+		<v-main class="LayoutAuth__main">
 			<slot />
-		</v-content>
+		</v-main>
 	</div>
 </template>
 

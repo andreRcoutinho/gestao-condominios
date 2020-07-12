@@ -18,7 +18,7 @@
 					>
 					</v-switch>
 				</v-row>
-				<v-divider></v-divider>
+				<v-divider inset></v-divider>
 				<v-row justify="center" class="mt-3">
 					<v-col cols="5">
 						<v-text-field
@@ -79,7 +79,7 @@
 						/>
 					</v-col>
 				</v-row>
-				<v-divider></v-divider>
+				<v-divider inset></v-divider>
 
 				<v-row class="mt-3" justify="center">
 					<v-col cols="6" class="text-center">
@@ -116,7 +116,7 @@
 					>
 					</v-switch>
 				</v-row>
-				<v-divider></v-divider>
+				<v-divider inset></v-divider>
 
 				<v-row class="mt-4" align-content="end">
 					<v-spacer></v-spacer>

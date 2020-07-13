@@ -32,7 +32,6 @@ export async function index() {
     }
 }
 
-// TO DO ALL EXPENSEVES
 export async function show(id: Number) {
     try {
         var supplier: Supplier = await Supplier.findOne({ where: { id } });

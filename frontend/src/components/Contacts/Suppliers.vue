@@ -78,7 +78,7 @@
 					</template>
 				</v-data-table>
 
-				<v-dialog v-model="editDialog" max-width="650px">
+				<v-dialog v-model="editDialog" max-width="650px" persistent>
 					<v-card>
 						<v-card-title>
 							<span class="headline">{{ editedItem.name }}</span>
@@ -146,7 +146,7 @@
 												</v-list-item-icon>
 												<v-list-item-content>
 													<v-list-item-subtitle>
-														{{ editedItem.contacts[i].phone_number }}
+														{{ c.phone_number }}
 													</v-list-item-subtitle>
 												</v-list-item-content>
 												<v-list-item-action class="my-0">
@@ -160,18 +160,32 @@
 
 									<v-col cols="6">
 										<v-select
-											v-model="editedItem.service_types"
+											v-model="editedItem.selectedServiceType"
 											:items="serviceTypes"
 											label="Tipo de Serviço"
 											item-text="service_type"
 											item-value="id"
 											color="secondary"
 											item-color="secondary"
-											chips
-											small-chips
-											deletable-chips
-											multiple
+											@input="addServiceTypeToSupplier"
 										></v-select>
+										<v-list dense>
+											<v-list-item v-for="(s, i) in editedItem.service_types" :key="i">
+												<v-list-item-icon>
+													<v-icon small>mdi-hammer-wrench</v-icon>
+												</v-list-item-icon>
+												<v-list-item-content>
+													<v-list-item-subtitle>
+														{{ s.service_type }}
+													</v-list-item-subtitle>
+												</v-list-item-content>
+												<v-list-item-action class="my-0">
+													<v-btn x-small icon @click="deleteSupplierST(i)">
+														<v-icon>mdi-delete</v-icon>
+													</v-btn>
+												</v-list-item-action>
+											</v-list-item>
+										</v-list>
 									</v-col>
 								</v-row>
 								<v-row justify="center">
@@ -250,7 +264,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="supplierRowDlog.service_types[i].service_type"
+													v-text="st.service_type"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -266,7 +280,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="supplierRowDlog.contacts[i].phone_number"
+													v-text="ctct.phone_number"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -370,6 +384,8 @@ export default {
 
 			contactValue: null,
 			otherContact: false,
+
+			selectedServiceType: null,
 		},
 
 		editItemSuccess: null,
@@ -386,6 +402,23 @@ export default {
 			.then((res) => (this.serviceTypes = res.data.data));
 	},
 	methods: {
+		async addServiceTypeToSupplier() {
+			//console.log(this.editedItem.selectedServiceType);
+			if (this.editedItem.selectedServiceType) {
+				await axios
+					.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-service-type`, {
+						service_type_id: this.editedItem.selectedServiceType,
+					})
+					.then((res) => {
+						this.editedItem.service_types.push(res.data.data);
+						console.log(res);
+					})
+					.catch((err) => console.log(err));
+			}
+			this.editedItem.selectedServiceType = null;
+			console.log(this.editedItem.service_types);
+		},
+
 		addContactToArray() {
 			if (this.editedItem.contactValue) {
 				axios
@@ -403,11 +436,28 @@ export default {
 			console.log(this.editedItem.contacts);
 		},
 
-		addServiceType() {
-			axios.put(
-				`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-service-type`,
-				{}
-			);
+		deleteSupplierST(index) {
+			axios
+				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-service-type`, {
+					service_type_id: this.editedItem.service_types[index].id,
+				})
+				.then((res) => {
+					this.editedItem.service_types.splice(index, 1);
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
+		},
+
+		deleteSupplierContact(index) {
+			axios
+				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-contact`, {
+					contact_id: this.editedItem.contacts[index].id,
+				})
+				.then((res) => {
+					this.editedItem.contacts.splice(index, 1);
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
 		},
 
 		deleteItem(item) {
@@ -465,18 +515,6 @@ export default {
 				});
 		},
 
-		deleteSupplierContact(index) {
-			axios
-				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-contact`, {
-					contact_id: this.editedItem.contacts[index].id,
-				})
-				.then((res) => {
-					this.editedItem.contacts.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
-		},
-
 		close() {
 			this.editDialog = false;
 			this.$nextTick(() => {
@@ -488,8 +526,8 @@ export default {
 			this.editedIndex = this.suppliers.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.editDialog = true;
-			console.log(this.editedIndex);
-			console.log(this.editedItem);
+			// console.log(this.editedIndex);
+			// console.log(this.editedItem);
 		},
 
 		openSupplierInfo(item) {

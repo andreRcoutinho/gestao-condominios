@@ -32,7 +32,6 @@ export async function index() {
     }
 }
 
-// TO DO ALL EXPENSEVES
 export async function show(id: Number) {
     try {
         var supplier: Supplier = await Supplier.findOne({ where: { id } });
@@ -54,7 +53,7 @@ export async function show(id: Number) {
                 id: expense.getId(),
                 description: expense.getDescription(),
                 value: expense.getValue(),
-                payment_date: expense.getPayment_date(),
+                payment_date: expense.getExpense_date(),
                 payment_record_date: expense.getPayment_record_date(),
             };
             expenses_res.push(e);

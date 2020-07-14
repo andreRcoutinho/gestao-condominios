@@ -10,7 +10,7 @@ export async function index(year?: String) {
         if (year !== null) {
             expenses = await Expense.find({
                 where: {
-                    payment_date: Between(new Date(`${year}-01-01`), new Date(`${year}-12-31`))
+                    expense_date: Between(new Date(`${year}-01-01`), new Date(`${year}-12-31`))
                 }
             })
         } else {
@@ -44,7 +44,7 @@ export async function create(body: any) {
             throw new Error(api_errors.SUPPLIER_NOT_EXISTS)
         }
 
-        let expense: Expense = new Expense(body.value, body.description, body.payment_date, supplier);
+        let expense: Expense = new Expense(body.value, body.description, body.expense_date, supplier);
 
         await expense.save();
 

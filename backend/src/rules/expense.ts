@@ -6,7 +6,7 @@ export function createRules(body: any): boolean | void {
         supplier_id: "required",
         description: "required",
         value: "required",
-        payment_date: "required|date"
+        expense_date: "required|date"
     }
     var validation = new Validator(body, rules);
 

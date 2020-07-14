@@ -79,7 +79,7 @@
 									</v-list-item-icon>
 									<v-list-item-content>
 										<v-list-item-subtitle>
-											{{ newUserInfo.contacts[i] }}
+											{{ c }}
 										</v-list-item-subtitle>
 									</v-list-item-content>
 									<v-list-item-action class="my-0">

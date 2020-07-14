@@ -109,7 +109,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="ownerRowDlog.units[i]"
+													v-text="unit"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -125,7 +125,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="ownerRowDlog.contacts[i]"
+													v-text="ctct"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>

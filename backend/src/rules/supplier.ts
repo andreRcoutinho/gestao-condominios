@@ -46,7 +46,7 @@ export function deleteContactRules(body: any): boolean | void {
 
 export function addServiceTypeRules(body: any): boolean | void {
     let rules: Rules = {
-        service_type_id: "required",
+        service_types: "required",
     }
     var validation = new Validator(body, rules);
 

@@ -1,5 +1,3 @@
-import { Rules } from "validatorjs";
-
 export function filterBody(body: any, rules: any) {
     for (const body_key in body) {
         for (const key in rules) {

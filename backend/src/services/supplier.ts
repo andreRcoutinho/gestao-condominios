@@ -196,16 +196,15 @@ export async function addServiceTypeSupplier(id: Number, body: any) {
             throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
         }
 
-        let service_type: ServiceType = await ServiceType.findOne({ where: { id: body.service_type_id } });
-        if (!service_type) {
-            throw new Error(api_errors.SERVICE_TYPE_NOT_EXISTS);
+        for (let i = 0; i < body.service_types.length; i++) {
+            let service_type: ServiceType = await ServiceType.findOne({ where: { id: body.service_types[i] } });
+            if (service_type) {
+                let service_types: ServiceType[] = supplier.getService_types();
+                service_types.push(service_type);
+                supplier.setService_types(service_types);
+                await supplier.save();
+            }
         }
-
-        let service_types: ServiceType[] = supplier.getService_types();
-        service_types.push(service_type);
-
-        supplier.setService_types(service_types);
-        await supplier.save();
 
         return true;
     } catch (error) {

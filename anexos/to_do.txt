@@ -10,8 +10,6 @@ TO DO
 
 --  Adicionar restrições quer nas rules quer nos modelos
 
---  Cascades 
-
 --  Docker com Docker Compose
 
 -- Swagger

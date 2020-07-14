@@ -45,7 +45,7 @@ export async function show(req: Request, res: Response) {
     let response = await supplierService.show(Number(req.params.id));
 
     if (response instanceof Error) {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_NOT_FOUND, HttpStatus.OK, {}, response.message));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_NOT_FOUND, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_SHOW_REQUEST, SUPPLIER_SHOW_MESSAGE_SUCCESS, HttpStatus.OK, response));
     }
@@ -65,7 +65,7 @@ export async function update(req: Request, res: Response) {
     let response = await supplierService.update(Number(req.params.id), req.body);
 
     if (response instanceof Error) {
-        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, response));
     }

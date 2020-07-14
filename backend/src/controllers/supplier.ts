@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, request } from 'express';
 import * as supplierService from '../services/supplier';
 import { ApiResponse } from '../api/api_response';
 import HttpStatus from "http-status-codes";
@@ -22,6 +22,10 @@ const SUPPLIER_INDEX_FAIL: String = 'Failed to retrieve all suppliers';
 const SUPPLIER_UPDATE_REQUEST: String = 'Update supplier';
 const SUPPLIER_UPDATE_SUCCESS: String = 'Supplier updated successfully';
 const SUPPLIER_UPDATE_FAIL: String = 'Failed to update supplier';
+//Remove
+const SUPPLIER_REMOVE_REQUEST: String = 'Remove supplier';
+const SUPPLIER_REMOVE_MESSAGE_SUCCESS: String = 'Supplier remove successfully';
+const SUPPLIER_REMOVE_MESSAGE_FAILED: String = 'Failed to remove supplier';
 
 export async function create(req: Request, res: Response) {
     if (!supplierRules.createRules(req.body))
@@ -64,6 +68,16 @@ export async function update(req: Request, res: Response) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_FAIL, HttpStatus.OK, {}, response.message));
     } else {
         return res.send(new ApiResponse(SUPPLIER_UPDATE_REQUEST, SUPPLIER_UPDATE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+export async function remove(req: Request, res: Response) {
+    let response = await supplierService.remove(Number(req.params.id));
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(SUPPLIER_REMOVE_REQUEST, SUPPLIER_REMOVE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(SUPPLIER_REMOVE_REQUEST, SUPPLIER_REMOVE_MESSAGE_SUCCESS, HttpStatus.OK, response))
     }
 }
 

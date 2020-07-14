@@ -95,7 +95,7 @@ export async function remove(req: Request, res: Response) {
     let response = await userService.remove(Number(req.params.id));
 
     if (response instanceof Error) {
-        return res.send(new ApiResponse(USER_REMOVE_REQUEST, USER_REMOVE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message))
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_REMOVE_REQUEST, USER_REMOVE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message))
     } else {
         return res.send(new ApiResponse(USER_REMOVE_REQUEST, USER_REMOVE_MESSAGE_SUCCESS, HttpStatus.OK, response))
     }

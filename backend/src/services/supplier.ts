@@ -116,8 +116,31 @@ export async function update(id: Number, body: any) {
     }
 }
 
-//TO DO
-export async function remove() { }
+export async function remove(id: Number) {
+    try {
+        let supplier: Supplier = await Supplier.findOne({ where: { id } });
+        if (!supplier) {
+            throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
+        }
+
+        let expenses: Expense[] = await Expense.find({ where: { supplier } });
+        if (expenses.length > 0) {
+            throw new Error(api_errors.SUPPLIER_WITH_REGISTERED_EXPENSES);
+        }
+
+        let supplier_contacts: Contact[] = await Contact.find({ where: { supplier } });
+        if (supplier_contacts.length >= 0) {
+            await Contact.remove(supplier_contacts);
+        }
+
+        await Supplier.remove(supplier);
+
+        return supplier;
+
+    } catch (error) {
+        return error;
+    }
+}
 
 export async function addContact(id: Number, body: any) {
     try {

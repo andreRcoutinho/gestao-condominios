@@ -72,7 +72,7 @@
 						</v-icon>
 					</template>
 				</v-data-table>
-				<v-dialog v-model="ownerRowDlog.show" max-width="600px">
+				<v-dialog v-model="ownerRowDlog.show" max-width="650px">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
 							<span>{{ ownerRowDlog.name }}</span>
@@ -131,7 +131,7 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="closeOwnerInfo">Fechar</v-btn>
+								<v-btn color="red" text @click="closeOwnerInfo">Fechar</v-btn>
 								<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
 								<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
 							</v-row>

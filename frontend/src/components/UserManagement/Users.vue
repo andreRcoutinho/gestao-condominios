@@ -75,7 +75,7 @@
 						</v-icon>
 					</template>
 				</v-data-table>
-				<v-dialog v-model="ownerRowDlog.show" max-width="600px">
+				<v-dialog v-model="ownerRowDlog.show" max-width="650px">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
 							<span>{{ ownerRowDlog.name }}</span>
@@ -134,7 +134,7 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="closeOwnerInfo">Fechar</v-btn>
+								<v-btn color="red" text @click="closeOwnerInfo">Fechar</v-btn>
 							</v-row>
 						</v-card-text>
 					</v-card>
@@ -214,10 +214,13 @@ export default {
 		},
 		deleteItem(item) {
 			const index = this.owners.indexOf(item);
-			// TODO: DELETE REQUEST
+
 			confirm('Are you sure you want to delete this item?') &&
 				this.owners.splice(index, 1) &&
-				axios.delete();
+				axios
+					.delete(`http://localhost:3333/api/users/${item.id}`)
+					.then((res) => console.log(res))
+					.catch((err) => console.log(err));
 		},
 		closeOwnerInfo() {
 			this.ownerRowDlog.show = false;

@@ -136,7 +136,6 @@ export async function remove(id: Number) {
         await Supplier.remove(supplier);
 
         return supplier;
-
     } catch (error) {
         return error;
     }
@@ -146,13 +145,13 @@ export async function addContact(id: Number, body: any) {
     try {
         let supplier: Supplier = await Supplier.findOne({ where: { id } });
         if (!supplier) {
-            throw new Error(api_errors.SUPPLIER_NOT_EXISTS)
+            throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
         }
 
         let contact: Contact = new Contact(body.phone_number, null, supplier);
         await contact.save();
 
-        return true;
+        return contact;
     } catch (error) {
         return error;
     }
@@ -160,7 +159,6 @@ export async function addContact(id: Number, body: any) {
 
 export async function updateContact(body: any) {
     try {
-
         let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
         if (!contact) {
             throw new Error(api_errors.CONTACT_NOT_EXISTS);
@@ -176,7 +174,6 @@ export async function updateContact(body: any) {
 
 export async function deleteContact(id: Number, body: any) {
     try {
-
         let contact: Contact = await Contact.findOne({ where: { id: body.contact_id } });
         if (!contact) {
             throw new Error(api_errors.CONTACT_NOT_EXISTS);
@@ -219,7 +216,9 @@ export async function deleteServiceTypeSupplier(id: Number, body: any) {
             throw new Error(api_errors.SUPPLIER_NOT_EXISTS);
         }
 
-        let service_type_remove: ServiceType = await ServiceType.findOne({ where: { id: body.service_type_id } });
+        let service_type_remove: ServiceType = await ServiceType.findOne({
+            where: { id: body.service_type_id },
+        });
         if (!service_type_remove) {
             throw new Error(api_errors.SERVICE_TYPE_NOT_EXISTS);
         }
@@ -227,7 +226,7 @@ export async function deleteServiceTypeSupplier(id: Number, body: any) {
         let service_types: ServiceType[] = supplier.getService_types();
         service_types.filter((service_type, index) => {
             if (service_type.getId() === service_type_remove.getId()) {
-                delete service_types[index]
+                delete service_types[index];
             }
         });
 
@@ -235,7 +234,6 @@ export async function deleteServiceTypeSupplier(id: Number, body: any) {
         await supplier.save();
 
         return true;
-
     } catch (error) {
         return error;
     }

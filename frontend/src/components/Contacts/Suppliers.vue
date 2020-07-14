@@ -69,10 +69,144 @@
 						<v-icon class="mr-2" @click="openSupplierInfo(props.item)">
 							mdi-plus
 						</v-icon>
+						<v-icon small class="mr-2" @click="editItem(props.item)">
+							mdi-pencil
+						</v-icon>
+						<v-icon small @click="deleteItem(props.item)">
+							mdi-delete
+						</v-icon>
 					</template>
 				</v-data-table>
 
-				<v-dialog v-model="supplierRowDlog.show" max-width="600px">
+				<v-dialog v-model="editDialog" max-width="650px">
+					<v-card>
+						<v-card-title>
+							<span class="headline">{{ editedItem.name }}</span>
+						</v-card-title>
+
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.first_name"
+											label="Primeiro Nome"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.last_name"
+											label="Último Nome"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.email"
+											label="Email"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.company_name"
+											label="Nome da Empresa"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.NIF"
+											label="NIF"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.IBAN"
+											label="IBAN"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="6">
+										<v-text-field
+											v-model="editedItem.contactValue"
+											label="Contacto"
+											color="secondary"
+											:append-icon="`mdi-plus`"
+											@click:append="addContactToArray"
+											@keydown.enter="addContactToArray"
+										>
+										</v-text-field>
+										<v-list dense>
+											<v-list-item v-for="(c, i) in editedItem.contacts" :key="i">
+												<v-list-item-icon>
+													<v-icon small>mdi-phone</v-icon>
+												</v-list-item-icon>
+												<v-list-item-content>
+													<v-list-item-subtitle>
+														{{ editedItem.contacts[i].phone_number }}
+													</v-list-item-subtitle>
+												</v-list-item-content>
+												<v-list-item-action class="my-0">
+													<v-btn x-small icon @click="deleteSupplierContact(i)">
+														<v-icon>mdi-delete</v-icon>
+													</v-btn>
+												</v-list-item-action>
+											</v-list-item>
+										</v-list>
+									</v-col>
+
+									<v-col cols="6">
+										<v-select
+											v-model="editedItem.service_types"
+											:items="serviceTypes"
+											label="Tipo de Serviço"
+											item-text="service_type"
+											item-value="id"
+											color="secondary"
+											item-color="secondary"
+											chips
+											small-chips
+											deletable-chips
+											multiple
+										></v-select>
+									</v-col>
+								</v-row>
+								<v-row justify="center">
+									<v-alert
+										v-if="editItemSuccess"
+										class="mb-3"
+										text
+										type="success"
+										transition="fade-transition"
+									>
+										{{ editItemSuccess }}
+									</v-alert>
+
+									<v-alert
+										v-else-if="editItemErrorMsg"
+										class="mb-3"
+										text
+										type="error"
+										transition="fade-transition"
+									>
+										{{ editItemErrorMsg }}
+									</v-alert>
+								</v-row>
+							</v-container>
+						</v-card-text>
+
+						<v-card-actions>
+							<v-spacer></v-spacer>
+							<v-btn color="red" text @click="close">Fechar</v-btn>
+							<v-btn color="secondary" text @click="updateSupplier">Atualizar</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-dialog v-model="supplierRowDlog.show" max-width="650px">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
 							<span>
@@ -141,11 +275,9 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="closeSupplierInfo">
+								<v-btn color="red" text @click="closeSupplierInfo">
 									Fechar
 								</v-btn>
-								<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
-								<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
 							</v-row>
 						</v-card-text>
 					</v-card>
@@ -161,6 +293,13 @@
 				</div>
 			</v-col>
 		</v-row>
+		<v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" top :color="snackbar.colour">
+			{{ snackbar.message }}
+			<v-icon v-if="snackbar.success"> mdi-checkbox-marked-circle</v-icon>
+			<v-icon v-else>
+				mdi-cancel
+			</v-icon>
+		</v-snackbar>
 	</div>
 </template>
 
@@ -201,19 +340,168 @@ export default {
 					align: 'center',
 				},
 				{
-					text: 'Mais info',
+					text: 'Ações',
 					value: 'actions',
 					sortable: false,
+					align: 'center',
 				},
 			],
 		},
+
+		snackbar: {
+			show: false,
+			message: null,
+			timeout: 3500,
+			success: false,
+			colour: '',
+		},
+
+		editDialog: false,
+		editedIndex: -1,
+		editedItem: {
+			first_name: '',
+			last_name: '',
+			company_name: '',
+			email: '',
+			IBAN: '',
+			NIF: '',
+			service_types: [],
+			contacts: [],
+
+			contactValue: null,
+			otherContact: false,
+		},
+
+		editItemSuccess: null,
+		editItemErrorMsg: null,
+
 		suppliers: [],
+		serviceTypes: [],
 	}),
 	created() {},
 	mounted() {
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
+		axios
+			.get('//localhost:3333/api/service-types/')
+			.then((res) => (this.serviceTypes = res.data.data));
 	},
 	methods: {
+		addContactToArray() {
+			if (this.editedItem.contactValue) {
+				axios
+					.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-contact`, {
+						phone_number: this.editedItem.contactValue,
+					})
+					.then((res) => {
+						this.editedItem.contacts.push(res.data.data);
+						console.log(res);
+					})
+					.catch((err) => console.log(err));
+			}
+			this.editedItem.otherContact = true;
+			this.editedItem.contactValue = null;
+			console.log(this.editedItem.contacts);
+		},
+
+		addServiceType() {
+			axios.put(
+				`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-service-type`,
+				{}
+			);
+		},
+
+		deleteItem(item) {
+			const index = this.suppliers.indexOf(item);
+
+			confirm('Are you sure you want to delete this item?') &&
+				axios
+					.delete(`http://localhost:3333/api/suppliers/${item.id}`)
+					.then((res) => {
+						this.suppliers.splice(index, 1);
+
+						this.snackbar.message = res.data.message;
+						this.snackbar.success = true;
+						this.snackbar.colour = 'green';
+						this.snackbar.show = true;
+						console.log(res);
+					})
+					.catch((err) => {
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
+						console.log(err.response.data.error);
+					});
+		},
+
+		updateSupplier() {
+			// TODO: UPDATE SUPPLIERS SERVICE TYPES
+			axios
+				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}`, {
+					first_name: this.editedItem.first_name,
+					last_name: this.editedItem.last_name,
+					email: this.editedItem.email,
+					company_name: this.editedItem.company_name,
+					NIF: this.editedItem.NIF,
+					IBAN: this.editedItem.IBAN,
+					//service_types: this.editedItem.service_types,
+				})
+				.then((res) => {
+					this.editItemSuccess = res.data.message;
+
+					setTimeout(() => {
+						this.editItemSuccess = null;
+					}, 3000);
+
+					console.log(res);
+				})
+				.catch((err) => {
+					this.editItemErrorMsg = err.response.data.error;
+					setTimeout(() => {
+						this.editItemErrorMsg = null;
+					}, 3000);
+
+					console.log(err);
+				});
+		},
+
+		deleteSupplierContact(index) {
+			axios
+				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-contact`, {
+					contact_id: this.editedItem.contacts[index].id,
+				})
+				.then((res) => {
+					this.editedItem.contacts.splice(index, 1);
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
+		},
+
+		close() {
+			this.editDialog = false;
+			this.$nextTick(() => {
+				this.editedIndex = -1;
+			});
+		},
+
+		editItem(item) {
+			this.editedIndex = this.suppliers.indexOf(item);
+			this.editedItem = Object.assign({}, item);
+			this.editDialog = true;
+			console.log(this.editedIndex);
+			console.log(this.editedItem);
+		},
+
+		openSupplierInfo(item) {
+			Object.assign(this.supplierRowDlog, item);
+			this.supplierRowDlog.show = true;
+			console.log(item);
+		},
+
+		closeSupplierInfo() {
+			this.supplierRowDlog.show = false;
+		},
+
 		/**
 		 * saveFile - downloads all relevant info in both JSON and CSV
 		 *
@@ -262,15 +550,6 @@ export default {
 				document.body.appendChild(a);
 				a.click();
 			}
-		},
-
-		openSupplierInfo(item) {
-			Object.assign(this.supplierRowDlog, item);
-			this.supplierRowDlog.show = true;
-			console.log(item);
-		},
-		closeSupplierInfo() {
-			this.supplierRowDlog.show = false;
 		},
 	},
 };

@@ -99,6 +99,9 @@
 							item-value="id"
 							color="secondary"
 							item-color="secondary"
+							chips
+							small-chips
+							deletable-chips
 							multiple
 						></v-select>
 						<!-- NEW SERVICE TYPE -->
@@ -161,14 +164,11 @@
 											</v-row>
 											<v-row>
 												<v-spacer></v-spacer>
-												<v-btn
-													color="blue darken-1"
-													text
-													@click="closeNewServiceTypeDlg"
+												<v-btn color="red" text @click="closeNewServiceTypeDlg"
 													>Fechar</v-btn
 												>
 												<v-btn
-													color="blue darken-1"
+													color="secondary"
 													text
 													type="submit"
 													:disabled="!newSupplierInfo.serviceTypeDialog.validity"
@@ -293,7 +293,7 @@ export default {
 				.catch((err) => {
 					this.newSupplierInfo.serviceTypeDialog.errorMsg = err.response.data.error;
 					setTimeout(() => {
-						this.errorMsg = null;
+						this.newSupplierInfo.serviceTypeDialog.errorMsg = null;
 					}, 3000);
 				});
 		},

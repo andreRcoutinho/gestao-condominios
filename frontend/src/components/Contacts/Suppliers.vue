@@ -129,7 +129,7 @@
 											color="secondary"
 										></v-text-field>
 									</v-col>
-									<v-col cols="5">
+									<v-col cols="6">
 										<v-text-field
 											v-model="editedItem.contactValue"
 											label="Contacto"
@@ -157,6 +157,43 @@
 											</v-list-item>
 										</v-list>
 									</v-col>
+
+									<v-col cols="6">
+										<v-select
+											v-model="editedItem.service_types"
+											:items="serviceTypes"
+											label="Tipo de Serviço"
+											item-text="service_type"
+											item-value="id"
+											color="secondary"
+											item-color="secondary"
+											chips
+											small-chips
+											deletable-chips
+											multiple
+										></v-select>
+									</v-col>
+								</v-row>
+								<v-row justify="center">
+									<v-alert
+										v-if="editItemSuccess"
+										class="mb-3"
+										text
+										type="success"
+										transition="fade-transition"
+									>
+										{{ editItemSuccess }}
+									</v-alert>
+
+									<v-alert
+										v-else-if="editItemErrorMsg"
+										class="mb-3"
+										text
+										type="error"
+										transition="fade-transition"
+									>
+										{{ editItemErrorMsg }}
+									</v-alert>
 								</v-row>
 							</v-container>
 						</v-card-text>
@@ -335,11 +372,18 @@ export default {
 			otherContact: false,
 		},
 
+		editItemSuccess: null,
+		editItemErrorMsg: null,
+
 		suppliers: [],
+		serviceTypes: [],
 	}),
 	created() {},
 	mounted() {
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
+		axios
+			.get('//localhost:3333/api/service-types/')
+			.then((res) => (this.serviceTypes = res.data.data));
 	},
 	methods: {
 		addContactToArray() {
@@ -357,6 +401,13 @@ export default {
 			this.editedItem.otherContact = true;
 			this.editedItem.contactValue = null;
 			console.log(this.editedItem.contacts);
+		},
+
+		addServiceType() {
+			axios.put(
+				`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-service-type`,
+				{}
+			);
 		},
 
 		deleteItem(item) {
@@ -383,7 +434,36 @@ export default {
 					});
 		},
 
-		updateSupplier() {},
+		updateSupplier() {
+			// TODO: UPDATE SUPPLIERS SERVICE TYPES
+			axios
+				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}`, {
+					first_name: this.editedItem.first_name,
+					last_name: this.editedItem.last_name,
+					email: this.editedItem.email,
+					company_name: this.editedItem.company_name,
+					NIF: this.editedItem.NIF,
+					IBAN: this.editedItem.IBAN,
+					//service_types: this.editedItem.service_types,
+				})
+				.then((res) => {
+					this.editItemSuccess = res.data.message;
+
+					setTimeout(() => {
+						this.editItemSuccess = null;
+					}, 3000);
+
+					console.log(res);
+				})
+				.catch((err) => {
+					this.editItemErrorMsg = err.response.data.error;
+					setTimeout(() => {
+						this.editItemErrorMsg = null;
+					}, 3000);
+
+					console.log(err);
+				});
+		},
 
 		deleteSupplierContact(index) {
 			axios

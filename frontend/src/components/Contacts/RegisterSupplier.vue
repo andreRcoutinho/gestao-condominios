@@ -293,7 +293,7 @@ export default {
 				.catch((err) => {
 					this.newSupplierInfo.serviceTypeDialog.errorMsg = err.response.data.error;
 					setTimeout(() => {
-						this.errorMsg = null;
+						this.newSupplierInfo.serviceTypeDialog.errorMsg = null;
 					}, 3000);
 				});
 		},

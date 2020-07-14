@@ -69,10 +69,13 @@
 						<v-icon class="mr-2" @click="openSupplierInfo(props.item)">
 							mdi-plus
 						</v-icon>
+						<v-icon small @click="deleteItem(props.item)">
+							mdi-delete
+						</v-icon>
 					</template>
 				</v-data-table>
 
-				<v-dialog v-model="supplierRowDlog.show" max-width="600px">
+				<v-dialog v-model="supplierRowDlog.show" max-width="650px">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
 							<span>
@@ -141,11 +144,9 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="closeSupplierInfo">
+								<v-btn color="red" text @click="closeSupplierInfo">
 									Fechar
 								</v-btn>
-								<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
-								<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
 							</v-row>
 						</v-card-text>
 					</v-card>
@@ -161,6 +162,13 @@
 				</div>
 			</v-col>
 		</v-row>
+		<v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" top :color="snackbar.colour">
+			{{ snackbar.message }}
+			<v-icon v-if="snackbar.success"> mdi-checkbox-marked-circle</v-icon>
+			<v-icon v-else>
+				mdi-cancel
+			</v-icon>
+		</v-snackbar>
 	</div>
 </template>
 
@@ -201,12 +209,22 @@ export default {
 					align: 'center',
 				},
 				{
-					text: 'Mais info',
+					text: 'Ações',
 					value: 'actions',
 					sortable: false,
+					align: 'center',
 				},
 			],
 		},
+
+		snackbar: {
+			show: false,
+			message: null,
+			timeout: 3500,
+			success: false,
+			colour: '',
+		},
+
 		suppliers: [],
 	}),
 	created() {},
@@ -214,6 +232,30 @@ export default {
 		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
 	},
 	methods: {
+		deleteItem(item) {
+			const index = this.suppliers.indexOf(item);
+
+			confirm('Are you sure you want to delete this item?') &&
+				axios
+					.delete(`http://localhost:3333/api/suppliers/${item.id}`)
+					.then((res) => {
+						this.suppliers.splice(index, 1);
+
+						this.snackbar.message = res.data.message;
+						this.snackbar.success = true;
+						this.snackbar.colour = 'green';
+						this.snackbar.show = true;
+						console.log(res);
+					})
+					.catch((err) => {
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
+						console.log(err.response.data.error);
+					});
+		},
+
 		/**
 		 * saveFile - downloads all relevant info in both JSON and CSV
 		 *

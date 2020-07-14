@@ -44,6 +44,12 @@ const routes = [
 		component: () => import(/* webpackChunkName: "Settings" */ '../views/Settings.vue'),
 	},
 	{
+		path: '/utilizadores',
+		name: 'utilizadores',
+		component: () =>
+			import(/* webpackChunkName: "UserManagement" */ '../views/UserManagement.vue'),
+	},
+	{
 		path: '/404',
 		component: NotFound,
 	},

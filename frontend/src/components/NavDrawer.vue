@@ -37,8 +37,7 @@ export default {
 				{ title: 'Gestão do Condomínio', icon: 'mdi-office-building', route: '' },
 				{ title: 'Movimentos', icon: 'mdi-currency-usd', route: '/movimentos' },
 				{ title: 'Contactos', icon: 'mdi-card-account-mail', route: '/contactos' },
-				{ title: 'Gestão de Utilizadores', icon: 'mdi-account-group', route: '' },
-				{ title: 'Definições', icon: 'mdi-cog', route: '' },
+				{ title: 'Gestão de Utilizadores', icon: 'mdi-account-group', route: '/utilizadores' },
 				{ title: 'Definições de Utilizador', icon: 'mdi-cog', route: '/definicoes' },
 			],
 		};

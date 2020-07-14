@@ -67,7 +67,10 @@
 					item-key="name"
 				>
 					<template v-slot:item.actions="props">
-						<v-icon class="mr-2" @click="openOwnerInfo(props.item)" color="red">
+						<v-icon class="mr-2" @click="openOwnerInfo(props.item)">
+							mdi-plus
+						</v-icon>
+						<v-icon small @click="deleteItem(props.item)">
 							mdi-delete
 						</v-icon>
 					</template>
@@ -132,8 +135,6 @@
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
 								<v-btn color="blue darken-1" text @click="closeOwnerInfo">Fechar</v-btn>
-								<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
-								<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
 							</v-row>
 						</v-card-text>
 					</v-card>
@@ -187,7 +188,12 @@ export default {
 					align: 'center',
 				},
 				{
-					text: 'Mais info',
+					text: 'Permissões',
+					value: 'role_name',
+					align: 'center',
+				},
+				{
+					text: 'Ações',
 					value: 'actions',
 					sortable: false,
 					align: 'center',
@@ -205,6 +211,13 @@ export default {
 		openOwnerInfo(item) {
 			Object.assign(this.ownerRowDlog, item);
 			this.ownerRowDlog.show = true;
+		},
+		deleteItem(item) {
+			const index = this.owners.indexOf(item);
+			// TODO: DELETE REQUEST
+			confirm('Are you sure you want to delete this item?') &&
+				this.owners.splice(index, 1) &&
+				axios.delete();
 		},
 		closeOwnerInfo() {
 			this.ownerRowDlog.show = false;

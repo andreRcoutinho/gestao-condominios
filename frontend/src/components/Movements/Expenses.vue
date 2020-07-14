@@ -122,7 +122,7 @@
 					:items-per-page="expensesTableOptions.itemsPerPage"
 					class="elevation-0"
 					@page-count="expensesTableOptions.pageCount = $event"
-					:sort-by="['payment_date']"
+					:sort-by="['expense_date']"
 					:sort-desc="[true]"
 					:footer-props="{
 						firstIcon: 'mdi-arrow-collapse-left',
@@ -130,8 +130,11 @@
 						showFirstLastPage: true,
 					}"
 				>
-					<template v-slot:item.payment_date="{ item }">
-						<span>{{ item.payment_date | formatDate }}</span>
+					<template v-slot:item.expense_date="{ item }">
+						<span>{{ item.expense_date | formatDate }}</span>
+					</template>
+					<template v-slot:item.payment_record_date="{ item }">
+						<span>{{ item.payment_record_date | formatDate }}</span>
 					</template>
 					<template v-slot:item.value="{ item }">
 						<span>{{ item.value }} €</span>
@@ -186,7 +189,8 @@ export default {
 				},
 				{ text: 'Valor', value: 'value', align: 'center' },
 				{ text: 'Tipo de Despesa', value: 'description', sortable: false, align: 'center' },
-				{ text: 'Data de Pagamento', value: 'payment_date', align: 'center' },
+				{ text: 'Data da Despesa', value: 'expense_date', align: 'center' },
+				{ text: 'Data de Registo de Pagamento', value: 'payment_record_date', align: 'center' },
 			],
 		},
 		expenses: [],
@@ -260,7 +264,8 @@ export default {
 					{ label: 'ID', value: 'id' },
 					{ label: 'Descrição', value: 'description' },
 					{ label: 'Valor', value: 'value' },
-					{ label: 'Data de Registo de Pagamento', value: 'payment_date' },
+					{ label: 'Data da Despesa', value: 'expense_date' },
+					{ label: 'Data de Registo de Pagamento', value: 'payment_record_date' },
 					{ label: 'Fornecedor - ID', value: 'supplier.id' },
 					{ label: 'Fornecedor - Primeiro Nome', value: 'supplier.first_name' },
 					{ label: 'Fornecedor - Último Nome', value: 'supplier.last_name' },

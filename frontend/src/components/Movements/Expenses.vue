@@ -112,7 +112,7 @@
 		</v-row>
 		<!-- TABLE -->
 		<v-row justify="space-around">
-			<v-col cols="8">
+			<v-col cols="10">
 				<v-data-table
 					:headers="expensesTableOptions.headers"
 					:items="expenses"
@@ -124,11 +124,6 @@
 					@page-count="expensesTableOptions.pageCount = $event"
 					:sort-by="['expense_date']"
 					:sort-desc="[true]"
-					:footer-props="{
-						firstIcon: 'mdi-arrow-collapse-left',
-						lastIcon: 'mdi-arrow-collapse-right',
-						showFirstLastPage: true,
-					}"
 				>
 					<template v-slot:item.expense_date="{ item }">
 						<span>{{ item.expense_date | formatDate }}</span>

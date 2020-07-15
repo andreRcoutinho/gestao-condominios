@@ -9,7 +9,7 @@
 						<v-row class="mb-3">
 							<span class="text-h5 grey--text">Atualizar informação</span>
 						</v-row>
-						<v-form @submit.prevent="updateContact">
+						<v-form @submit.prevent="updateUser">
 							<v-row justify="center" class="mb-3">
 								<v-col cols="6">
 									<v-text-field
@@ -306,7 +306,7 @@ export default {
 			this.updateUser.updateContactsDialog.show = false;
 			this.$refs.form.reset();
 		},
-		updateContact: function() {
+		updateUser: function() {
 			axios
 				.put(`http://localhost:3333/api/users/${this.userInfo.id}`, {
 					first_name: this.updateUser.firstName,

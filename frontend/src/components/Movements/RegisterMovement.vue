@@ -160,6 +160,32 @@
 										></v-text-field>
 									</v-col>
 
+									<v-col cols="12">
+										<v-menu
+											v-model="d2Info.menu"
+											:close-on-content-click="false"
+											transition="slide-y-transition"
+											min-width="290px"
+										>
+											<template v-slot:activator="{ on, attrs }">
+												<v-text-field
+													v-model="d2Info.date"
+													label="Data da Despesa"
+													readonly
+													v-bind="attrs"
+													v-on="on"
+													color="secondary"
+												></v-text-field>
+											</template>
+											<v-date-picker
+												v-model="d2Info.date"
+												@input="d2Info.menu = false"
+												color="secondary"
+												show-current
+											></v-date-picker>
+										</v-menu>
+									</v-col>
+
 									<v-col>
 										<v-alert
 											v-if="success"
@@ -202,7 +228,7 @@
 
 <script>
 import axios from 'axios';
-import moment from 'moment';
+// import moment from 'moment';
 
 export default {
 	name: 'RegisterMovement',
@@ -229,7 +255,10 @@ export default {
 				(v) => !!v || 'Introduza uma quantia.',
 				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
 			],
+			menu: false,
+			date: new Date().toISOString().substr(0, 10),
 		},
+
 		formValidity: false,
 		success: null,
 		errorMsg: null,
@@ -284,13 +313,16 @@ export default {
 		},
 
 		payMapText: (item) => item.name + ': ' + item.description,
+
 		registerNewExpense: function() {
+			console.log(this.d2Info);
 			axios
 				.post('//localhost:3333/api/expenses', {
 					supplier_id: this.d2Info.supplier,
 					value: this.d2Info.value,
 					description: this.d2Info.desc,
-					payment_date: moment().format('YYYY-MM-DD'),
+					expense_date: this.d2Info.date,
+					//payment_record_date: moment().format('YYYY-MM-DD'),
 				})
 				.then((res) => {
 					this.success = res.data.message;
@@ -361,6 +393,7 @@ export default {
 				this.dialog1 = false;
 			} else {
 				this.$refs.formExpense.reset();
+				this.d2Info.date = new Date().toISOString().substr(0, 10);
 				this.success = null;
 				this.errorMsg = null;
 				this.dialog2 = false;

@@ -142,7 +142,110 @@
 					<template #item.full_name="{ item }">
 						{{ item.supplier.first_name }} {{ item.supplier.last_name }}
 					</template>
+
+					<template v-slot:item.actions="props">
+						<v-icon small class="mr-2" @click="editItem(props.item)">
+							mdi-pencil
+						</v-icon>
+						<v-icon small @click="deleteItem(props.item)">
+							mdi-delete
+						</v-icon>
+					</template>
 				</v-data-table>
+
+				<v-dialog v-model="editDialog" max-width="650px" persistent>
+					<v-card>
+						<v-card-title>
+							<span class="headline">Atualizar Despesa</span>
+						</v-card-title>
+
+						<v-card-text>
+							<v-container>
+								<v-row>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model="editedItem.description"
+											label="Tipo de Despesa"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-text-field
+											v-model.number="editedItem.value"
+											label="Valor"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" md="6">
+										<v-menu
+											v-model="menu"
+											:close-on-content-click="false"
+											transition="slide-y-transition"
+											min-width="290px"
+										>
+											<template v-slot:activator="{ on, attrs }">
+												<v-text-field
+													v-model="editedItem.expense_date"
+													label="Data da Despesa"
+													readonly
+													v-bind="attrs"
+													v-on="on"
+													color="secondary"
+												></v-text-field>
+											</template>
+											<v-date-picker
+												v-model="editedItem.expense_date"
+												@input="menu = false"
+												color="secondary"
+												show-current
+											></v-date-picker>
+										</v-menu>
+									</v-col>
+
+									<v-col cols="6">
+										<v-select
+											v-model="editedItem.supplier"
+											:items="suppliers"
+											label="Fornecedores"
+											item-text="name"
+											item-value="id"
+											color="secondary"
+											item-color="secondary"
+										></v-select>
+									</v-col>
+								</v-row>
+								<v-row justify="center">
+									<v-alert
+										v-if="editItemSuccess"
+										class="mb-3"
+										text
+										type="success"
+										transition="fade-transition"
+									>
+										{{ editItemSuccess }}
+									</v-alert>
+
+									<v-alert
+										v-else-if="editItemErrorMsg"
+										class="mb-3"
+										text
+										type="error"
+										transition="fade-transition"
+									>
+										{{ editItemErrorMsg }}
+									</v-alert>
+								</v-row>
+							</v-container>
+						</v-card-text>
+
+						<v-card-actions>
+							<v-spacer></v-spacer>
+							<v-btn color="red" text @click="close">Fechar</v-btn>
+							<v-btn color="secondary" text @click="updateExpense">Atualizar</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
 				<div class="text-center pt-3">
 					<v-pagination
 						v-model="expensesTableOptions.page"
@@ -153,6 +256,13 @@
 				</div>
 			</v-col>
 		</v-row>
+		<v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" top :color="snackbar.colour">
+			{{ snackbar.message }}
+			<v-icon v-if="snackbar.success"> mdi-checkbox-marked-circle</v-icon>
+			<v-icon v-else>
+				mdi-cancel
+			</v-icon>
+		</v-snackbar>
 	</div>
 </template>
 
@@ -191,15 +301,54 @@ export default {
 				{ text: 'Tipo de Despesa', value: 'description', sortable: false, align: 'center' },
 				{ text: 'Data da Despesa', value: 'expense_date', align: 'center' },
 				{ text: 'Data de Registo de Pagamento', value: 'payment_record_date', align: 'center' },
+				{
+					text: 'Ações',
+					value: 'actions',
+					sortable: false,
+					align: 'center',
+				},
 			],
 		},
+
+		snackbar: {
+			show: false,
+			message: null,
+			timeout: 3500,
+			success: false,
+			colour: '',
+		},
+
+		editDialog: false,
+		menu: false,
+		editedIndex: -1,
+		editedItem: {
+			value: 0,
+			valueRules: [
+				(v) => !!v || 'Introduza uma quantia.',
+				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
+			],
+			description: '',
+			expense_date: '',
+			supplier: null,
+		},
+
+		editItemSuccess: null,
+		editItemErrorMsg: null,
+
 		expenses: [],
+		suppliers: [],
 	}),
 
 	mounted() {
 		axios
 			.get(`//localhost:3333/api/expenses?year=${new Date().toISOString().substr(0, 4)}`)
-			.then((res) => (this.expenses = res.data.data));
+			.then((res) => {
+				this.expenses = res.data.data;
+			});
+
+		axios
+			.get(`http://localhost:3333/api/suppliers/`)
+			.then((res) => (this.suppliers = res.data.data));
 	},
 
 	watch: {
@@ -214,6 +363,74 @@ export default {
 	},
 
 	methods: {
+		updateExpense() {
+			axios
+				.put(`http://localhost:3333/api/expenses/${this.editedItem.id}`, {
+					value: this.editedItem.value,
+					description: this.editedItem.description,
+					expense_date: this.editedItem.expense_date.substring(0, 10),
+					supplier_id: this.editedItem.supplier,
+				})
+				.then((res) => {
+					this.editItemSuccess = res.data.message;
+
+					setTimeout(() => {
+						this.editItemSuccess = null;
+					}, 3000);
+
+					console.log(res);
+				})
+				.catch((err) => {
+					this.editItemErrorMsg = err.response.data.error;
+					setTimeout(() => {
+						this.editItemErrorMsg = null;
+					}, 3000);
+
+					console.log(err);
+				});
+		},
+
+		close() {
+			this.editDialog = false;
+			this.$nextTick(() => {
+				this.editedIndex = -1;
+			});
+		},
+
+		editItem(item) {
+			this.editedIndex = this.expenses.indexOf(item);
+			let formatDate = item.expense_date.substr(0, 10);
+			item.expense_date = formatDate;
+			this.editedItem = Object.assign({}, item);
+			this.editDialog = true;
+			// console.log(this.editedIndex);
+			// console.log(this.editedItem);
+		},
+
+		deleteItem(item) {
+			const index = this.expenses.indexOf(item);
+
+			confirm('Are you sure you want to delete this item?') &&
+				axios
+					.delete(`http://localhost:3333/api/expenses/${item.id}`)
+					.then((res) => {
+						this.expenses.splice(index, 1);
+
+						this.snackbar.message = res.data.message;
+						this.snackbar.success = true;
+						this.snackbar.colour = 'green';
+						this.snackbar.show = true;
+						console.log(res);
+					})
+					.catch((err) => {
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
+						console.log(err.response.data.error);
+					});
+		},
+
 		showInfoByYear: function(toDownload) {
 			if (toDownload) {
 				let year = this.anualExpsDownloadSelectedDate.substr(0, 4);

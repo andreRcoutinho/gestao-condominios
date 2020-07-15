@@ -485,7 +485,6 @@ export default {
 		},
 
 		updateSupplier() {
-			// TODO: UPDATE SUPPLIERS SERVICE TYPES
 			axios
 				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}`, {
 					first_name: this.editedItem.first_name,
@@ -494,7 +493,6 @@ export default {
 					company_name: this.editedItem.company_name,
 					NIF: this.editedItem.NIF,
 					IBAN: this.editedItem.IBAN,
-					//service_types: this.editedItem.service_types,
 				})
 				.then((res) => {
 					this.editItemSuccess = res.data.message;

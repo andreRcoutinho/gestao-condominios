@@ -101,7 +101,6 @@ import LayoutDefault from '@/layouts/LayoutDefault';
 export default {
 	name: 'Home',
 	data: () => ({
-		roles: [],
 		tab: null,
 		months: [
 			'janeiro',
@@ -121,9 +120,6 @@ export default {
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
-		axios.get('//localhost:3333/api/roles').then(({ data }) => {
-			this.roles = data.data;
-		});
 	},
 	methods: {
 		getData(tab) {

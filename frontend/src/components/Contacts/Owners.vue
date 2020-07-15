@@ -106,7 +106,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="unit"
+													v-text="unit.unit"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -122,7 +122,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="ctct"
+													v-text="ctct.phone_number"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>

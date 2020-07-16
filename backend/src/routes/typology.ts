@@ -12,7 +12,7 @@ routes.get('/:id', typology.show);
 
 //routes.use(adminMiddleware);
 
-routes.post('/create', typology.create);
+routes.post('/', typology.create);
 routes.put('/:id', typology.update);
 routes.delete('/:id', typology.remove);
 

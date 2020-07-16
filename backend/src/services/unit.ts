@@ -28,13 +28,18 @@ export async function show(id: number) {
 export async function create(body: any) {
     try {
         let hasUnit: Unit = await Unit.findOne({ where: { unit: body.unit } })
+
         if (hasUnit)
             throw new Error(api_errors.UNIT_ALREADY_EXISTS);
+
         let typology: Typology = await Typology.findOne({ where: { id: body.typology_id } })
+
         if (!typology)
             throw new Error(api_errors.TYPOLOGY_NOT_EXISTS)
+
         let unit: Unit = new Unit(body.unit, typology);
-        await unit.save()
+        await unit.save();
+
         return unit;
     } catch (error) {
         return error;

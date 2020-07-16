@@ -10,8 +10,7 @@ const routes = Router();
 
 routes.get('/', unit.index);
 routes.get('/:id', unit.show);
-
-//routes.post('/', unit.show);
+routes.post('/', unit.create);
 routes.put('/:id', unit.update);
 
 export default routes;

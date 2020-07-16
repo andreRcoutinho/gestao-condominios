@@ -39,7 +39,7 @@ export async function show(id: Number) {
 		var expenses: Expense[] = await Expense.find({ where: { supplier: supplier } });
 
 		let contacts_res: { id; phone_number }[] = [];
-		let expenses_res: { id; description; value; payment_date; payment_record_date }[] = [];
+		let expenses_res: { id; description; value; expense_date; payment_record_date }[] = [];
 		contacts.forEach((contact) => {
 			let c = {
 				id: contact.getId(),
@@ -53,7 +53,7 @@ export async function show(id: Number) {
 				id: expense.getId(),
 				description: expense.getDescription(),
 				value: expense.getValue(),
-				payment_date: expense.getExpense_date(),
+				expense_date: expense.getExpense_date(),
 				payment_record_date: expense.getPayment_record_date(),
 			};
 			expenses_res.push(e);

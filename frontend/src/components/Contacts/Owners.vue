@@ -227,9 +227,9 @@ export default {
 					{ label: 'Email', value: 'email' },
 					{ label: 'IBAN', value: 'IBAN' },
 					{ label: 'NIF', value: 'NIF' },
-					{ label: 'Permissões', value: 'role_name' },
-					{ label: 'Fração', value: 'units' },
-					{ label: 'Contacto', value: 'contacts' },
+					{ label: 'Permissões', value: 'role.role_name' },
+					{ label: 'Fração', value: 'units.unit' },
+					{ label: 'Contacto', value: 'contacts.phone_number' },
 				];
 				const { unwind } = transforms;
 

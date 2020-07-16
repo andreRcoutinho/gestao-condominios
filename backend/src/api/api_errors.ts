@@ -22,6 +22,7 @@ export const NO_EXPENSES_REGISTERED = 'Ainda não existem despesas registadas.';
 export const EXPENSE_NOT_EXISTS = 'Despesa inexistente';
 
 export const SUPPLIER_NOT_EXISTS = 'Fornecedor inexistente';
+export const SUPPLIER_WITH_REGISTERED_EXPENSES = 'Fornecedor não pode ser eliminado porque tem despesas registadas';
 
 export const CONTACT_NOT_EXISTS = 'Contacto inexistente';
 

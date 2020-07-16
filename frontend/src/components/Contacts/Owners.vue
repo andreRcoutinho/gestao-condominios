@@ -72,7 +72,7 @@
 						</v-icon>
 					</template>
 				</v-data-table>
-				<v-dialog v-model="ownerRowDlog.show" max-width="600px">
+				<v-dialog v-model="ownerRowDlog.show" max-width="650px">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
 							<span>{{ ownerRowDlog.name }}</span>
@@ -106,7 +106,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="ownerRowDlog.units[i]"
+													v-text="unit.unit"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -122,7 +122,7 @@
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="ownerRowDlog.contacts[i]"
+													v-text="ctct.phone_number"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -131,7 +131,7 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="closeOwnerInfo">Fechar</v-btn>
+								<v-btn color="red" text @click="closeOwnerInfo">Fechar</v-btn>
 								<!-- <v-btn color="blue darken-1" text>Editar</v-btn> -->
 								<!-- <v-btn color="blue darken-1" text>Eliminar</v-btn> -->
 							</v-row>

@@ -19,5 +19,6 @@ routes.put('/:id/delete-contact', supplier.deleteContact);
 routes.put('/:id/add-service-type', supplier.addServiceType);
 routes.put('/:id/delete-service-type', supplier.deleteServiceType);
 routes.put('/:id', supplier.update);
+routes.delete('/:id', supplier.remove);
 
 export default routes;

@@ -12,8 +12,8 @@ export class Expense extends BaseEntity {
     @Column({ name: 'description' })
     private description: String;
 
-    @Column({ name: 'payment_date' })
-    private payment_date: Date;
+    @Column({ name: 'expense_date' })
+    private expense_date: Date;
 
     @Column({ name: 'payment_record_date' })
     private payment_record_date: Date;
@@ -22,11 +22,11 @@ export class Expense extends BaseEntity {
     @JoinColumn()
     private supplier: Supplier;
 
-    constructor(value: Number, description: String, payment_date: Date, supplier: Supplier) {
+    constructor(value: Number, description: String, expense_date: Date, supplier: Supplier) {
         super();
         this.value = value;
         this.description = description;
-        this.payment_date = payment_date;
+        this.expense_date = expense_date;
         this.payment_record_date = new Date();
         this.supplier = supplier;
     }
@@ -55,12 +55,12 @@ export class Expense extends BaseEntity {
         this.description = description;
     }
 
-    public getPayment_date(): Date {
-        return this.payment_date;
+    public getExpense_date(): Date {
+        return this.expense_date;
     }
 
-    public setPayment_date(payment_date: Date): void {
-        this.payment_date = payment_date;
+    public setExpense_date(expense_date: Date): void {
+        this.expense_date = expense_date;
     }
 
     public getPayment_record_date(): Date {

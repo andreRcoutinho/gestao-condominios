@@ -1,15 +1,4 @@
-import {
-    Entity,
-    BaseEntity,
-    PrimaryGeneratedColumn,
-    Column,
-    OneToOne,
-    OneToMany,
-    ManyToOne,
-    ManyToMany,
-    JoinColumn,
-    JoinTable,
-} from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, } from "typeorm";
 import { Role } from "./role";
 import { Contact } from "./contact";
 import { UserPassword } from "./user_password";

@@ -4,7 +4,7 @@
 		<v-row justify="center" align="end" class="mt-8">
 			<v-col cols="5">
 				<v-text-field
-					v-model="suppliersTableOptions.search"
+					v-model="ownersTableOptions.search"
 					append-icon="mdi-magnify"
 					label="Search"
 					single-line
@@ -14,7 +14,7 @@
 			</v-col>
 			<v-col cols="1" class="pb-1">
 				<v-row justify="end">
-					<v-menu v-model="downloadSuppliersMenu" :close-on-content-click="false" offset-y>
+					<v-menu v-model="downloadOwnersMenu" :close-on-content-click="false" offset-y>
 						<template v-slot:activator="{ on }">
 							<v-btn icon v-on="on">
 								<v-icon color="secondary">
@@ -29,18 +29,18 @@
 									<v-btn
 										color="secondary"
 										text
-										@click="saveFile(suppliers, 'fornecedores', true)"
+										@click="saveFile(owners, 'condominos', true)"
 										>JSON</v-btn
 									>
 									<v-btn
 										color="secondary"
 										text
-										@click="saveFile(suppliers, 'fornecedores', false)"
+										@click="saveFile(owners, 'condominos', false)"
 										>CSV</v-btn
 									>
 								</v-row>
 								<v-row justify="center" align="end">
-									<v-btn text @click="downloadSuppliersMenu = false" color="red">
+									<v-btn text @click="downloadOwnersMenu = false" color="red">
 										Fechar
 									</v-btn>
 								</v-row>
@@ -50,29 +50,30 @@
 				</v-row>
 			</v-col>
 		</v-row>
+		<!-- OWNERS TABLE -->
 		<v-row justify="space-around">
 			<v-col cols="8">
 				<v-data-table
-					:headers="suppliersTableOptions.headers"
-					:items="suppliers"
-					:search="suppliersTableOptions.search"
+					:headers="ownersTableOptions.headers"
+					:items="owners"
+					:search="ownersTableOptions.search"
 					hide-default-footer
-					:page.sync="suppliersTableOptions.page"
-					:items-per-page="suppliersTableOptions.itemsPerPage"
+					:page.sync="ownersTableOptions.page"
+					:items-per-page="ownersTableOptions.itemsPerPage"
 					class="elevation-0"
-					@page-count="suppliersTableOptions.pageCount = $event"
-					:sort-by="['company_name']"
+					@page-count="ownersTableOptions.pageCount = $event"
+					:sort-by="['name']"
 					:sort-desc="[false]"
 					item-key="name"
 				>
 					<template v-slot:item.actions="props">
-						<v-icon class="mr-2" @click="openSupplierInfo(props.item)">
+						<v-icon class="mr-2" @click="openOwnerInfo(props.item)">
 							mdi-plus
 						</v-icon>
 						<v-icon small class="mr-2" @click="editItem(props.item)">
 							mdi-pencil
 						</v-icon>
-						<v-icon small @click="deleteItem(props.item)">
+						<v-icon small class="mr-2" @click="deleteItem(props.item)">
 							mdi-delete
 						</v-icon>
 					</template>
@@ -81,7 +82,7 @@
 				<v-dialog v-model="editDialog" max-width="650px" persistent>
 					<v-card>
 						<v-card-title>
-							<span class="headline">{{ editedItem.name }}</span>
+							<span class="headline">Atualizar Utilizador</span>
 						</v-card-title>
 
 						<v-card-text>
@@ -96,7 +97,7 @@
 									</v-col>
 									<v-col cols="12" md="6">
 										<v-text-field
-											v-model="editedItem.last_name"
+											v-model.number="editedItem.last_name"
 											label="Último Nome"
 											color="secondary"
 										></v-text-field>
@@ -108,26 +109,18 @@
 											color="secondary"
 										></v-text-field>
 									</v-col>
-									<v-col cols="12" md="6">
-										<v-text-field
-											v-model="editedItem.company_name"
-											label="Nome da Empresa"
+
+									<v-col cols="6">
+										<v-select
+											v-model="editedItem.role"
+											:items="roles"
+											label="Permissões"
+											item-text="role_name"
+											item-value="id"
 											color="secondary"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" md="6">
-										<v-text-field
-											v-model="editedItem.NIF"
-											label="NIF"
-											color="secondary"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" md="6">
-										<v-text-field
-											v-model="editedItem.IBAN"
-											label="IBAN"
-											color="secondary"
-										></v-text-field>
+											item-color="secondary"
+											@input="updateRole"
+										></v-select>
 									</v-col>
 									<v-col cols="6">
 										<v-text-field
@@ -135,8 +128,8 @@
 											label="Contacto"
 											color="secondary"
 											:append-icon="`mdi-plus`"
-											@click:append="addContactToArray"
-											@keydown.enter="addContactToArray"
+											@click:append="addNewContact"
+											@keydown.enter="addNewContact"
 										>
 										</v-text-field>
 										<v-list dense>
@@ -150,37 +143,36 @@
 													</v-list-item-subtitle>
 												</v-list-item-content>
 												<v-list-item-action class="my-0">
-													<v-btn x-small icon @click="deleteSupplierContact(i)">
+													<v-btn x-small icon @click="deleteUserContact(i)">
 														<v-icon>mdi-delete</v-icon>
 													</v-btn>
 												</v-list-item-action>
 											</v-list-item>
 										</v-list>
 									</v-col>
-
 									<v-col cols="6">
 										<v-select
-											v-model="editedItem.selectedServiceType"
-											:items="serviceTypes"
-											label="Tipo de Serviço"
-											item-text="service_type"
+											v-model="editedItem.selectedUnit"
+											:items="units"
+											label="Parcela"
+											item-text="unit"
 											item-value="id"
 											color="secondary"
 											item-color="secondary"
-											@input="addServiceTypeToSupplier"
+											@input="addUnitToUser"
 										></v-select>
 										<v-list dense>
-											<v-list-item v-for="(s, i) in editedItem.service_types" :key="i">
+											<v-list-item v-for="(u, i) in editedItem.units" :key="i">
 												<v-list-item-icon>
-													<v-icon small>mdi-hammer-wrench</v-icon>
+													<v-icon small>mdi-home</v-icon>
 												</v-list-item-icon>
 												<v-list-item-content>
 													<v-list-item-subtitle>
-														{{ s.service_type }}
+														{{ u.unit }}
 													</v-list-item-subtitle>
 												</v-list-item-content>
 												<v-list-item-action class="my-0">
-													<v-btn x-small icon @click="deleteSupplierST(i)">
+													<v-btn x-small icon @click="deleteUserUnit(i)">
 														<v-icon>mdi-delete</v-icon>
 													</v-btn>
 												</v-list-item-action>
@@ -215,17 +207,15 @@
 						<v-card-actions>
 							<v-spacer></v-spacer>
 							<v-btn color="red" text @click="close">Fechar</v-btn>
-							<v-btn color="secondary" text @click="updateSupplier">Atualizar</v-btn>
+							<v-btn color="secondary" text @click="updateUser">Atualizar</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
 
-				<v-dialog v-model="supplierRowDlog.show" max-width="650px">
+				<v-dialog v-model="ownerRowDlog.show" max-width="650px">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
-							<span>
-								{{ `${supplierRowDlog.company_name} - ${supplierRowDlog.name}` }}
-							</span>
+							<span>{{ ownerRowDlog.name }}</span>
 						</v-card-title>
 
 						<v-card-text>
@@ -234,12 +224,7 @@
 									<v-list-item two-line>
 										<v-list-item-content>
 											<v-list-item-subtitle>IBAN</v-list-item-subtitle>
-											<v-list-item-title v-if="supplierRowDlog.IBAN">
-												{{ supplierRowDlog.IBAN }}
-											</v-list-item-title>
-											<v-list-item-title v-else>
-												Não disponível
-											</v-list-item-title>
+											<v-list-item-title>{{ ownerRowDlog.IBAN }}</v-list-item-title>
 										</v-list-item-content>
 									</v-list-item>
 								</v-col>
@@ -247,24 +232,21 @@
 									<v-list-item two-line>
 										<v-list-item-content>
 											<v-list-item-subtitle>NIF</v-list-item-subtitle>
-											<v-list-item-title>{{ supplierRowDlog.NIF }}</v-list-item-title>
+											<v-list-item-title>{{ ownerRowDlog.NIF }}</v-list-item-title>
 										</v-list-item-content>
 									</v-list-item>
 								</v-col>
 								<v-col cols="6">
 									<v-list disabled>
-										<v-subheader>Tipo de Serviço</v-subheader>
-										<v-list-item
-											v-for="(st, i) in supplierRowDlog.service_types"
-											:key="i"
-										>
+										<v-subheader class="mb-0">Fração</v-subheader>
+										<v-list-item v-for="(unit, i) in ownerRowDlog.units" :key="i">
 											<v-list-item-icon>
-												<v-icon>mdi-hammer-wrench</v-icon>
+												<v-icon>mdi-home</v-icon>
 											</v-list-item-icon>
 											<v-list-item-content>
 												<v-list-item-title
 													class="listItem"
-													v-text="st.service_type"
+													v-text="unit.unit"
 												></v-list-item-title>
 											</v-list-item-content>
 										</v-list-item>
@@ -273,7 +255,7 @@
 								<v-col cols="6">
 									<v-list disabled>
 										<v-subheader>Contacto</v-subheader>
-										<v-list-item v-for="(ctct, i) in supplierRowDlog.contacts" :key="i">
+										<v-list-item v-for="(ctct, i) in ownerRowDlog.contacts" :key="i">
 											<v-list-item-icon>
 												<v-icon>mdi-phone</v-icon>
 											</v-list-item-icon>
@@ -289,18 +271,15 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="red" text @click="closeSupplierInfo">
-									Fechar
-								</v-btn>
+								<v-btn color="red" text @click="closeOwnerInfo">Fechar</v-btn>
 							</v-row>
 						</v-card-text>
 					</v-card>
 				</v-dialog>
-
 				<div class="text-center pt-3">
 					<v-pagination
-						v-model="suppliersTableOptions.page"
-						:length="suppliersTableOptions.pageCount"
+						v-model="ownersTableOptions.page"
+						:length="ownersTableOptions.pageCount"
 						:total-visible="7"
 						color="secondary"
 					></v-pagination>
@@ -319,18 +298,22 @@
 
 <script>
 import axios from 'axios';
-import { Parser, transforms } from 'json2csv';
 
 export default {
-	name: 'Suppliers',
+	name: 'Users',
 	data: () => ({
-		downloadSuppliersMenu: false,
+		downloadOwnersMenu: false,
 
-		// objeto é mapeado através da função openSupplierInfo
-		supplierRowDlog: {
+		ownerRowDlog: {
 			show: false,
+			name: '',
+			email: '',
+			IBAN: '',
+			NIF: '',
+			contacts: [],
+			units: [],
 		},
-		suppliersTableOptions: {
+		ownersTableOptions: {
 			search: '',
 			page: 1,
 			pageCount: 0,
@@ -339,11 +322,6 @@ export default {
 			singleExpand: false,
 			headers: [
 				{
-					text: 'Entidade',
-					value: 'company_name',
-					align: 'center',
-				},
-				{
 					text: 'Nome',
 					value: 'name',
 					align: 'center',
@@ -351,6 +329,11 @@ export default {
 				{
 					text: 'Email',
 					value: 'email',
+					align: 'center',
+				},
+				{
+					text: 'Permissões',
+					value: 'role.role_name',
 					align: 'center',
 				},
 				{
@@ -375,124 +358,41 @@ export default {
 		editedItem: {
 			first_name: '',
 			last_name: '',
-			company_name: '',
 			email: '',
 			IBAN: '',
 			NIF: '',
-			service_types: [],
+			role: null,
 			contacts: [],
+			units: [],
+
+			selectedUnit: null,
 
 			contactValue: null,
 			otherContact: false,
-
-			selectedServiceType: null,
 		},
 
 		editItemSuccess: null,
 		editItemErrorMsg: null,
 
-		suppliers: [],
-		serviceTypes: [],
+		owners: [],
+		roles: [],
+		units: [],
 	}),
 	created() {},
 	mounted() {
-		axios.get('//localhost:3333/api/suppliers').then((res) => (this.suppliers = res.data.data));
-		axios
-			.get('//localhost:3333/api/service-types/')
-			.then((res) => (this.serviceTypes = res.data.data));
+		axios.get('//localhost:3333/api/users/').then((res) => (this.owners = res.data.data));
+		axios.get('//localhost:3333/api/roles/').then((res) => (this.roles = res.data.data));
+		axios.get('//localhost:3333/api/units/').then((res) => (this.units = res.data.data));
 	},
 	methods: {
-		async addServiceTypeToSupplier() {
-			//console.log(this.editedItem.selectedServiceType);
-			if (this.editedItem.selectedServiceType) {
-				await axios
-					.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-service-type`, {
-						service_type_id: this.editedItem.selectedServiceType,
-					})
-					.then((res) => {
-						this.editedItem.service_types.push(res.data.data);
-						console.log(res);
-					})
-					.catch((err) => console.log(err));
-			}
-			this.editedItem.selectedServiceType = null;
-			console.log(this.editedItem.service_types);
-		},
-
-		addContactToArray() {
-			if (this.editedItem.contactValue) {
-				axios
-					.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/add-contact`, {
-						phone_number: this.editedItem.contactValue,
-					})
-					.then((res) => {
-						this.editedItem.contacts.push(res.data.data);
-						console.log(res);
-					})
-					.catch((err) => console.log(err));
-			}
-			this.editedItem.otherContact = true;
-			this.editedItem.contactValue = null;
-			console.log(this.editedItem.contacts);
-		},
-
-		deleteSupplierST(index) {
+		updateUser() {
 			axios
-				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-service-type`, {
-					service_type_id: this.editedItem.service_types[index].id,
-				})
-				.then((res) => {
-					this.editedItem.service_types.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
-		},
-
-		deleteSupplierContact(index) {
-			axios
-				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-contact`, {
-					contact_id: this.editedItem.contacts[index].id,
-				})
-				.then((res) => {
-					this.editedItem.contacts.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
-		},
-
-		deleteItem(item) {
-			const index = this.suppliers.indexOf(item);
-
-			confirm('Are you sure you want to delete this item?') &&
-				axios
-					.delete(`http://localhost:3333/api/suppliers/${item.id}`)
-					.then((res) => {
-						this.suppliers.splice(index, 1);
-
-						this.snackbar.message = res.data.message;
-						this.snackbar.success = true;
-						this.snackbar.colour = 'green';
-						this.snackbar.show = true;
-						console.log(res);
-					})
-					.catch((err) => {
-						this.snackbar.message = err.response.data.error;
-						this.snackbar.success = false;
-						this.snackbar.colour = 'red';
-						this.snackbar.show = true;
-						console.log(err.response.data.error);
-					});
-		},
-
-		updateSupplier() {
-			axios
-				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}`, {
+				.put(`http://localhost:3333/api/users/${this.editedItem.id}`, {
 					first_name: this.editedItem.first_name,
 					last_name: this.editedItem.last_name,
 					email: this.editedItem.email,
-					company_name: this.editedItem.company_name,
-					NIF: this.editedItem.NIF,
 					IBAN: this.editedItem.IBAN,
+					NIF: this.editedItem.NIF,
 				})
 				.then((res) => {
 					this.editItemSuccess = res.data.message;
@@ -512,89 +412,119 @@ export default {
 					console.log(err);
 				});
 		},
-
+		async addUnitToUser() {
+			if (this.editedItem.selectedUnit) {
+				await axios
+					.put(`http://localhost:3333/api/users/${this.editedItem.id}/add-unit`, {
+						unit_id: this.editedItem.selectedUnit,
+					})
+					.then((res) => {
+						this.editedItem.units.push(res.data.data);
+						console.log(res);
+					})
+					.catch((err) => console.log(err));
+			}
+			this.editedItem.selectedUnit = null;
+			console.log(this.editedItem.units);
+		},
+		deleteUserUnit(index) {
+			axios
+				.put(`http://localhost:3333/api/users/${this.editedItem.id}/delete-unit`, {
+					unit_id: this.editedItem.units[index].id,
+				})
+				.then((res) => {
+					this.editedItem.units.splice(index, 1);
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
+		},
+		updateRole() {
+			axios
+				.put(`http://localhost:3333/api/users/${this.editedItem.id}/update-role`, {
+					role_id: this.editedItem.role,
+				})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
+		},
+		addNewContact() {
+			if (this.editedItem.contactValue) {
+				axios
+					.put(`http://localhost:3333/api/users/${this.editedItem.id}/add-contact`, {
+						phone_number: this.editedItem.contactValue,
+					})
+					.then((res) => {
+						this.editedItem.contacts.push(res.data.data);
+						console.log(res);
+					})
+					.catch((err) => console.log(err));
+			}
+			this.editedItem.otherContact = true;
+			this.editedItem.contactValue = null;
+			console.log(this.editedItem.contacts);
+		},
+		deleteUserContact(index) {
+			axios
+				.put(`http://localhost:3333/api/users/${this.editedItem.id}/delete-contact`, {
+					contact_id: this.editedItem.contacts[index].id,
+				})
+				.then((res) => {
+					this.editedItem.contacts.splice(index, 1);
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
+		},
+		openOwnerInfo(item) {
+			Object.assign(this.ownerRowDlog, item);
+			this.ownerRowDlog.show = true;
+		},
 		close() {
 			this.editDialog = false;
 			this.$nextTick(() => {
 				this.editedIndex = -1;
 			});
 		},
-
 		editItem(item) {
-			this.editedIndex = this.suppliers.indexOf(item);
+			this.editedIndex = this.owners.indexOf(item);
 			this.editedItem = Object.assign({}, item);
 			this.editDialog = true;
 			// console.log(this.editedIndex);
-			// console.log(this.editedItem);
+			//console.log(this.editedItem);
 		},
+		deleteItem(item) {
+			const index = this.owners.indexOf(item);
 
-		openSupplierInfo(item) {
-			Object.assign(this.supplierRowDlog, item);
-			this.supplierRowDlog.show = true;
-			console.log(item);
+			confirm('Are you sure you want to delete this item?') &&
+				axios
+					.delete(`http://localhost:3333/api/users/${item.id}`)
+					.then((res) => {
+						this.owners.splice(index, 1);
+
+						this.snackbar.message = res.data.message;
+						this.snackbar.success = true;
+						this.snackbar.colour = 'green';
+						this.snackbar.show = true;
+
+						console.log(res);
+					})
+					.catch((err) => {
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
+
+						console.log(err);
+					});
 		},
-
-		closeSupplierInfo() {
-			this.supplierRowDlog.show = false;
-		},
-
-		/**
-		 * saveFile - downloads all relevant info in both JSON and CSV
-		 *
-		 * data - the data from the response from the API
-		 * filename - name of file to be downloaded
-		 * json - true if it is, false if CSV
-		 */
-		saveFile: function(data, filename, json) {
-			if (json) {
-				const jsonData = JSON.stringify(data, null, '\t');
-				const blob = new Blob([jsonData], { type: 'application/json' });
-				const a = document.createElement('a');
-				a.download = `${filename}.json`;
-				a.href = window.URL.createObjectURL(blob);
-				a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
-				document.body.appendChild(a);
-				a.click();
-			} else {
-				let fields = [
-					{ label: 'ID', value: 'id' },
-					{ label: 'Nome', value: 'name' },
-					{ label: 'Email', value: 'email' },
-					{ label: 'IBAN', value: 'IBAN' },
-					{ label: 'NIF', value: 'NIF' },
-					{ label: 'Empresa', value: 'company_name' },
-					{ label: 'Tipo de Serviço', value: 'service_types.service_type' },
-					{ label: 'Contacto', value: 'contacts.phone_number' },
-				];
-				const { unwind } = transforms;
-
-				let json2csvParser = new Parser({
-					fields,
-					transforms: [
-						unwind({
-							paths: ['service_types', 'contacts'],
-						}),
-					],
-				});
-
-				const csv = json2csvParser.parse(data);
-				const blob = new Blob([csv], { type: 'text/csv' });
-				const a = document.createElement('a');
-				a.download = `${filename}.csv`;
-				a.href = window.URL.createObjectURL(blob);
-				a.dataset.downloadurl = ['text/csv', a.download, a.href].join(':');
-				document.body.appendChild(a);
-				a.click();
-			}
+		closeOwnerInfo() {
+			this.ownerRowDlog.show = false;
 		},
 	},
 };
 </script>
 
 <style scoped>
-.custom_col {
-	flex-grow: 0;
-}
 .listItem {
 	-webkit-user-select: text;
 	-moz-user-select: text;

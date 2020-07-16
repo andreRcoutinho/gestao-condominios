@@ -27,14 +27,14 @@ export class Supplier extends BaseEntity {
     @Column({ name: 'email', nullable: true })
     private email: String;
 
-    @OneToMany(type => Expense, expense => expense.getSupplier, { cascade: ["remove"] })
+    @OneToMany(type => Expense, expense => expense.getSupplier)
     private expenses: Expense[];
 
-    @OneToMany(type => Contact, contact => contact.getSupplier, { cascade: ["remove"] })
+    @OneToMany(type => Contact, contact => contact.getSupplier)
     @JoinColumn()
     private contacts: Contact[];
 
-    @ManyToMany(type => ServiceType, { eager: true })
+    @ManyToMany(type => ServiceType, { eager: true, cascade: true })
     @JoinTable()
     private service_types: ServiceType[];
 

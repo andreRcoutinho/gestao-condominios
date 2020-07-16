@@ -145,7 +145,7 @@
 										:headers="mapDetailedInfo.headers"
 										:items="mapDetailedInfo.revenues"
 										hide-default-footer
-										class="elevation-1"
+										class="elevation-2"
 									>
 										<template v-slot:item="props">
 											<td class="text-center">
@@ -156,6 +156,7 @@
 															color="green"
 															v-bind="attrs"
 															v-on="on"
+															class="ma-3"
 														>
 															mdi-check-outline
 														</v-icon>
@@ -207,7 +208,7 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="closeMapInfo">Fechar</v-btn>
+								<v-btn color="secondary" text @click="closeMapInfo">Fechar</v-btn>
 							</v-row>
 						</v-card-text>
 					</v-card>

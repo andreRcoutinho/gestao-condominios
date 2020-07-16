@@ -5,7 +5,7 @@ export class ApiResponse {
 
     private status: Number;
 
-    private data: any; //DTO interface
+    private data: any;
 
     private error?: String;
 

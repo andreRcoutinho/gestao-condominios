@@ -5,33 +5,29 @@ import * as typologyServices from '../services/typology';
 import { ApiResponse } from '../api/api_response';
 import { INVALID_JSON_BODY } from '../api/api_errors';
 
-//Index
-const TYPOLOGY_INDEX_REQUEST: String = "Get all typologies";
-const TYPOLOGY_INDEX_MESSAGE_SUCCESS: String = "Retrieved all tipologies successfully";
-const TYPOLOGY_INDEX_MESSAGE_FAIL: String = "Failed to retrieve all tipologies";
+const TYPOLOGY_INDEX_REQUEST: String = "Tipologias";
+const TYPOLOGY_INDEX_MESSAGE_SUCCESS: String = "Todas as Tipologias retornadas com sucesso!";
+const TYPOLOGY_INDEX_MESSAGE_FAIL: String = "Ocorreu um erro ao retornar todas as tipologias.";
 
-//Show
-const TYPOLOGY_SHOW_REQUEST: String = "Get typology";
-const TYPOLOGY_SHOW_MESSAGE_SUCCESS: String = "Retrieved typology successfully";
-const TYPOLOGY_SHOW_MESSAGE_FAIL: String = "Failed to retreive typology";
+const TYPOLOGY_SHOW_REQUEST: String = "Tipologia";
+const TYPOLOGY_SHOW_MESSAGE_SUCCESS: String = "Tipologia retornada com sucesso!";
+const TYPOLOGY_SHOW_MESSAGE_FAIL: String = "Ocorreu um erro ao retornar a tipologia.";
 
-//Create
-const TYPOLOGY_CREATE_REQUEST: String = "Create typology";
-const TYPOLOGY_CREATE_MESSAGE_SUCCESS: String = "Created typology successfully";
-const TYPOLOGY_CREATE_MESSAGE_FAIL: String = "Failed to create typology";
+const TYPOLOGY_CREATE_REQUEST: String = "Criar Tipologia";
+const TYPOLOGY_CREATE_MESSAGE_SUCCESS: String = "Tipologia criada com sucesso!";
+const TYPOLOGY_CREATE_MESSAGE_FAIL: String = "Ocorreu um erro ao criar a tipologia.";
 
-//Update
-const TYPOLOGY_UPDATE_REQUEST: String = "Update typology";
-const TYPOLOGY_UPDATE_MESSAGE_SUCCESS: String = "Updated typology successfully";
-const TYPOLOGY_UPDATE_MESSAGE_FAIL: String = "Failed to update typology";
+const TYPOLOGY_UPDATE_REQUEST: String = "Alterar tipologia";
+const TYPOLOGY_UPDATE_MESSAGE_SUCCESS: String = "Tipologia alterada com sucesso!";
+const TYPOLOGY_UPDATE_MESSAGE_FAIL: String = "Ocorreu um erro ao alterar a tipologia.";
 
-//Remove
-const TYPOLOGY_REMOVE_REQUEST: String = "Remove typology";
-const TYPOLOGY_REMOVE_MESSAGE_SUCCESS: String = "Removed typology successfully";
-const TYPOLOGY_REMOVE_MESSAGE_FAIL: String = "Failed to remove typology";
+const TYPOLOGY_REMOVE_REQUEST: String = "Remover tipologia";
+const TYPOLOGY_REMOVE_MESSAGE_SUCCESS: String = "Tipologia removida com sucesso!";
+const TYPOLOGY_REMOVE_MESSAGE_FAIL: String = "Ocorreu um erro ao remover a tipologia.";
 
 
 export async function index(req: Request, res: Response) {
+
     var response = await typologyServices.index();
 
     if (response instanceof Error) {
@@ -52,6 +48,7 @@ export async function show(req: Request, res: Response) {
 }
 
 export async function create(req: Request, res: Response) {
+
     if (!typologyRules.createRules(req.body))
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(TYPOLOGY_CREATE_REQUEST, TYPOLOGY_CREATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
 
@@ -65,6 +62,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function update(req: Request, res: Response) {
+
     if (!typologyRules.updateRules(req.body)) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(TYPOLOGY_UPDATE_REQUEST, TYPOLOGY_UPDATE_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
     }
@@ -79,6 +77,7 @@ export async function update(req: Request, res: Response) {
 }
 
 export async function remove(req: Request, res: Response) {
+
     var response = await typologyServices.remove(Number(req.params.id));
 
     if (response instanceof Error) {

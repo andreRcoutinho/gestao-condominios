@@ -3,10 +3,9 @@ import * as roleService from '../services/role';
 import { ApiResponse } from '../api/api_response';
 import HttpStatus from "http-status-codes";
 
-//index
-const GET_ROLES_REQUEST: String = 'Get roles';
-const GET_ROLES_SUCCESS: String = 'Retrieved all roles successfully';
-const GET_ROLES_FAIL: String = 'Failed to retrieve all roles';
+const GET_ROLES_REQUEST: String = 'Permissões';
+const GET_ROLES_SUCCESS: String = 'Permissões retornadas com sucesso!';
+const GET_ROLES_FAIL: String = 'Ocorreu um erro ao retornar todas as permissões.';
 
 export async function index(req: Request, res: Response) {
     let response = await roleService.index();

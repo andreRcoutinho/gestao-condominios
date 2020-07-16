@@ -5,18 +5,17 @@ import * as unitRules from '../rules/unit';
 import { ApiResponse } from '../api/api_response';
 import { INVALID_JSON_BODY } from '../api/api_errors';
 
-//Index
-const UNIT_INDEX_REQUEST: String = "Get all units";
-const UNIT_INDEX_MESSAGE_SUCCESS: String = "Retrieved all units successfully";
-const UNIT_INDEX_MESSAGE_FAILED: String = "Failed to retrieve all units";
-//Show
-const UNIT_SHOW_REQUEST: String = "Get specific unit";
-const UNIT_SHOW_MESSAGE_SUCCESS: String = "Retrieved specific unit successfully";
-const UNIT_SHOW_MESSAGE_FAILED: String = "Failed to retrieve specific unit";
-//Update
-const UNIT_UPDATE_REQUEST: String = "Update unit";
-const UNIT_UPDATE_MESSAGE_SUCCESS: String = "Updated unit successfully";
-const UNIT_UPDATE_MESSAGE_FAILED: String = "Failed to update unit";
+const UNIT_INDEX_REQUEST: String = "Frações";
+const UNIT_INDEX_MESSAGE_SUCCESS: String = "Todas as frações retornadas com sucesso!";
+const UNIT_INDEX_MESSAGE_FAILED: String = "Ocorreu um erro ao retornar todas as frações.";
+
+const UNIT_SHOW_REQUEST: String = "Fração";
+const UNIT_SHOW_MESSAGE_SUCCESS: String = "Fração retornada com sucesso!";
+const UNIT_SHOW_MESSAGE_FAILED: String = "Ocorreu um erro ao retornar a fração.";
+
+const UNIT_UPDATE_REQUEST: String = "Alterar Fração";
+const UNIT_UPDATE_MESSAGE_SUCCESS: String = "Fração alterada com sucesso!";
+const UNIT_UPDATE_MESSAGE_FAILED: String = "Ocorreu um erro ao alterar fração.";
 
 export async function index(req: Request, res: Response) {
     var response = await unitService.index();

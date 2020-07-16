@@ -5,27 +5,25 @@ import { ApiResponse } from '../api/api_response';
 import { INVALID_JSON_BODY } from '../api/api_errors';
 import HttpStatus from 'http-status-codes';
 
-//Create
-const EXPENSE_CREATE_REQUEST: String = 'Create Expense';
-const EXPENSE_CREATE_MESSAGE_FAIL: String = 'Failed to create the Expense';
+const EXPENSE_CREATE_REQUEST: String = 'Registar despesa';
+const EXPENSE_CREATE_MESSAGE_FAIL: String = 'Ocorreu um erro ao registar uma despesa.';
 const EXPENSE_CREATE_MESSAGE_SUCCESS: String = 'Despesa registada!';
-//Show
-const EXPENSE_SHOW_REQUEST: String = 'Get Expense';
-const EXPENSE_SHOW_MESSAGE_SUCCESS: String = 'Retrieved expense successfully';
-const EXPENSE_SHOW_MESSAGE_FAIL: String = 'Failed to retrieve expense';
-const EXPENSE_SHOW_MESSAGE_NOT_FOUND: String = 'No expense found with given id';
-//Index
-const EXPENSE_INDEX_REQUEST: String = 'Get all expenses';
-const EXPENSE_INDEX_SUCCESS: String = 'All expenses retrieved successfully';
-const EXPENSE_INDEX_FAIL: String = 'Failed to retrieve all expenses';
-//Update
-const EXPENSE_UPDATE_REQUEST: String = 'Update expense';
-const EXPENSE_UPDATE_SUCCESS: String = 'Expense updated successfully';
-const EXPENSE_UPDATE_FAIL: String = 'Failed to update expense';
-//Remove
-const EXPENSE_REMOVE_REQUEST: String = 'Remove expense';
-const EXPENSE_REMOVE_MESSAGE_SUCCESS: String = 'Removed expense successfully';
-const EXPENSE_REMOVE_MESSAGE_FAIL: String = 'Failed to remove expense';
+
+const EXPENSE_SHOW_REQUEST: String = 'Visualizar Despesa';
+const EXPENSE_SHOW_MESSAGE_SUCCESS: String = 'Despesa visualizada com sucesso!';
+const EXPENSE_SHOW_MESSAGE_FAIL: String = 'Ocorreu um erro ao visualizar uma despesa.';
+
+const EXPENSE_INDEX_REQUEST: String = 'Todas as Despesas';
+const EXPENSE_INDEX_SUCCESS: String = 'Todas as Despesas com sucesso.';
+const EXPENSE_INDEX_FAIL: String = 'Ocorreu um erro ao recuperar todas as despesas.';
+
+const EXPENSE_UPDATE_REQUEST: String = 'Alterar Despesa.';
+const EXPENSE_UPDATE_SUCCESS: String = 'Despesa alterada com sucesso!';
+const EXPENSE_UPDATE_FAIL: String = 'Ocorreu um erro ao alterar a despesa.';
+
+const EXPENSE_REMOVE_REQUEST: String = 'Remover uma Despesa';
+const EXPENSE_REMOVE_MESSAGE_SUCCESS: String = 'Despesa removida com sucesso!';
+const EXPENSE_REMOVE_MESSAGE_FAIL: String = 'Ocorreu um erro ao remover a despesa.';
 
 export async function index(req: Request, res: Response) {
     let response = await expenseService.index((req.query.year) ? req.query.year.toString() : null);

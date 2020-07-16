@@ -55,12 +55,50 @@ export async function payment_record(body: any) {
             throw new Error(api_errors.UNIT_NOT_EXISTS)
         }
 
-        for (let i = 0; i < body.months.length; i++) {
-            const month = body.months[i];
-            let revenue: Revenue = await Revenue.findOne({ where: { payment_map, unit, month } });
-            revenue.setPaid(true);
-            revenue.setPayment_date(new Date());
-            await revenue.save();
+        if (payment_map.getYearly() === true) {
+            for (let i = 0; i < body.months.length; i++) {
+                const month = body.months[i];
+                let revenue: Revenue = await Revenue.findOne({ where: { payment_map, unit, month } });
+                revenue.setPaid(true);
+                revenue.setPayment_date(new Date());
+                await revenue.save();
+            }
+        } else {
+            return payment_record_normal_payment_map(payment_map, unit, body.installments_to_pay ? body.installments_to_pay : 1);
+        }
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
+async function payment_record_normal_payment_map(payment_map: PaymentMap, unit: Unit, installments_to_pay: Number) {
+    try {
+        let revenues: Revenue[] = await Revenue.find({ where: { payment_map, unit } });
+
+        if (installments_to_pay > revenues.length) {
+            throw new Error("Número de prestações a pagar é maior que as prestações.");
+        }
+
+        let unPaidRevenues: Revenue[] = [];
+
+        revenues.forEach(revenue => {
+            if (!revenue.isPaid()) {
+                unPaidRevenues.push(revenue);
+            }
+        });
+
+        if (unPaidRevenues.length == 0) {
+            throw new Error("Já não existem prestações para pagar!");
+        }
+
+        if (unPaidRevenues.length < installments_to_pay) {
+            throw new Error("Apenas podem ser pagas " + unPaidRevenues.length + " prestações.");
+        }
+
+        for (let i = 0; i < installments_to_pay; i++) {
+            unPaidRevenues[i].setPaid(true);
+            await unPaidRevenues[i].save();
         }
 
         return true;

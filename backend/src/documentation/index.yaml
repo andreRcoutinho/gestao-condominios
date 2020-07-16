@@ -19,15 +19,15 @@ tags:
     description: "Endpoints for the application users"
   - name: "Units"
     description: "Endpoints for the apartment units"
-  - name: "Service_types"
+  - name: "ServiceTypes"
     description: "Endpoints for the types of service given by suppliers"
   - name: "Suppliers"
     description: "Endpoints for the service suppliers"
   - name: "Expenses"
     description: "Endpoints for expenses"
-  - name: "Payment_map"
+  - name: "PaymentMap"
     description: "Endpoints for the payment maps"
-  - name: "Revenue"
+  - name: "Revenues"
     description: "Endpoints for the revenues"
 
 #Schemes
@@ -41,142 +41,149 @@ paths:
   /sign-up:
     post:
       tags:
-      - "Authentication"
+        - "Authentication"
       summary: "Create a new user in the database"
       operationId: "signUp"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Authentication object to create a new user"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            email:
-              type: string
-            first_name:
-              type: string
-            last_name:
-              type: string
-            role_id:
-              type: integer
-            units_id:
-              type: array
-              items:
+        - in: "body"
+          name: "body"
+          description: "Authentication object to create a new user"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: string
+              first_name:
+                type: string
+              last_name:
+                type: string
+              role_id:
                 type: integer
-              example: [1, 2, 3]
-            NIF:
-              type: string
-            IBAN:
-              type: string
-            contacts:
-              type: array
-              items:
-                $ref: "#/definitions/PhoneList"
+              units_id:
+                type: array
+                items:
+                  type: integer
+                example: [1, 2, 3]
+              NIF:
+                type: string
+              IBAN:
+                type: string
+              contacts:
+                type: array
+                items:
+                  $ref: "#/definitions/PhoneList"
       responses:
         "200":
           description: "User created"
         "400":
           description: "Bad Request"
-
+          schema:
+            $ref: "#/definitions/EmptyResponse"
   /sign-in:
     post:
       tags:
-      - "Authentication"
+        - "Authentication"
       summary: "Create login session for user"
       operationId: "signIn"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Authentication object to create a new user"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            email:
-              type: string
-            password:
-              type: string
+        - in: "body"
+          name: "body"
+          description: "Authentication object to create a new user"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: string
+              password:
+                type: string
       responses:
         "200":
           description: "User logged"
         "400":
           description: "Bad Request"
-
+          schema:
+            $ref: "#/definitions/EmptyResponse"
   /forgot-password:
     post:
       tags:
-      - "Authentication"
+        - "Authentication"
       summary: "Forgot user password"
+      description: "Sends an email for forgetting a password."
       operationId: "forgotPassword"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Authentication object forget password"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            email:
-              type: string
+        - in: "body"
+          name: "body"
+          description: "Authentication object forget password"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: string
       responses:
         "200":
           description: "Password forgot"
         "400":
           description: "Bad Request"
-
+          schema:
+            $ref: "#/definitions/EmptyResponse"
   /reset-password:
     post:
       tags:
-      - "Authentication"
+        - "Authentication"
       summary: "Reset a user password"
+      description: "Resets the user password"
       operationId: "resetPassword"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Authentication object reset password"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            email:
-              type: string
-            token:
-              type: string
-            password:
-              type: string
+        - in: "body"
+          name: "body"
+          description: "Authentication object reset password"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: string
+              token:
+                type: string
+              password:
+                type: string
       responses:
         "200":
           description: "Password reset"
         "400":
           description: "Bad Request"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #Typologies
   /typologies:
     get:
       tags:
-      - "Typologies"
+        - "Typologies"
       summary: "Get all typologies"
       description: "Returns array of typologies"
       operationId: "getTypologies"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         "200":
           description: "Retrieved all tipologies successfully"
@@ -189,25 +196,27 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/TypologiesList"
         "400":
           description: "Failed to retrieve all tipologies"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
   /typologies/{id}:
     get:
       tags:
-      - "Typologies"
+        - "Typologies"
       summary: "Get typology by id"
       description: "Return a typology"
       operationId: "getTypologyById"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of typology to return"
-        required: true
-        type: "integer"
+        - name: "id"
+          in: "path"
+          description: "ID of typology to return"
+          required: true
+          type: "integer"
       responses:
         "200":
           description: "Typology"
@@ -220,42 +229,31 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/Typology"
         "400":
           description: "Invalid ID supplied"
           schema:
-            type: object
-            properties:
-              request:
-                type: string
-              message:
-                type: string
-              status:
-                type: integer
-              data: 
-                type: object
-              error:
-                type: string
+            $ref: "#/definitions/EmptyResponse"
     post:
       tags:
-      - "Typologies"
+        - "Typologies"
       summary: "Post new typology"
       description: "Creates a new typology"
       operationId: "postTypology"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Typology object to create a new typology"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            typology:
-              type: string
-              example: "T2"
+        - in: "body"
+          name: "body"
+          description: "Typology object to create a new typology"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              typology:
+                type: string
+                example: "T2"
       responses:
         "200":
           description: "Typology"
@@ -268,10 +266,39 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/Typology"
         "400":
           description: "Invalid ID supplied"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    put:
+      tags:
+        - "Typologies"
+      summary: "Update typology"
+      description: "Updates an existing typology"
+      operationId: "putTypology"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of typology to edit"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Typology object to edit a typology"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              typology:
+                type: string
+                example: "T2 Duplex"
+      responses:
+        "200":
+          description: "Updated Typology successfully"
           schema:
             type: object
             properties:
@@ -281,24 +308,54 @@ paths:
                 type: string
               status:
                 type: integer
-                default: 400
-              data: 
-                type: object
-              error:
-                type: string    
-    #put:
-    #delete:
-
+              data:
+                $ref: "#/definitions/Typology"
+        "400":
+          description: "Failed to update typology"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    delete:
+      tags:
+        - "Typologies"
+      summary: "Delete typology"
+      description: "Deletes an existing typology"
+      operationId: "deleteTypology"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of typology to delete"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Removed Typology successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Typology"
+        "400":
+          description: "Failed to remove typology"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
   #Roles
   /roles:
     get:
       tags:
-      - "Roles"
+        - "Roles"
       summary: "Get all roles"
       description: "Returns array of roles"
       operationId: "getRoles"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         "200":
           description: "Retrieved all roles successfully"
@@ -311,10 +368,26 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/RolesList"
         "400":
           description: "Failed to retrieve all roles"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+
+  #Users
+  /users:
+    get:
+      tags:
+        - "Users"
+      summary: "Get all users"
+      description: "Returns array of users"
+      operationId: "getUsers"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all users successfully"
           schema:
             type: object
             properties:
@@ -324,23 +397,392 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
-                type: object
-              error:
-                type: string
+              data:
+                $ref: "#/definitions/UsersList"
+        "400":
+          description: "Failed to retrieve all users"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
-  #Users
+  /users/{id}:
+    get:
+      tags:
+        - "Users"
+      summary: "Get user"
+      description: "Retrieves information about an user"
+      operationId: "getUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Retrieved user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to retrieve user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    put:
+      tags:
+        - "Users"
+      summary: "Update user"
+      description: "Updates information about an user"
+      operationId: "updateUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "User object to edit a user"
+          required: true
+          schema:
+            type: object
+            properties:
+              first_name:
+                type: string
+              last_name:
+                type: string
+              email:
+                type: string
+              IBAN:
+                type: string
+              NIF:
+                type: string
+      responses:
+        "200":
+          description: "Updated user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    delete:
+      tags:
+        - "Users"
+      summary: "Delete user"
+      description: "Deletes an existing user"
+      operationId: "deleteUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to delete"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Removed user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to remove user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/update-role:
+    put:
+      tags:
+        - "Users"
+      summary: "Update user role"
+      description: "Updates the role of an user"
+      operationId: "updateUserRole"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Role object to edit a user role"
+          required: true
+          schema:
+            type: object
+            properties:
+              role_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated user role successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user role"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/add-contact:
+    put:
+      tags:
+        - "Users"
+      summary: "Add user contact"
+      description: "Adds a new contact to a user"
+      operationId: "addContactUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Contact object to add a contact"
+          required: true
+          schema:
+            type: object
+            properties:
+              phone_number:
+                type: string
+      responses:
+        "200":
+          description: "Updated user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/delete-contact:
+    put:
+      tags:
+        - "Users"
+      summary: "Delete user contact"
+      description: "Deletes a contact from an user"
+      operationId: "deleteContactUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Contact object to delete a contact"
+          required: true
+          schema:
+            type: object
+            properties:
+              contact_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/update-contact:
+    put:
+      tags:
+        - "Users"
+      summary: "Update user contact"
+      description: "Updates a contact on an user"
+      operationId: "updateContactUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Contact object to add a contact"
+          required: true
+          schema:
+            type: object
+            properties:
+              contact_id:
+                type: integer
+              phone_number:
+                type: string
+      responses:
+        "200":
+          description: "Updated user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/add-unit:
+    put:
+      tags:
+        - "Users"
+      summary: "Add unit to user"
+      description: "Adds a unit to a user"
+      operationId: "addUnitUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Unit object to add a unit"
+          required: true
+          schema:
+            type: object
+            properties:
+              unit_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/delete-unit:
+    put:
+      tags:
+        - "Users"
+      summary: "Add unit to user"
+      description: "Adds a unit to a user"
+      operationId: "addUnitUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Unit object to add a unit"
+          required: true
+          schema:
+            type: object
+            properties:
+              unit_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated user successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update user"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #Units
   /units:
     get:
       tags:
-      - "Units"
+        - "Units"
       summary: "Get all units"
       description: "Returns array of units"
       operationId: "getUnits"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         "200":
           description: "Retrieved all units successfully"
@@ -353,7 +795,7 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/UnitsList"
         "400":
           description: "Failed to retrieve all Units"
@@ -366,25 +808,25 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 type: object
               error:
                 type: string
   /units/{id}:
     get:
       tags:
-      - "Units"
+        - "Units"
       summary: "Get unit by id"
       description: "Return a unit"
       operationId: "getUnitById"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of unit to return"
-        required: true
-        type: "integer"
+        - name: "id"
+          in: "path"
+          description: "ID of unit to return"
+          required: true
+          type: "integer"
       responses:
         "200":
           description: "Get specific unit"
@@ -397,7 +839,7 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/Unit"
         "400":
           description: "Failed to retrieve specific unit"
@@ -410,33 +852,33 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 type: object
               error:
                 type: string
     put:
       tags:
-      - "Units"
+        - "Units"
       summary: "Edit unit"
       description: "Edits an existing unit"
       operationId: "putUnit"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of unit to edit"
-        required: true
-        type: "integer"
-      - in: "body"
-        name: "body"
-        description: "Unit object to edit"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            unit:
-              type: string
+        - name: "id"
+          in: "path"
+          description: "ID of unit to edit"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Unit object to edit"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              unit:
+                type: string
       responses:
         "200":
           description: "Updated unit successfully"
@@ -449,7 +891,7 @@ paths:
                 type: string
               status:
                 type: integer
-              data: 
+              data:
                 $ref: "#/definitions/Unit"
         "400":
           description: "Failed to update unit"
@@ -463,39 +905,980 @@ paths:
               status:
                 type: integer
                 default: 400
-              data: 
+              data:
                 type: object
               error:
-                type: string  
+                type: string
 
   #ServiceTypes
+  /service-type:
+    get:
+      tags:
+        - "ServiceTypes"
+      summary: "Get all service types"
+      description: "Returns array of service types"
+      operationId: "getServiceTypes"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all service types successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/ServiceTypeList"
+        "400":
+          description: "Failed to retrieve all service types"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    post:
+      tags:
+        - "ServiceTypes"
+      summary: "Post new service type"
+      description: "Creates a new service type"
+      operationId: "postServiceType"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Service type object to create a new service type"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              service_type:
+                type: string
+                example: "Luz"
+      responses:
+        "200":
+          description: "Service type created successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/ServiceType"
+        "400":
+          description: "Failed to create service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /service-type/{id}:
+    get:
+      tags:
+        - "ServiceTypes"
+      summary: "Get service type"
+      description: "Retrieves information about a service type"
+      operationId: "getServiceType"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of service type to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Retrieved service type successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/ServiceType"
+        "400":
+          description: "Failed to retrieve service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    put:
+      tags:
+        - "ServiceTypes"
+      summary: "Edit a service type"
+      description: "Edits an existing service type"
+      operationId: "editServiceType"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of service type to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Service type object edit"
+          required: true
+          schema:
+            type: object
+            properties:
+              service_type:
+                type: string
+      responses:
+        "200":
+          description: "Updated service type successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Failed to update service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    delete:
+      tags:
+        - "ServiceTypes"
+      summary: "Delete service type"
+      description: "Deletes an existing service type"
+      operationId: "deleteServiceType"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of service type to delete"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Removed service type successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/ServiceType"
+        "400":
+          description: "Failed to remove service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #Suppliers
+  /suppliers:
+    get:
+      tags:
+        - "Suppliers"
+      summary: "Get all suppliers"
+      description: "Returns array of suppliers"
+      operationId: "getSuppliers"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all suppliers successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/SupplierList"
+        "400":
+          description: "Failed to retrieve all suppliers"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    post:
+      tags:
+        - "Suppliers"
+      summary: "Post a supplier"
+      description: "Creates a new supplier"
+      operationId: "postSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Service type object to create a new supplier"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              first_name:
+                type: string
+              last_name:
+                type: string
+              company_name:
+                type: string
+              NIF:
+                type: string
+              contacts:
+                type: array
+                items:
+                  $ref: "#/definitions/PhoneList"
+              service_types:
+                type: array
+                $ref: "#/definitions/ServiceTypeList"
+      responses:
+        "200":
+          description: "Supplier created successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to create service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /suppliers/{id}:
+    get:
+      tags:
+        - "Suppliers"
+      summary: "Get supplier"
+      description: "Retrieves information about a supplier"
+      operationId: "getSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of supplier to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Retrieved supplier successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to retrieve supplier"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    put:
+      tags:
+        - "Suppliers"
+      summary: "Edit a supplier"
+      description: "Edits an existing supplier"
+      operationId: "editSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of supplier to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Supplier object edit"
+          required: true
+          schema:
+            type: object
+            properties:
+              first_name:
+                type: string
+              last_name:
+                type: string
+              company_name:
+                type: string
+              NIF:
+                type: string
+      responses:
+        "200":
+          description: "Updated supplier successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to update supplier"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /suppliers/{id}/add-contact:
+    put:
+      tags:
+        - "Users"
+      summary: "Add supplier contact"
+      description: "Adds a new contact to a supplier"
+      operationId: "addContactSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of supplier to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Contact object to add a contact"
+          required: true
+          schema:
+            type: object
+            properties:
+              phone_number:
+                type: string
+      responses:
+        "200":
+          description: "Updated supplier successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to update supplier"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /suppliers/{id}/update-contact:
+    put:
+      tags:
+        - "Users"
+      summary: "Update supplier contact"
+      description: "Updates a contact of a supplier"
+      operationId: "updateContactSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of supplier to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Contact object to update a contact"
+          required: true
+          schema:
+            type: object
+            properties:
+              phone_number:
+                type: string
+              id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated supplier successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to update supplier"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  #/suppliers/{id}/delete-contact?
+  /suppliers/{id}/add-service-type:
+    put:
+      tags:
+        - "Users"
+      summary: "Add supplier service type"
+      description: "Adds a new service type to a supplier"
+      operationId: "addServiceTypeSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of supplier to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Service type object to add a service type"
+          required: true
+          schema:
+            type: object
+            properties:
+              service_type_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated supplier successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to update supplier"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /suppliers/{id1}/delete-service-type:
+    put:
+      tags:
+        - "Users"
+      summary: "Delete supplier service type"
+      description: "Removes a service type from a supplier"
+      operationId: "deleteServiceTypeSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of supplier to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Service type object to delete service type"
+          required: true
+          schema:
+            type: object
+            properties:
+              service_type_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated supplier successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Failed to update supplier"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #Expenses
+  /expenses:
+    get:
+      tags:
+        - "Expenses"
+      summary: "Get all expenses"
+      description: "Returns array of expenses"
+      operationId: "getExpenses"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all expenses successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/ExpensesList"
+        "400":
+          description: "Failed to retrieve all expenses"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    post:
+      tags:
+        - "Expenses"
+      summary: "Post an expense"
+      description: "Creates a new expense"
+      operationId: "postExpense"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Expense object to create a new expense"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              value:
+                type: number
+              description:
+                type: string
+              supplier_id:
+                type: integer
+              payment_date:
+                type: string
+      responses:
+        "200":
+          description: "Expense created successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Expense"
+        "400":
+          description: "Failed to create service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /expenses/{id}:
+    get:
+      tags:
+        - "Expenses"
+      summary: "Get expense"
+      description: "Retrieves information about an expense"
+      operationId: "getExpense"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of expense to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Retrieved expense successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Expense"
+        "400":
+          description: "Failed to retrieve expense"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    put:
+      tags:
+        - "Expenses"
+      summary: "Edit an expense"
+      description: "Edits an existing expense"
+      operationId: "editExpense"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of expense to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Expense object edit"
+          required: true
+          schema:
+            type: object
+            properties:
+              value:
+                type: number
+              description:
+                type: string
+              supplied_id:
+                type: integer
+      responses:
+        "200":
+          description: "Updated expense successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Expense"
+        "400":
+          description: "Failed to update expense"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    delete:
+      tags:
+        - "Expenses"
+      summary: "Delete expense"
+      description: "Deletes an existing expense"
+      operationId: "deleteExpense"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of expense to delete"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Removed expense successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Expense"
+        "400":
+          description: "Failed to remove Expense"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #PaymentMap
+  /payment_map:
+    get:
+      tags:
+        - "PaymentMap"
+      summary: "Get all payment maps"
+      description: "Returns array of payment maps"
+      operationId: "getPaymentMaps"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all payment maps successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/PaymentMapsList"
+        "400":
+          description: "Failed to retrieve all payment maps"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    post:
+      tags:
+        - "PaymentMap"
+      summary: "Post a payment map"
+      description: "Creates a new payment map"
+      operationId: "postPaymentMap"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "PaymentMap object to create a new payment map"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              value:
+                type: string
+              description:
+                type: string
+              name:
+                type: string
+              unit_ids:
+                type: array
+                items:
+                  type: integer
+              is_yearly:
+                type: boolean
+              year:
+                type: string
+      responses:
+        "200":
+          description: "Payment map created successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/PaymentMap"
+        "400":
+          description: "Failed to create payment map"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /payment_map/{id}:
+    get:
+      tags:
+        - "PaymentMap"
+      summary: "Get payment map"
+      description: "Retrieves information about a payment map"
+      operationId: "getPaymentMap"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of payment map to retrieve"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Retrieved payment map successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/PaymentMapInfo"
+        "400":
+          description: "Failed to retrieve payment map"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    put:
+      tags:
+        - "PaymentMap"
+      summary: "Edit a payment map"
+      description: "Edits an existing payment map"
+      operationId: "editPaymentMap"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of payment map to update"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Payment map object edit"
+          required: true
+          schema:
+            type: object
+            properties:
+              value:
+                type: string
+              month:
+                type: integer
+      responses:
+        "200":
+          description: "Updated payment map successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/PaymentMap"
+        "400":
+          description: "Failed to update payment map"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /payment_map/{id}/close:
+    put:
+      tags:
+        - "PaymentMap"
+      summary: "Close a payment map"
+      description: "Edits an existing payment map to be closed"
+      operationId: "closePaymentMap"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of payment map to close"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Payment map successfully closed"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/PaymentMap"
+        "400":
+          description: "Failed to update payment map"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #Revenues
+  /revenue:
+    get:
+      tags:
+        - "Revenues"
+      summary: "Get all revenues"
+      description: "Returns array of revenues"
+      operationId: "getRevenues"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Retrieved all revenues successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/RevenuesList"
+        "400":
+          description: "Failed to retrieve all revenues"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    post:
+      tags:
+        - "Revenues"
+      summary: "Post a payment record"
+      description: "Creates a new payment record"
+      operationId: "postPaymentRecord"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Payment record object to register"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              payment_map_id:
+                type: integer
+              unit_id:
+                type: integer
+              month:
+                type: integer
+      responses:
+        "200":
+          description: "Payment record created successfully"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Revenue"
+        "400":
+          description: "Failed to create revenue"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
 
   #Others
+  #monthly data
 
 definitions:
+  EmptyResponse:
+    type: object
+    properties:
+      request:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+      data:
+        type: object
+      error:
+        type: string
   PhoneList:
     type: object
-    properties: 
-       phone_number: 
+    properties:
+      phone_number:
         type: string
         example: "123456789"
   Typology:
-      type: object
-      properties:
-        typology:
-          type: string
-        permilage: 
-          type: integer
-        id:
-          type: integer        
+    type: object
+    properties:
+      typology:
+        type: string
+      permilage:
+        type: integer
+      id:
+        type: integer
   TypologiesList:
     type: array
     items:
@@ -503,9 +1886,9 @@ definitions:
   Role:
     type: object
     properties:
-      role_name: 
+      role_name:
         type: string
-      id: 
+      id:
         type: integer
   RolesList:
     type: array
@@ -514,7 +1897,7 @@ definitions:
   Unit:
     type: object
     properties:
-      unit: 
+      unit:
         type: string
       typology:
         $ref: "#/definitions/Typology"
@@ -524,4 +1907,149 @@ definitions:
     type: array
     items:
       $ref: "#/definitions/Unit"
-      
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      email:
+        type: string
+      IBAN:
+        type: string
+      NIF:
+        type: string
+      role_name:
+        type: string
+      units:
+        type: array
+        items:
+          type: string
+      contacts:
+        $ref: "#/definitions/PhoneList"
+  UsersList:
+    type: array
+    items:
+      $ref: "#/definitions/User"
+  ServiceType:
+    type: object
+    properties:
+      service_type:
+        type: string
+      id:
+        type: integer
+  ServiceTypeList:
+    type: array
+    items:
+      $ref: "#/definitions/ServiceType"
+  Supplier:
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      NIF:
+        type: string
+      IBAN:
+        type: string
+      company_name:
+        type: string
+      id:
+        type: integer
+      service_types:
+        type: array
+        items:
+          $ref: "#/definitions/ServiceTypeList"
+      contacts:
+        type: array
+        items:
+          $ref: "#/definitions/PhoneList"
+      expenses:
+        type: array
+        items:
+          $ref: "#/definitions/ExpensesList"
+  Expenses:
+    type: object
+    properties:
+      value:
+        type: string
+      description:
+        type: string
+      payment_date:
+        type: string
+      payment_record_date:
+        type: string
+      supplier:
+        $ref: "#/definitions/Supplier"
+      id:
+        type: integer
+  ExpensesList:
+    type: array
+    items:
+      $ref: "#/definitions/Expenses"
+  PaymentMap:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      description:
+        type: string
+      yearly:
+        type: boolean
+      year:
+        type: string
+      closed:
+        type: boolean
+  PaymentMapValues:
+    type: object
+    properties:
+      value:
+        type: string
+      start_date:
+        type: string
+      reserve_fund:
+        type: string
+      id:
+        type: integer
+      end_date:
+        type: string
+  PaymentMapValuesList:
+    type: array
+    items:
+      $ref: "#/definitions/PaymentMapValues"
+  PaymentMapsList:
+    type: array
+    items:
+      $ref: "#/definitions/PaymentMap"
+  Revenue:
+    type: object
+    properties:
+      month:
+        type: integer
+      unit_id:
+        type: integer
+      unit:
+        type: string
+      paid:
+        type: boolean
+      value:
+        type: string
+  RevenueList:
+    type: array
+    items:
+      $ref: "#/definitions/Revenue"
+  PaymentMapInfo:
+    type: object
+    properties:
+      payment_map:
+        $ref: "#/definitions/PaymentMap"
+      payment_map_values:
+        $ref: "#/definitions/PaymentMapValuesList"
+      revenues:
+        $ref: "#/definitions/RevenueList"

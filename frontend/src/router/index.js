@@ -35,13 +35,13 @@ const routes = [
 	},
 	{
 		path: '/mapas',
-		name: 'mapaPagamento',
+		name: 'paymentMaps',
 		component: () => import(/* webpackChunkName: "PaymentMaps" */ '../views/PaymentMaps.vue'),
 	},
 	{
-		path: '/definicoes',
-		name: 'definicoes',
-		component: () => import(/* webpackChunkName: "Settings" */ '../views/Settings.vue'),
+		path: '/definicoes-utilizador',
+		name: 'userSettings',
+		component: () => import(/* webpackChunkName: "UserSettings" */ '../views/UserSettings.vue'),
 	},
 	{
 		path: '/utilizadores',

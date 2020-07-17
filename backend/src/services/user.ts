@@ -110,19 +110,27 @@ export async function remove(id: Number) {
     }
 }
 
-export async function updatePassword(body: any) {
+export async function updatePassword(id: Number, body: any) {
     try {
-        let user = await findUser(body.email);
+        let user = await User.findOne({ where: { id } });
 
         if (!user) {
             throw new Error(api_errors.USER_NOT_EXISTS);
+        }
+
+        if (!user.getUser_password().verify_password(body.old_password)) {
+            throw new Error(api_errors.INVALID_PASSWORD);
+        }
+
+        if (body.new_password !== body.new_password_repeat) {
+            throw new Error("Nova Palavra-Passe e repetição de Nova Palavra-passe são diferentes!");
         }
 
         var user_password: UserPassword = user.getUser_password();
         user_password.update_password(body.new_password);
         await user_password.save();
 
-        return {};
+        return true;
     } catch (error) {
         return error;
     }

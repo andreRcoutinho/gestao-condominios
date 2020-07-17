@@ -3,8 +3,9 @@ import { filterBody } from "../middlewares/rules";
 
 export function updatePasswordRules(body: any): boolean | void {
     let rules: Rules = {
-        email: "required",
+        old_password: "required",
         new_password: "required",
+        new_password_repeat: "required"
     };
     filterBody(body, rules);
     var validation = new Validator(body, rules);

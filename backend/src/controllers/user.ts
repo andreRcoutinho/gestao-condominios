@@ -100,7 +100,7 @@ export async function updatePassword(req: Request, res: Response) {
     if (!userRules.updatePasswordRules(req.body))
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_PASSWORD_REQUEST, USER_UPDATE_PASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, INVALID_JSON_BODY));
 
-    let response = await userService.updatePassword(req.body);
+    let response = await userService.updatePassword(Number(req.params.id), req.body);
 
     if (response instanceof Error) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(USER_UPDATE_PASSWORD_REQUEST, USER_UPDATE_PASSWORD_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));

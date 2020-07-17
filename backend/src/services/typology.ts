@@ -55,9 +55,12 @@ export async function update(body: any, id: number): Promise<Typology> {
             throw new Error(api_errors.TYPOLOGY_NOT_EXISTS)
 
         let typology: Typology = await Typology.findOne({ where: { id } });
+
         typology.setTypology(body.typology);
         typology.setPermilage(body.permilage);
+
         await typology.save();
+
         return typology;
     } catch (error) {
         return error;

@@ -1,6 +1,7 @@
 import { Unit } from '../models/unit';
 import { Typology } from '../models/typology';
 import * as api_errors from '../api/api_errors';
+import { Revenue } from '../models/revenue';
 
 
 export async function index() {
@@ -69,10 +70,19 @@ export async function update(body: any, id: number) {
 export async function remove(id: number) {
     try {
         let unit: Unit = await Unit.findOne({ where: { id } });
+
         if (!unit)
             throw new Error(api_errors.UNIT_NOT_EXISTS)
+
+        let revenues: Revenue[] = await Revenue.find({ where: { unit } });
+
+        if (revenues.length > 0) {
+            throw new Error('Fração não pode ser removida!');
+        }
+
         await Unit.remove(unit);
         return unit;
+
     } catch (error) {
         return error;
     }

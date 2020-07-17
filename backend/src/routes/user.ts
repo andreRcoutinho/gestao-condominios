@@ -16,7 +16,7 @@ routes.put('/:id/update-contact', user.updateContact);
 routes.put('/:id/add-unit', user.addUnit);
 routes.put('/:id/delete-unit', user.deleteUnit);
 routes.put('/:id', user.update)
-routes.post('/update-password', user.updatePassword);
+routes.put('/update-password/:id', user.updatePassword);
 routes.delete('/:id', user.remove)
 
 export default routes;

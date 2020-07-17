@@ -21,9 +21,15 @@ const UNIT_UPDATE_REQUEST: String = "Alterar Fração";
 const UNIT_UPDATE_MESSAGE_SUCCESS: String = "Fração alterada com sucesso!";
 const UNIT_UPDATE_MESSAGE_FAILED: String = "Ocorreu um erro ao alterar fração.";
 
+
+const UNIT_REMOVE_REQUEST: String = "Remover Fração";
+const UNIT_REMOVE_MESSAGE_SUCCESS: String = "Fração removida com sucesso!";
+const UNIT_REMOVE_MESSAGE_FAILED: String = "Ocorreu um erro ao remover a fração.";
+
 const UNIT_IMPORT_REQUEST: String = "Importar frações";
 const UNIT_IMPORT_MESSAGE_SUCCESS: String = "Frações importadas com sucesso!";
 const UNIT_IMPORT_MESSAGE_FAIL: String = "Ocorreu um erro ao importar as frações";
+
 
 export async function index(req: Request, res: Response) {
     var response = await unitService.index();
@@ -70,6 +76,18 @@ export async function update(req: Request, res: Response) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(UNIT_UPDATE_REQUEST, UNIT_UPDATE_MESSAGE_FAILED, HttpStatus.BAD_REQUEST, {}, response.message));
     } else {
         return res.send(new ApiResponse(UNIT_UPDATE_REQUEST, UNIT_UPDATE_MESSAGE_SUCCESS, HttpStatus.OK, response));
+    }
+}
+
+
+export async function remove(req: Request, res: Response) {
+
+    var response = await unitService.remove(Number(req.params.id));
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(UNIT_REMOVE_REQUEST, UNIT_REMOVE_MESSAGE_SUCCESS, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(UNIT_REMOVE_REQUEST, UNIT_REMOVE_MESSAGE_FAILED, HttpStatus.OK, response));
     }
 }
 

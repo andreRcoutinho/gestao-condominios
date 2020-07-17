@@ -140,11 +140,14 @@
 						</v-card-title>
 						<v-card-text>
 							<v-row justify="center" class="my-3">
-								<v-col cols="8">
+								<v-col cols="10">
 									<v-data-table
 										:headers="mapDetailedInfo.headers"
 										:items="mapDetailedInfo.revenues"
 										hide-default-footer
+										:page.sync="otherMapsTableOptions.valuesInfoTable.page"
+										@page-count="otherMapsTableOptions.valuesInfoTable.pageCount = $event"
+										:items-per-page="otherMapsTableOptions.valuesInfoTable.itemsPerPage"
 										class="elevation-2"
 									>
 										<template v-slot:item="props">
@@ -160,7 +163,13 @@
 														>
 															mdi-check-outline
 														</v-icon>
-														<v-icon v-else color="orange" v-bind="attrs" v-on="on">
+														<v-icon
+															v-else
+															color="orange"
+															v-bind="attrs"
+															v-on="on"
+															class="ma-3"
+														>
 															mdi-emoticon-sad-outline
 														</v-icon>
 													</template>
@@ -177,7 +186,7 @@
 									<v-list-item two-line>
 										<v-list-item-content>
 											<v-list-item-subtitle>Descrição</v-list-item-subtitle>
-											<v-list-item-title>
+											<v-list-item-title class="text-wrap">
 												{{ mapDetailedInfo.payment_map.description }}
 											</v-list-item-title>
 										</v-list-item-content>
@@ -201,6 +210,16 @@
 											<v-list-item-subtitle>Criado em</v-list-item-subtitle>
 											<v-list-item-title>{{
 												mapDetailedInfo.payment_map.record_date | formatDate
+											}}</v-list-item-title>
+										</v-list-item-content>
+									</v-list-item>
+								</v-col>
+								<v-col cols="4" class="text-center">
+									<v-list-item two-line>
+										<v-list-item-content>
+											<v-list-item-subtitle>Prestações</v-list-item-subtitle>
+											<v-list-item-title>{{
+												mapDetailedInfo.installments
 											}}</v-list-item-title>
 										</v-list-item-content>
 									</v-list-item>
@@ -278,6 +297,11 @@ export default {
 					align: 'center',
 				},
 			],
+			valuesInfoTable: {
+				page: 1,
+				pageCount: 0,
+				itemsPerPage: -1,
+			},
 		},
 		maps: [],
 	}),
@@ -351,6 +375,50 @@ export default {
 				this.showOtherMapsPicker = false;
 			}
 		},
+
+		async showMapInfo(item) {
+			let mapAllInfo = null;
+
+			await axios
+				.get(`//localhost:3333/api/payment_map/${item.id}`)
+				.then((res) => {
+					mapAllInfo = res.data.data;
+				})
+				.catch((err) => {
+					console.log(err);
+					mapAllInfo = { error: err };
+				});
+
+			await Object.assign(this.mapDetailedInfo, mapAllInfo);
+
+			console.log(this.mapDetailedInfo);
+
+			let counts = {};
+
+			//iterates revenues array to count repeated units and create the headers for the data-table
+			this.mapDetailedInfo.revenues.forEach((rev) => {
+				counts[rev.unit_id] = (counts[rev.unit_id] || 0) + 1;
+
+				this.mapDetailedInfo.headers.push({
+					text: rev.unit,
+					align: 'center',
+					sortable: false,
+					class: 'black--text',
+				});
+			});
+
+			let installments = counts[Object.keys(counts)[0]];
+			this.mapDetailedInfo['installments'] = installments;
+
+			// console.log(mapAllInfo);
+			this.mapDetailedInfo.show = true;
+		},
+
+		closeMapInfo() {
+			this.mapDetailedInfo.headers = [];
+			this.mapDetailedInfo.show = false;
+		},
+
 		saveFile: function(data, filename, json) {
 			this.downloadAnualOtherMapsInfoMenu = false;
 
@@ -399,37 +467,6 @@ export default {
 				document.body.appendChild(a);
 				a.click();
 			}
-		},
-		async showMapInfo(item) {
-			let mapAllInfo = null;
-
-			await axios
-				.get(`//localhost:3333/api/payment_map/${item.id}`)
-				.then((res) => {
-					mapAllInfo = res.data.data;
-				})
-				.catch((err) => {
-					console.log(err);
-					mapAllInfo = { error: err };
-				});
-
-			await Object.assign(this.mapDetailedInfo, mapAllInfo);
-
-			this.mapDetailedInfo.revenues.forEach((rev) => {
-				this.mapDetailedInfo.headers.push({
-					text: rev.unit,
-					align: 'center',
-					sortable: false,
-					class: 'black--text',
-				});
-			});
-
-			// console.log(mapAllInfo);
-			this.mapDetailedInfo.show = true;
-		},
-		closeMapInfo() {
-			this.mapDetailedInfo.headers = [];
-			this.mapDetailedInfo.show = false;
 		},
 	},
 };

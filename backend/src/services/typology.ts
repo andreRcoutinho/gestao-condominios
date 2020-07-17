@@ -56,6 +56,7 @@ export async function update(body: any, id: number): Promise<Typology> {
 
         let typology: Typology = await Typology.findOne({ where: { id } });
         typology.setTypology(body.typology);
+        typology.setPermilage(body.permilage);
         await typology.save();
         return typology;
     } catch (error) {

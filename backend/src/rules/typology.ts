@@ -17,6 +17,7 @@ export function createRules(body: any): boolean | void {
 export function updateRules(body: any): boolean | void {
     let rules: Rules = {
         typology: 'required',
+        permilage: 'required|numeric'
     };
     filterBody(body, rules);
     var validation = new Validator(body, rules);

@@ -15,5 +15,6 @@ routes.get('/:id', typology.show);
 routes.post('/', typology.create);
 routes.put('/:id', typology.update);
 routes.delete('/:id', typology.remove);
+routes.post('/import', typology.importTypologies);
 
 export default routes;

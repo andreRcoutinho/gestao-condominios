@@ -346,6 +346,7 @@ paths:
           description: "Failed to remove typology"
           schema:
             $ref: "#/definitions/EmptyResponse"
+  
   #Roles
   /roles:
     get:
@@ -403,7 +404,6 @@ paths:
           description: "Failed to retrieve all users"
           schema:
             $ref: "#/definitions/EmptyResponse"
-
   /users/{id}:
     get:
       tags:

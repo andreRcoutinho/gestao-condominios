@@ -6,7 +6,7 @@ export class Typology extends BaseEntity {
     @PrimaryGeneratedColumn({ name: 'id' })
     private id: Number;
 
-    @Column({ name: 'typology' })
+    @Column({ name: 'typology', unique: true })
     private typology: String;
 
     @Column({ name: "permilage" })

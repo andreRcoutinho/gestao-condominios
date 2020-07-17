@@ -12,6 +12,10 @@ routes.get('/', unit.index);
 routes.get('/:id', unit.show);
 routes.post('/', unit.create);
 routes.put('/:id', unit.update);
+
 routes.delete('/:id', unit.remove);
+
+routes.post('/import', unit.importUnits);
+
 
 export default routes;

@@ -72,7 +72,7 @@ async function sendWelcomeEmail(user: User) {
     const token = crypto.randomBytes(20).toString('hex');
 
     const now = new Date();
-    now.setHours(now.getHours() + 3);
+    now.setHours(now.getHours() + 4);
 
     let user_password: UserPassword = await UserPassword.findOne({ where: { user } });
     user_password.setPassword_expire_date(now);
@@ -84,7 +84,6 @@ async function sendWelcomeEmail(user: User) {
         from: 'lei.gestao.condominios@gmail.com',
         subject: 'Bem-vindo',
         html: welcome(token, user.getEmail())
-
     });
 
     return true;

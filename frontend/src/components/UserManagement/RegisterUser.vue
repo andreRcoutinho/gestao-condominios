@@ -168,7 +168,7 @@ export default {
 			role: -1,
 			units: [],
 			validity: false,
-			unitRules: [(v) => !!v || 'Selecione pelo menos uma parcela.'],
+			unitRules: [(v) => !!v || 'Selecione pelo menos uma fração.'],
 		},
 		success: null,
 		errorMsg: null,

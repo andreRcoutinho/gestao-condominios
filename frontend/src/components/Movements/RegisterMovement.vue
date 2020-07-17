@@ -27,7 +27,7 @@
 											:items="paymentMaps"
 											:item-text="payMapText"
 											label="Mapa de Pagamento"
-											color="#949494"
+											color="secondary"
 											item-color="secondary"
 											required
 											return-object
@@ -43,16 +43,15 @@
 											item-text="unit"
 											item-value="id"
 											label="Fração"
-											color="#949494"
+											color="secondary"
 											item-color="secondary"
 											:rules="d1Info.unitRules"
 											required
 										>
 										</v-select>
 									</v-col>
-
 									<v-col cols="12" v-if="d1Info.paymentMap !== null">
-										<v-row justify="center">
+										<v-row justify="center" class="ma-0">
 											<!-- DATEPICKER ONLY TO ANUAL MAP -->
 											<v-date-picker
 												v-if="d1Info.paymentMap.yearly == true"
@@ -64,6 +63,14 @@
 												:min="d1Info.beginYear"
 												:max="d1Info.endYear"
 											></v-date-picker>
+											<v-text-field
+												v-else
+												v-model.number="d1Info.installmentsToPay"
+												label="Prestações a pagar"
+												color="secondary"
+												:rules="d1Info.numberRules"
+												required
+											></v-text-field>
 										</v-row>
 									</v-col>
 
@@ -131,7 +138,7 @@
 											item-text="name"
 											item-value="id"
 											label="Fornecedor"
-											color="#949494"
+											color="secondary"
 											item-color="blue"
 											:rules="d2Info.supRules"
 											required
@@ -143,7 +150,7 @@
 										<v-text-field
 											v-model="d2Info.desc"
 											label="Descrição"
-											color="#949494"
+											color="secondary"
 											:rules="d2Info.descRules"
 											required
 										></v-text-field>
@@ -154,7 +161,7 @@
 											v-model.number="d2Info.value"
 											label="Valor em €"
 											placeholder="0.00"
-											color="#949494"
+											color="secondary"
 											:rules="d2Info.valueRules"
 											required
 										></v-text-field>
@@ -243,6 +250,9 @@ export default {
 			beginYear: '',
 			endYear: '',
 			paymentMapUnits: [],
+
+			installmentsToPay: 0,
+			numberRules: [(v) => /^\d+$/.test(v) || 'Número inteiros apenas.'],
 		},
 		dialog2: false,
 		d2Info: {
@@ -342,47 +352,69 @@ export default {
 					}, 3000);
 				});
 		},
+
 		registerNewRevenue: function() {
 			let formatedMonths = this.d1Info.checkedMonths.map((elem) => {
 				return +elem.slice(5, 7);
 			});
 
-			//se payment_map selecionado não for anual, mês vai a 0
+			//se payment_map selecionado não for anual, mês vai a 0 e com prestações
 			if (formatedMonths.length === 0) {
 				formatedMonths = [0];
+
+				axios
+					.post('//localhost:3333/api/revenue', {
+						payment_map_id: this.d1Info.paymentMap.id,
+						unit_id: this.d1Info.unit,
+						months: formatedMonths,
+						installments_to_pay: this.d1Info.installmentsToPay,
+					})
+					.then((res) => {
+						this.success = res.data.message;
+
+						setTimeout(() => {
+							this.success = null;
+						}, 3000);
+
+						this.$refs.formRevenue.reset();
+						this.d1Info.checkedMonths = [];
+						this.d1Info.paymentMap = null;
+						// console.log(res);
+					})
+					.catch((err) => {
+						this.errorMsg = err.response.data.error;
+						setTimeout(() => {
+							this.errorMsg = null;
+						}, 3000);
+					});
+			} else {
+				axios
+					.post('//localhost:3333/api/revenue', {
+						payment_map_id: this.d1Info.paymentMap.id,
+						unit_id: this.d1Info.unit,
+						months: formatedMonths,
+					})
+					.then((res) => {
+						this.success = res.data.message;
+
+						setTimeout(() => {
+							this.success = null;
+						}, 3000);
+
+						this.$refs.formRevenue.reset();
+						this.d1Info.checkedMonths = [];
+						this.d1Info.paymentMap = null;
+						// console.log(res);
+					})
+					.catch((err) => {
+						this.errorMsg = err.response.data.error;
+						setTimeout(() => {
+							this.errorMsg = null;
+						}, 3000);
+					});
 			}
-
-			console.log({
-				payment_map_id: this.d1Info.paymentMap.id,
-				unit_id: this.d1Info.unit,
-				months: formatedMonths,
-			});
-
-			axios
-				.post('//localhost:3333/api/revenue', {
-					payment_map_id: this.d1Info.paymentMap.id,
-					unit_id: this.d1Info.unit,
-					months: formatedMonths,
-				})
-				.then((res) => {
-					this.success = res.data.message;
-
-					setTimeout(() => {
-						this.success = null;
-					}, 3000);
-
-					this.$refs.formRevenue.reset();
-					this.d1Info.checkedMonths = [];
-					this.d1Info.paymentMap = null;
-					// console.log(res);
-				})
-				.catch((err) => {
-					this.errorMsg = err.response.data.error;
-					setTimeout(() => {
-						this.errorMsg = null;
-					}, 3000);
-				});
 		},
+
 		closeRegisterNewMvmt: function(revenue) {
 			if (revenue) {
 				this.$refs.formRevenue.reset();

@@ -13,7 +13,7 @@
 							<v-row justify="center" class="mb-3">
 								<v-col cols="6">
 									<v-text-field
-										v-model="updateUser.firstName"
+										v-model="editedUser.firstName"
 										label="Primeiro Nome"
 										color="secondary"
 										hide-details
@@ -21,7 +21,7 @@
 								</v-col>
 								<v-col cols="6">
 									<v-text-field
-										v-model="updateUser.lastName"
+										v-model="editedUser.lastName"
 										label="Último Nome"
 										color="secondary"
 										hide-details
@@ -31,7 +31,7 @@
 							<v-row justify="center" class="mb-3">
 								<v-col cols="12">
 									<v-text-field
-										v-model="updateUser.email"
+										v-model="editedUser.email"
 										label="Email"
 										color="secondary"
 										hide-details
@@ -41,14 +41,14 @@
 							<v-row justify="center">
 								<v-col cols="12">
 									<v-text-field
-										v-model="updateUser.IBAN"
+										v-model="editedUser.IBAN"
 										label="IBAN"
 										color="secondary"
 									></v-text-field>
 								</v-col>
 								<v-col cols="12">
 									<v-text-field
-										v-model="updateUser.NIF"
+										v-model="editedUser.NIF"
 										label="NIF"
 										color="secondary"
 									></v-text-field>
@@ -64,10 +64,10 @@
 									</v-row>
 								</v-col>
 								<v-col>
-									<v-icon v-if="updateUser.success" color="green">
+									<v-icon v-if="editedUser.success" color="green">
 										mdi-check
 									</v-icon>
-									<v-icon v-if="updateUser.error" color="red">
+									<v-icon v-if="editedUser.error" color="red">
 										mdi-cancel
 									</v-icon>
 								</v-col>
@@ -76,7 +76,7 @@
 								<!-- Update Contacts -->
 								<v-col>
 									<v-dialog
-										v-model="updateUser.updateContactsDialog.show"
+										v-model="editedUser.updateContactsDialog.show"
 										persistent
 										max-width="450px"
 									>
@@ -130,12 +130,12 @@
 												<v-row justify="center">
 													<v-form ref="form" @submit.prevent>
 														<v-text-field
-															v-model="updateUser.updateContactsDialog.newContact"
+															v-model="editedUser.updateContactsDialog.newContact"
 															label="Novo Contacto"
 															color="secondary"
 															:append-icon="`mdi-plus`"
 															@click:append="addContact"
-															:rules="updateUser.updateContactsDialog.contactRules"
+															:rules="editedUser.updateContactsDialog.contactRules"
 														>
 														</v-text-field>
 													</v-form>
@@ -154,33 +154,71 @@
 								<!-- TODO: Update Password -->
 								<v-col>
 									<v-dialog
-										v-model="updateUser.updatePwdDialog.show"
+										v-model="editedUser.updatePwdDialog.show"
 										persistent
 										max-width="600px"
 									>
 										<template v-slot:activator="{ on }" class="text-xs-center">
 											<v-btn v-on="on" outlined color="red">
-												Atualizar Password
+												Atualizar Palavra-passe
 											</v-btn>
 										</template>
 										<v-card>
 											<v-card-title class="ml-2 pt-5">
 												<span>
-													Atualizar Password
+													Atualizar Palavra-passe
 												</span>
 											</v-card-title>
 
 											<v-card-text>
-												<v-row justify="center"> </v-row>
-
-												<v-row> </v-row>
+												<v-row justify="center">
+													<v-col cols="12">
+														<v-text-field
+															v-model="editedUser.updatePwdDialog.activePwd"
+															label="Palavra-passe antiga"
+															color="secondary"
+															:type="showPassword1 ? 'text' : 'password'"
+															prepend-icon="mdi-lock"
+															:append-icon="
+																showPassword1 ? 'mdi-eye' : 'mdi-eye-off'
+															"
+															@click:append="showPassword1 = !showPassword1"
+														></v-text-field>
+													</v-col>
+													<v-col cols="12">
+														<v-text-field
+															v-model="editedUser.updatePwdDialog.newPwd"
+															label="Nova palavra-passe"
+															color="secondary"
+															:type="showPassword2 ? 'text' : 'password'"
+															prepend-icon="mdi-lock"
+															:append-icon="
+																showPassword2 ? 'mdi-eye' : 'mdi-eye-off'
+															"
+															@click:append="showPassword2 = !showPassword2"
+														></v-text-field>
+													</v-col>
+													<v-col cols="12">
+														<v-text-field
+															v-model="editedUser.updatePwdDialog.repeatPwd"
+															label="Repetir palavra-passe"
+															color="secondary"
+															:type="showPassword3 ? 'text' : 'password'"
+															prepend-icon="mdi-lock"
+															:append-icon="
+																showPassword3 ? 'mdi-eye' : 'mdi-eye-off'
+															"
+															@click:append="showPassword3 = !showPassword3"
+														></v-text-field>
+													</v-col>
+												</v-row>
 
 												<v-row>
 													<v-spacer></v-spacer>
 													<v-btn
 														color="red"
 														text
-														@click="updateUser.updatePwdDialog.show = false"
+														@click="editedUser.updatePwdDialog.show = false"
 														>Fechar</v-btn
 													>
 												</v-row>
@@ -263,7 +301,7 @@ import axios from 'axios';
 export default {
 	name: 'UserSettings',
 	data: () => ({
-		updateUser: {
+		editedUser: {
 			firstName: '',
 			lastName: '',
 			email: '',
@@ -276,10 +314,17 @@ export default {
 			},
 			updatePwdDialog: {
 				show: false,
+				activePwd: '',
+				newPwd: '',
 			},
 			success: false,
 			error: false,
 		},
+
+		showPassword1: false,
+		showPassword2: false,
+		showPassword3: false,
+
 		userInfo: [],
 		userContacts: [],
 	}),
@@ -293,34 +338,34 @@ export default {
 			this.userContacts = res.data.data.contacts;
 		});
 
-		this.updateUser.firstName = userFirstName;
-		this.updateUser.lastName = userLastName;
-		this.updateUser.email = this.userInfo.email;
-		this.updateUser.IBAN = this.userInfo.iban;
-		this.updateUser.NIF = this.userInfo.nif;
+		this.editedUser.firstName = userFirstName;
+		this.editedUser.lastName = userLastName;
+		this.editedUser.email = this.userInfo.email;
+		this.editedUser.IBAN = this.userInfo.iban;
+		this.editedUser.NIF = this.userInfo.nif;
 	},
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},
 	methods: {
 		closeContactsDialog: function() {
-			this.updateUser.updateContactsDialog.show = false;
+			this.editedUser.updateContactsDialog.show = false;
 			this.$refs.form.reset();
 		},
 		updateUser: function() {
 			axios
 				.put(`http://localhost:3333/api/users/${this.userInfo.id}`, {
-					first_name: this.updateUser.firstName,
-					last_name: this.updateUser.lastName,
-					email: this.updateUser.email,
-					IBAN: this.updateUser.IBAN,
-					NIF: this.updateUser.NIF,
+					first_name: this.editedUser.firstName,
+					last_name: this.editedUser.lastName,
+					email: this.editedUser.email,
+					IBAN: this.editedUser.IBAN,
+					NIF: this.editedUser.NIF,
 				})
 				.then(() => {
-					this.updateUser.success = true;
+					this.editedUser.success = true;
 
 					setTimeout(() => {
-						this.updateUser.success = null;
+						this.editedUser.success = null;
 					}, 3000);
 
 					axios.get(`//localhost:3333/api/users/${this.userInfo.id}`).then((res) => {
@@ -328,9 +373,9 @@ export default {
 					});
 				})
 				.catch((err) => {
-					this.updateUser.error = true;
+					this.editedUser.error = true;
 					setTimeout(() => {
-						this.updateUser.error = null;
+						this.editedUser.error = null;
 					}, 3000);
 					console.log(err);
 				});
@@ -338,13 +383,13 @@ export default {
 		addContact: function() {
 			axios
 				.put(`http://localhost:3333/api/users/${this.userInfo.id}/add-contact`, {
-					phone_number: this.updateUser.updateContactsDialog.newContact,
+					phone_number: this.editedUser.updateContactsDialog.newContact,
 				})
 				.then(() => {
 					this.userContacts.push({
-						phone_number: this.updateUser.updateContactsDialog.newContact,
+						phone_number: this.editedUser.updateContactsDialog.newContact,
 					});
-					this.updateUser.updateContactsDialog.newContact = '';
+					this.editedUser.updateContactsDialog.newContact = '';
 					this.$refs.form.reset();
 				})
 				.catch((err) => {

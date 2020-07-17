@@ -1,10 +1,10 @@
-export function forgot_password(token: String, email: String) {
+export function welcome(token: String, email: String) {
     return `
     <!DOCTYPE html>
 
 <head>
     <meta charset="UTF-8">
-    <title>Recuperar Password</title>
+    <title>Bem vindo</title>
 </head>
 
 <head>
@@ -60,7 +60,7 @@ export function forgot_password(token: String, email: String) {
                                             <td style="padding-top: 24px;"><img src="https://d1pgqke3goo8l6.cloudfront.net/wRMe5oiRRqYamUFBvXEw_logo.png" style="width: 56px;"></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="2" style="padding-top: 72px; -ms-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #000000; font-family: 'Postmates Std', 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 48px; font-smoothing: always; font-style: normal; font-weight: 600; letter-spacing: -2.6px; line-height: 52px; mso-line-height-rule: exactly; text-decoration: none;">Recuperar Password</td>
+                                            <td colspan="2" style="padding-top: 72px; -ms-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #000000; font-family: 'Postmates Std', 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 48px; font-smoothing: always; font-style: normal; font-weight: 600; letter-spacing: -2.6px; line-height: 52px; mso-line-height-rule: exactly; text-decoration: none;">Bem vindo</td>
                                         </tr>
                                         <tr>
                                             <td style="padding-top: 48px; padding-bottom: 48px;">
@@ -74,11 +74,11 @@ export function forgot_password(token: String, email: String) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="-ms-text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #9095a2; font-family: 'Postmates Std', 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 16px; font-smoothing: always; font-style: normal; font-weight: 400; letter-spacing: -0.18px; line-height: 24px; mso-line-height-rule: exactly; text-decoration: none; vertical-align: top; width: 100%;">Está a receber este e-mail porque foi solicitada a recuperação da sua password. Se não foi você que fez o pedido, por favor contacte o administrador.</td>
+                                            <td style="-ms-text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #9095a2; font-family: 'Postmates Std', 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 16px; font-smoothing: always; font-style: normal; font-weight: 400; letter-spacing: -0.18px; line-height: 24px; mso-line-height-rule: exactly; text-decoration: none; vertical-align: top; width: 100%;">Está a receber este e-mail porque foi criada uma conta com este endereço e-mail. Se não foi você que fez o pedido, por favor contacte o administrador.</td>
                                         </tr>
                                         <tr>
                                             <td><a data-click-track-id="37" href="http://localhost:8080/reset-password?token=${token}&email=${email}" style="margin-top: 36px; -ms-text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #ffffff; font-family: 'Postmates Std', 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 12px; font-smoothing: always; font-style: normal; font-weight: 600; letter-spacing: 0.7px; line-height: 48px; mso-line-height-rule: exactly; text-decoration: none; vertical-align: top; width: 220px; background-color: #54B4E2; border-radius: 28px; display: block; text-align: center; text-transform: uppercase"
-                                                    target="_blank">Recuperar Password</a></td>
+                                                    target="_blank">Criar Palavra-Passe</a></td>
                                         </tr>
                                         <p>Token provisório: ${token}</p>
                                         <p>Email provisório: ${email}</p>

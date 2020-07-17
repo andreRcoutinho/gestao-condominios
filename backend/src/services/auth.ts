@@ -9,6 +9,7 @@ import { Contact } from '../models/contact';
 import crypto from 'crypto';
 import { transporter } from '../config/email';
 import { forgot_password } from '../email/forgot_password';
+import { welcome } from '../email/welcome';
 
 async function hasUser(email: String): Promise<boolean> {
     try {
@@ -57,10 +58,36 @@ export async function signUp(body: any) {
             await c.save();
         }
 
+        if (!body.password) {
+            sendWelcomeEmail(user)
+        }
+
         return true;
-    } catch (e) {
-        return e;
+    } catch (error) {
+        return error;
     }
+}
+
+async function sendWelcomeEmail(user: User) {
+    const token = crypto.randomBytes(20).toString('hex');
+
+    const now = new Date();
+    now.setHours(now.getHours() + 3);
+
+    let user_password: UserPassword = await UserPassword.findOne({ where: { user } });
+    user_password.setPassword_expire_date(now);
+    user_password.setPassword_reset_token(token);
+    await user_password.save();
+
+    transporter.sendMail({
+        to: String(user.getEmail()),
+        from: 'lei.gestao.condominios@gmail.com',
+        subject: 'Bem-vindo',
+        html: welcome(token, user.getEmail())
+
+    });
+
+    return true;
 }
 
 export async function signIn(body: any) {

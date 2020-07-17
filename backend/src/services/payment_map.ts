@@ -134,7 +134,6 @@ export async function getAnualPaymentMap(year?: String) {
     }
 }
 
-/* CREATE REVENUES NORMAL PAYMENT MAP */
 async function createNormalPaymentMap(units: Unit[], total_value: Number, payment_map: PaymentMap, installments: Number): Promise<Boolean> {
     try {
         let sum_permilage = 0;

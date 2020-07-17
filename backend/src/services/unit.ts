@@ -77,3 +77,19 @@ export async function remove(id: number) {
         return error;
     }
 }
+
+export async function importUnits(body: any): Promise<Unit[]> {
+    try {
+        var units: Unit[] = [];
+        for (let index = 0; index < body.length; index++) {
+            let unit = body[index];
+            let typology: Typology = await Typology.getRepository().findOne({ where: { typology: unit.typology } });
+            var newUnit: Unit = new Unit(unit.unit, typology);
+            await newUnit.save();
+            units.push(newUnit);
+        }
+        return units;
+    } catch (error) {
+        return error;
+    }
+}

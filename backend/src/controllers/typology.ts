@@ -25,6 +25,10 @@ const TYPOLOGY_REMOVE_REQUEST: String = "Remover tipologia";
 const TYPOLOGY_REMOVE_MESSAGE_SUCCESS: String = "Tipologia removida com sucesso!";
 const TYPOLOGY_REMOVE_MESSAGE_FAIL: String = "Ocorreu um erro ao remover a tipologia.";
 
+const TYPOLOGY_IMPORT_REQUEST: String = "Importar tipologias";
+const TYPOLOGY_IMPORT_MESSAGE_SUCCESS: String = "Tipologias importadas com sucesso!";
+const TYPOLOGY_IMPORT_MESSAGE_FAIL: String = "Ocorreu um erro ao importar as tipologias";
+
 
 export async function index(req: Request, res: Response) {
 
@@ -87,3 +91,13 @@ export async function remove(req: Request, res: Response) {
     }
 }
 
+export async function importTypologies(req: Request, res: Response) {
+
+    var response = await typologyServices.importTypologies(req.body);
+
+    if (response instanceof Error) {
+        return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(TYPOLOGY_IMPORT_REQUEST, TYPOLOGY_IMPORT_MESSAGE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message));
+    } else {
+        return res.send(new ApiResponse(TYPOLOGY_IMPORT_REQUEST, TYPOLOGY_IMPORT_MESSAGE_SUCCESS, HttpStatus.OK, response))
+    }
+}

@@ -75,3 +75,22 @@ export async function remove(id: number): Promise<Typology> {
     }
 }
 
+export async function importTypologies(body: any): Promise<Typology[]> {
+    try {
+        var typologies: Typology[] = [];
+        for (let index = 0; index < body.length; index++) {
+            let typology = body[index];
+            var newTypology: Typology = new Typology(typology.typology, typology.permilage);
+            typologies.push(newTypology);
+        }
+
+        for (let index = 0; index < typologies.length; index++) {
+            let typology = typologies[index];
+            await typology.save();
+        }
+        return typologies;
+    } catch (error) {
+        return error;
+    }
+}
+

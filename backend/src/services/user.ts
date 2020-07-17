@@ -123,7 +123,7 @@ export async function updatePassword(id: Number, body: any) {
         }
 
         if (body.new_password !== body.new_password_repeat) {
-            throw new Error("Nova Palavra-Passe e repetição de Nova Palavra-passe são diferentes!");
+            throw new Error(api_errors.NEW_PASSWORD_REPEAT_ERROR);
         }
 
         var user_password: UserPassword = user.getUser_password();

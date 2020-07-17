@@ -144,8 +144,13 @@ export async function resetPassword(body: any) {
             throw new Error(api_errors.TOKEN_EXPIRED);
         }
 
-        user_password.update_password(body.password);
+        if (body.new_password !== body.new_password_repeat) {
+            throw new Error(api_errors.NEW_PASSWORD_REPEAT_ERROR);
+        }
+
+        user_password.update_password(body.new_password);
         user_password.save();
+
         return true;
 
     } catch (error) {

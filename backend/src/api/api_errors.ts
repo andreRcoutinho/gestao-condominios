@@ -1,6 +1,7 @@
 export const USER_NOT_EXISTS = 'Utilizador inexistente. Tente novamente.';
 export const INVALID_PASSWORD = 'Password inválida!';
 export const USER_ALREADY_EXISTS = 'Utilizador já existe na base de dados';
+export const NEW_PASSWORD_REPEAT_ERROR = 'Nova Palavra-Passe e Palavra-Passe repetida são diferentes!'
 
 export const ROLES_EMPTY = 'Ainda não existem tipos de utilizadores na base de dados';
 export const ROLE_NOT_EXISTS = 'Tipo de utilizador inexistente';

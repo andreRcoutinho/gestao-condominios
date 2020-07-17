@@ -50,6 +50,12 @@ const routes = [
 			import(/* webpackChunkName: "UserManagement" */ '../views/UserManagement.vue'),
 	},
 	{
+		path: '/gestao-condominio',
+		name: 'buildingManagement',
+		component: () =>
+			import(/* webpackChunkName: "BuildingManagement" */ '../views/BuildingManagement.vue'),
+	},
+	{
 		path: '/404',
 		component: NotFound,
 	},

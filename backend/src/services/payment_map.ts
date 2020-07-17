@@ -58,8 +58,11 @@ export async function show(id: Number, year?: String) {
 
         let revenues_res: { month; unit_id; unit; paid; value }[] = [];
 
+        let all_paid = true;
+
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
+
             revenues_res.push({
                 month: revenue.getMonth(),
                 unit_id: revenue.getUnit().getId(),
@@ -67,12 +70,17 @@ export async function show(id: Number, year?: String) {
                 paid: revenue.isPaid(),
                 value: revenue.getValue(),
             });
+
+            if (revenues[i].isPaid() === false) {
+                all_paid = false;
+            }
         }
 
         let response = {
             payment_map: payment_map,
             payment_map_values: payment_map_values,
             revenues: revenues_res,
+            all_paid
         };
 
         return response;

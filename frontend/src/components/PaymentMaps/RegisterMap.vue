@@ -18,7 +18,7 @@
 					>
 					</v-switch>
 				</v-row>
-				<v-divider inset></v-divider>
+				<v-divider class="mx-8"></v-divider>
 				<v-row justify="center" class="mt-3">
 					<v-col cols="5">
 						<v-text-field
@@ -79,7 +79,7 @@
 						/>
 					</v-col>
 				</v-row>
-				<v-divider inset></v-divider>
+				<v-divider class="mx-8"></v-divider>
 
 				<v-row class="mt-3" justify="center">
 					<v-col cols="6" class="text-center">
@@ -116,17 +116,30 @@
 					>
 					</v-switch>
 				</v-row>
-				<v-divider inset></v-divider>
+				<v-divider class="mx-8"></v-divider>
 
 				<v-row class="mt-4" align-content="end">
 					<v-spacer></v-spacer>
 					<v-btn color="red" text @click="clearFields">Cancelar</v-btn>
-					<v-btn color="secondary" text type="submit" :disabled="!newMapInfo.validity">
+					<v-btn
+						color="secondary"
+						text
+						type="submit"
+						:disabled="!newMapInfo.validity"
+						class="mr-8"
+					>
 						Registar
 					</v-btn>
 				</v-row>
 			</v-container>
 		</v-form>
+		<v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" top :color="snackbar.colour">
+			{{ snackbar.message }}
+			<v-icon v-if="snackbar.success"> mdi-checkbox-marked-circle</v-icon>
+			<v-icon v-else>
+				mdi-cancel
+			</v-icon>
+		</v-snackbar>
 	</div>
 </template>
 
@@ -182,6 +195,15 @@ export default {
 				// 	colour: '',
 			},
 		},
+
+		snackbar: {
+			show: false,
+			message: null,
+			timeout: 3500,
+			success: false,
+			colour: '',
+		},
+
 		units: [],
 		nextYear: +new Date().toISOString().substr(0, 4) + 1,
 	}),
@@ -190,9 +212,11 @@ export default {
 			set(val) {
 				this.newMapInfo.selectedUnits = [];
 				if (val) {
-					for (let i = 1; i <= this.units.length; i++) {
-						this.newMapInfo.selectedUnits.push(i);
+					let tempA = [];
+					for (let i = 0; i < this.units.length; i++) {
+						tempA.push(this.units[i].id);
 					}
+					this.newMapInfo.selectedUnits = tempA;
 				}
 			},
 			get() {
@@ -204,62 +228,55 @@ export default {
 		axios.get('//localhost:3333/api/units/').then((res) => (this.units = res.data.data));
 	},
 	methods: {
-		print() {
-			console.log(this.switchIsYearly);
-		},
 		registerNewPaymentMap: function() {
 			if (this.switchIsYearly) {
 				axios
 					.post('//localhost:3333/api/payment_map', {
-						//name: this.newMapInfo.mapName,
-						//description: this.newMapInfo.description,
-						//unit_ids: this.newMapInfo.selectedUnits,
-						//year: +(new Date().toISOString().substr(0, 4)) + 1,
-						//is_yearly: true,
-						//value: this.newMapInfo.totalValue,
+						name: this.newMapInfo.mapName,
+						description: this.newMapInfo.description,
+						unit_ids: this.newMapInfo.selectedUnits,
+						year: this.newMapInfo.year,
+						is_yearly: true,
+						value: this.newMapInfo.totalValue,
 					})
 					.then((res) => {
-						this.newMapInfo.snackbar.message = res.data.message;
-						// this.newMapInfo.snackbar.success = true;
-						// this.newMapInfo.snackbar.colour = 'green';
-						this.$refs.formNewAnualPayMap.reset();
-						// this.newMapInfo.snackbar.show = true;
+						this.snackbar.message = res.data.message;
+						this.snackbar.success = true;
+						this.snackbar.colour = 'green';
+						this.snackbar.show = true;
+
+						this.$refs.formNewPayMap.reset();
 					})
 					.catch((err) => {
-						this.newMapInfo.snackbar.message = err.response.data.message;
-						// this.newMapInfo.snackbar.success = false;
-						// this.newMapInfo.snackbar.colour = 'red';
-						// this.newMapInfo.snackbar.show = true;
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
 					});
 			} else {
-				console.log(this.newMapInfo.selectedUnits);
-				console.log(this.newMapInfo.numberOfInstallments);
-
-				this.$refs.formNewNormalPayMap.reset();
-
-				// axios
-				// 	.post('//localhost:3333/api/payment_map', {
-				// 		name: this.newMapInfo.mapName,
-				// 		description: this.newMapInfo.description,
-				// 		installments: this.newMapInfo.numberOfInstallments,
-				// 		unit_ids: this.newMapInfo.selectedUnits,
-				// 		year: new Date().toISOString().substr(0, 4),
-				// 		is_yearly: false,
-				// 		value: this.newMapInfo.totalValue,
-				// 	})
-				// 	.then((res) => {
-				// 		this.newMapInfo.snackbar.message = res.data.message;
-				// 		// this.newMapInfo.snackbar.success = true;
-				// 		// this.newMapInfo.snackbar.colour = 'green';
-				// 		this.$refs.formNewNormalPayMap.reset();
-				// 		//this.newMapInfo.snackbar.show = true;
-				// 	})
-				// 	.catch((err) => {
-				// 		this.newMapInfo.snackbar.message = err.response.data.message;
-				// 		// this.newMapInfo.snackbar.success = false;
-				// 		// this.newMapInfo.snackbar.colour = 'red';
-				// 		// this.newMapInfo.snackbar.show = true;
-				// 	});
+				axios
+					.post('//localhost:3333/api/payment_map', {
+						name: this.newMapInfo.mapName,
+						description: this.newMapInfo.description,
+						installments: this.newMapInfo.numberOfInstallments,
+						unit_ids: this.newMapInfo.selectedUnits,
+						year: new Date().toISOString().substr(0, 4),
+						is_yearly: false,
+						value: this.newMapInfo.totalValue,
+					})
+					.then((res) => {
+						this.snackbar.message = res.data.message;
+						this.snackbar.success = true;
+						this.snackbar.colour = 'green';
+						this.snackbar.show = true;
+						this.$refs.formNewPayMap.reset();
+					})
+					.catch((err) => {
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
+					});
 			}
 		},
 		clearFields: function() {

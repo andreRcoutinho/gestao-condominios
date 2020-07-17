@@ -39,15 +39,7 @@ export async function signUp(body: any) {
 
         var user_password: UserPassword = new UserPassword(password);
 
-        var user: User = new User(
-            body.email,
-            body.first_name,
-            body.last_name,
-            body.IBAN,
-            body.NIF,
-            role,
-            user_password
-        );
+        var user: User = new User(body.email, body.first_name, body.last_name, body.IBAN, body.NIF, role, user_password);
 
         await user_password.save();
 

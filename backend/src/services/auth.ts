@@ -14,9 +14,13 @@ import { welcome } from '../email/welcome';
 async function hasUser(email: String): Promise<boolean> {
     try {
         let hasUser: User = await User.findOne({ where: { email } });
-        if (hasUser) return true;
+
+        if (hasUser) {
+            return true;
+        }
+
         return false;
-    } catch (e) {
+    } catch (error) {
         return false;
     }
 }
@@ -117,8 +121,8 @@ export async function signIn(body: any) {
             token,
         };
         return response;
-    } catch (e) {
-        return e;
+    } catch (error) {
+        return error;
     }
 }
 

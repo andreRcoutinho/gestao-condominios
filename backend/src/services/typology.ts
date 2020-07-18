@@ -98,7 +98,7 @@ export async function update(body: any, id: number): Promise<Typology> {
                     }
                 }
 
-                await updatePaymentMap(revenues, paymentMapValues[0].getValue(), units_monthly);
+                await updatePaymentMap(revenues, paymentMapValues[0].getValue(), units_monthly, month);
             }
         }
         return typology;

@@ -2,7 +2,7 @@ import { PaymentMap } from '../models/payment_map';
 import { PaymentMapValues } from '../models/payment_map_values';
 import { Unit } from '../models/unit';
 import { Revenue } from '../models/revenue';
-import { MoreThan } from 'typeorm';
+import { MoreThan, LessThan } from 'typeorm';
 import * as api_errors from '../api/api_errors';
 
 const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -208,7 +208,7 @@ async function createPaymentMap(units_month: Unit[], total_value: Number, paymen
     }
 }
 
-export async function updatePaymentMap(revenues: Revenue[], total_value: Number, units_monthly: Unit[]): Promise<Boolean> {
+export async function updatePaymentMap(revenues: Revenue[], total_value: Number, units_monthly: Unit[], month: number): Promise<Boolean> {
     try {
         let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
         let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
@@ -219,10 +219,10 @@ export async function updatePaymentMap(revenues: Revenue[], total_value: Number,
         let total_permilage_monthly: number = calculateTotalPermilages(units_monthly);
 
         //Calculate monthly expenses
-        monthly_expenses = calculateMonthlyExpenses(units_monthly, total_permilage_monthly, Number(total_value));
+        monthly_expenses = calculateMonthlyExpenses(units_monthly, total_permilage_monthly, Number(total_value), 12 - month);
 
         //Calculate reserve funds
-        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value));
+        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value), 12 - month);
 
         await updateRevenues(revenues, monthly_expenses, reserve_funds);
 
@@ -306,7 +306,7 @@ export async function update(id: Number, body: any) {
         let revenues: Revenue[] = await Revenue.find({
             where: { payment_map: payment_map, month: MoreThan(month), paid: false },
         });
-
+        console.log(revenues);
         // Serve para identificar as revenues que entram na mensalidade
         let units_monthly: Unit[] = [];
         for (let i = 0; i < revenues.length; i++) {
@@ -318,7 +318,18 @@ export async function update(id: Number, body: any) {
             }
         }
 
-        await updatePaymentMap(revenues, body.value, units_monthly);
+        let paidRevenues: Revenue[] = await Revenue.find({
+            where: { payment_map: payment_map, month: LessThan(month + 1) }
+        });
+        console.log(paidRevenues);
+        var total_paid: number = 0;
+        for (let index = 0; index < paidRevenues.length; index++) {
+            var revenue = paidRevenues[index];
+            total_paid += Number(revenue.getValue());
+        }
+        body.value = body.value - total_paid;
+
+        await updatePaymentMap(revenues, body.value, units_monthly, body.month);
         return true;
     } catch (error) {
         return error;
@@ -384,13 +395,13 @@ function calculateTotalPermilages(units: Unit[]): number {
     return total_permilage_month;
 }
 
-function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number): { id: Number; monthy_expense: Number }[] {
+function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number, months?: number): { id: Number; monthy_expense: Number }[] {
     let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
 
     for (let i = 0; i < units.length; i++) {
         let monthly_expense = 0;
         monthly_expense = Number(units[i].getTypology().getPermilage()) / total_permilage_month;
-        monthly_expense = monthly_expense * (Number(total_value) / 12);
+        monthly_expense = monthly_expense * (Number(total_value) / (months ? months : 12));
         monthly_expenses.push({
             id: units[i].getId(),
             monthy_expense: Number(monthly_expense),
@@ -400,13 +411,13 @@ function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, 
     return monthly_expenses;
 }
 
-function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number): { id: Number; reserve_fund: Number }[] {
+function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number, months?: number): { id: Number; reserve_fund: Number }[] {
     let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
 
     for (let i = 0; i < units.length; i++) {
         let reserve_fund = 0;
         reserve_fund = Number(units[i].getTypology().getPermilage()) / total_permilage;
-        reserve_fund = reserve_fund * ((Number(total_value) * 0.1) / 12);
+        reserve_fund = reserve_fund * ((Number(total_value) * 0.1) / (months ? months : 12));
         reserve_funds.push({
             id: units[i].getId(),
             reserve_fund: Number(reserve_fund)

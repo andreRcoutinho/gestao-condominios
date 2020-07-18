@@ -77,7 +77,7 @@ export async function remove(id: number) {
         let revenues: Revenue[] = await Revenue.find({ where: { unit } });
 
         if (revenues.length > 0) {
-            throw new Error('Fração não pode ser removida!');
+            throw new Error(api_errors.UNIT_CANNOT_BE_REMOVED);
         }
 
         await Unit.remove(unit);

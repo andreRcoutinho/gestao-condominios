@@ -38,15 +38,7 @@ export class User extends BaseEntity {
     @JoinTable()
     private units: Unit[];
 
-    constructor(
-        email: String,
-        first_name: String,
-        last_name: String,
-        IBAN: String,
-        NIF: String,
-        role: Role,
-        user_password: UserPassword
-    ) {
+    constructor(email: String, first_name: String, last_name: String, IBAN: String, NIF: String, role: Role, user_password: UserPassword) {
         super();
         this.email = email;
         this.first_name = first_name;

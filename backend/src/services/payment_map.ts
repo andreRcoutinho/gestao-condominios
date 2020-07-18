@@ -2,10 +2,27 @@ import { PaymentMap } from '../models/payment_map';
 import { PaymentMapValues } from '../models/payment_map_values';
 import { Unit } from '../models/unit';
 import { Revenue } from '../models/revenue';
-import { MoreThan } from 'typeorm';
+import { MoreThan, LessThan } from 'typeorm';
 import * as api_errors from '../api/api_errors';
 
 const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+interface res_payment_map {
+    id: Number;
+    name: String;
+    description: String;
+    yearly: Boolean;
+    year: String;
+    closed: Boolean
+}
+
+interface res_revenues {
+    month: Number;
+    unit_id: Number;
+    unit: String;
+    paid: Boolean;
+    value: Number
+}
 
 export async function index(year?: String) {
     try {
@@ -14,18 +31,18 @@ export async function index(year?: String) {
             payment_maps_aux = await PaymentMap.find({
                 where: {
                     year,
-                    // yearly: false
                 },
             });
         } else {
-            // payment_maps_aux = await PaymentMap.find({ where: { yearly: false } });
             payment_maps_aux = await PaymentMap.find();
         }
 
         if (payment_maps_aux.length === 0) {
             throw new Error(api_errors.NO_PAYMENT_MAPS);
         }
-        let payment_maps: { id; name; description; yearly; year; closed }[] = [];
+
+        let payment_maps: res_payment_map[] = [];
+
         for (let i = 0; i < payment_maps_aux.length; i++) {
             const payment_map = payment_maps_aux[i];
             payment_maps.push({
@@ -37,6 +54,7 @@ export async function index(year?: String) {
                 closed: payment_map.isClosed(),
             });
         }
+
         return payment_maps;
     } catch (error) {
         return error;
@@ -56,10 +74,14 @@ export async function show(id: Number, year?: String) {
 
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
 
-        let revenues_res: { month; unit_id; unit; paid; value }[] = [];
+        let revenues_res: res_revenues[] = [];
+
+        let all_paid = true;
+        let total: number = 0;
 
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
+
             revenues_res.push({
                 month: revenue.getMonth(),
                 unit_id: revenue.getUnit().getId(),
@@ -67,12 +89,19 @@ export async function show(id: Number, year?: String) {
                 paid: revenue.isPaid(),
                 value: revenue.getValue(),
             });
+
+            if (revenues[i].isPaid() === false) {
+                all_paid = false;
+            }
+            total += Number(revenue.getValue());
         }
 
         let response = {
             payment_map: payment_map,
             payment_map_values: payment_map_values,
+            total,
             revenues: revenues_res,
+            all_paid,
         };
 
         return response;
@@ -101,7 +130,7 @@ export async function getAnualPaymentMap(year?: String) {
 
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
 
-        let revenues_res: { month; unit_id; unit; paid; value }[] = [];
+        let revenues_res: res_revenues[] = [];
 
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
@@ -126,16 +155,13 @@ export async function getAnualPaymentMap(year?: String) {
     }
 }
 
-/* CREATE REVENUES NORMAL PAYMENT MAP */
 async function createNormalPaymentMap(units: Unit[], total_value: Number, payment_map: PaymentMap, installments: Number): Promise<Boolean> {
     try {
-        let sum_permilage = 0;
-        for (let i = 0; i < units.length; i++) {
-            sum_permilage += Number(units[i].getTypology().getPermilage());
-        }
+
+        let sum_permilage: number = calculateTotalPermilages(units);
 
         for (let i = 0; i < units.length; i++) {
-            let value: Number;
+            let value: Number = 0;
             value = Number(units[i].getTypology().getPermilage().toString()) / sum_permilage;
             value = Number(value) * (Number(total_value) / Number(installments));
             for (let j = 0; j < installments; j++) {
@@ -151,13 +177,13 @@ async function createNormalPaymentMap(units: Unit[], total_value: Number, paymen
 
 async function createPaymentMap(units_month: Unit[], total_value: Number, payment_map: PaymentMap, isSimulation: Boolean): Promise<Boolean | {}> {
     try {
-        let reserve_funds: { id; reserve_fund }[] = [];
-        let monthly_expenses: { id; monthy_expense }[] = [];
+        let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
+        let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
 
-        //Calculate total permilage per month
+        //Calculate total permilage (Para as frações que entram na mensalidade) 
         let total_permilage_monthly: number = calculateTotalPermilages(units_month);
 
-        //Calculate total permilage
+        //Calculate total permilage (Todas as frações)
         let all_units: Unit[] = await Unit.find();
         let total_permilage: number = calculateTotalPermilages(all_units);
 
@@ -176,7 +202,7 @@ async function createPaymentMap(units_month: Unit[], total_value: Number, paymen
                 total_permilage_monthly,
             };
         } else {
-            await saveMap(reserve_funds, monthly_expenses, payment_map, all_units);
+            await saveMapRevenues(reserve_funds, monthly_expenses, payment_map, all_units);
         }
 
         return true;
@@ -185,29 +211,20 @@ async function createPaymentMap(units_month: Unit[], total_value: Number, paymen
     }
 }
 
-async function updatePaymentMap(
-    revenues: Revenue[],
-    total_value: Number,
-    units_monthly: Unit[]
-): Promise<Boolean> {
+export async function updatePaymentMap(revenues: Revenue[], total_value: Number, units_monthly: Unit[], month: number): Promise<Boolean> {
     try {
-        let reserve_funds: { id; reserve_fund }[] = [];
-        let monthly_expenses: { id; monthy_expense }[] = [];
+        let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
+        let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
 
         let all_units: Unit[] = await Unit.find();
         let total_permilage: number = calculateTotalPermilages(all_units);
 
         let total_permilage_monthly: number = calculateTotalPermilages(units_monthly);
-
+        console.log(month);
         //Calculate monthly expenses
-        monthly_expenses = calculateMonthlyExpenses(
-            units_monthly,
-            total_permilage_monthly,
-            Number(total_value)
-        );
-
+        monthly_expenses = calculateMonthlyExpenses(units_monthly, total_permilage_monthly, Number(total_value), (12 - month));
         //Calculate reserve funds
-        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value));
+        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value), (12 - month));
 
         await updateRevenues(revenues, monthly_expenses, reserve_funds);
 
@@ -222,9 +239,7 @@ export async function create(body: any) {
         let yearly: Boolean = false;
 
         if (body.is_yearly == true) {
-            let hasPaymentMap: PaymentMap[] = await PaymentMap.find({
-                where: { yearly: body.is_yearly, year: body.year },
-            });
+            let hasPaymentMap: PaymentMap[] = await PaymentMap.find({ where: { yearly: body.is_yearly, year: body.year } });
             if (hasPaymentMap.length >= 1) {
                 throw new Error(api_errors.ANNUAL_PAYMENT_MAP_ALREADY_EXISTS);
             }
@@ -257,19 +272,26 @@ export async function create(body: any) {
 
 export async function update(id: Number, body: any) {
     try {
+        //vai buscar o mapa 
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {
             throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS);
         }
 
+        //todo ver isto
         if (body.month <= 2 && body.month >= 12) {
             throw new Error(api_errors.MONTH_VALUE_INCORRECT);
         }
 
+        //vai buscar o payment_map_values atual (irá servir para fechar mais tarde)
         let payment_map_values: PaymentMapValues[] = await PaymentMapValues.find({
-            where: { payment_map, end_date: null },
+            where: { payment_map: payment_map, end_date: null },
         });
+
+        // Serve para definir a data de validade do valor anterior
         let month = body.month - 1;
+
+        //Fechar o mapa
         payment_map_values[0].setEnd_date(new Date(new Date().getFullYear() + '-' + month));
         await payment_map_values[0].save();
 
@@ -282,20 +304,38 @@ export async function update(id: Number, body: any) {
         );
         await new_payment_map_value.save();
 
+        // Vai buscar todas as revenues daquele payment_map, com um mês maior que o anterior ao recebido, e que ainda não foram pagas
         let revenues: Revenue[] = await Revenue.find({
             where: { payment_map: payment_map, month: MoreThan(month) },
         });
 
+        // Serve para identificar as revenues que entram na mensalidade
         let units_monthly: Unit[] = [];
         for (let i = 0; i < revenues.length; i++) {
-            const unit: Unit = revenues[i].getUnit();
-            if (revenues[i].isMonthly() === true) {
+            let unit: Unit = revenues[i].getUnit();
+            if (revenues[i].isMonthly() == true) {
                 if (!findUnit(units_monthly, unit)) {
                     units_monthly.push(unit);
                 }
             }
         }
-        await updatePaymentMap(revenues, body.value, units_monthly);
+
+        let paidRevenues: Revenue[] = await Revenue.find({
+            where: { payment_map: payment_map, month: LessThan(month + 1) }
+        });
+
+        var total_paid: number = 0;
+        for (let index = 0; index < paidRevenues.length; index++) {
+            var revenue = paidRevenues[index];
+            total_paid += Number(revenue.getValue());
+        }
+
+        console.log(total_paid);
+
+        body.value = body.value - total_paid;
+
+        await updatePaymentMap(revenues, body.value, units_monthly, body.month);
+
         return true;
     } catch (error) {
         return error;
@@ -304,13 +344,11 @@ export async function update(id: Number, body: any) {
 
 export async function closePaymentMap(id: Number) {
     try {
-        //Verificar se o mapa existe
         let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
         if (!payment_map) {
             throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS);
         }
 
-        //Verificar se todas as revenues do mapa estão pagas
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
         for (let i = 0; i < revenues.length; i++) {
             if (revenues[i].isPaid() === false) {
@@ -318,9 +356,9 @@ export async function closePaymentMap(id: Number) {
             }
         }
 
-        //Fechar o mapa
         payment_map.setClosed(true);
         payment_map.save();
+
         return true;
     } catch (error) {
         return error;
@@ -347,8 +385,7 @@ export async function simulate(body: any) {
 
 function findUnit(units: Unit[], unit: Unit) {
     for (let i = 0; i < units.length; i++) {
-        const element = units[i];
-        if (element.getId() === unit.getId()) {
+        if (units[i].getId() === unit.getId()) {
             return true;
         }
     }
@@ -363,65 +400,75 @@ function calculateTotalPermilages(units: Unit[]): number {
     return total_permilage_month;
 }
 
-function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number): { id; monthy_expense }[] {
-    let monthly_expenses: { id; monthy_expense }[] = [];
+function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number, months?: number): { id: Number; monthy_expense: Number }[] {
+    let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
+
     for (let i = 0; i < units.length; i++) {
         let monthly_expense = 0;
         monthly_expense = Number(units[i].getTypology().getPermilage()) / total_permilage_month;
-        monthly_expense = monthly_expense * (Number(total_value) / 12);
+        monthly_expense = monthly_expense * (Number(total_value) / (months ? months : 12));
         monthly_expenses.push({
             id: units[i].getId(),
-            monthy_expense: Number(monthly_expense.toFixed(2)),
+            monthy_expense: Number(monthly_expense),
         });
     }
+
     return monthly_expenses;
 }
 
-function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number): { id; reserve_fund }[] {
-    let reserve_funds: { id; reserve_fund }[] = [];
+function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number, months?: number): { id: Number; reserve_fund: Number }[] {
+    let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
+
     for (let i = 0; i < units.length; i++) {
         let reserve_fund = 0;
         reserve_fund = Number(units[i].getTypology().getPermilage()) / total_permilage;
-        reserve_fund = reserve_fund * ((Number(total_value) * 0.1) / 12);
-        reserve_funds.push({ id: units[i].getId(), reserve_fund: Number(reserve_fund.toFixed(2)) });
+        reserve_fund = reserve_fund * ((Number(total_value) * 0.1) / (months ? months : 12));
+        reserve_funds.push({
+            id: units[i].getId(),
+            reserve_fund: Number(reserve_fund)
+        });
     }
+
     return reserve_funds;
 }
 
-async function saveMap(reserve_funds: { id; reserve_fund }[], monthly_expenses: { id; monthy_expense }[], payment_map: PaymentMap, units: Unit[]) {
+async function saveMapRevenues(reserve_funds: { id: Number; reserve_fund: Number }[], monthly_expenses: { id: Number; monthy_expense: Number }[], payment_map: PaymentMap, units: Unit[]) {
+
     for (let i = 0; i < reserve_funds.length; i++) {
         let monthly_expense = 0;
         let monthly = false;
+
         for (let k = 0; k < monthly_expenses.length; k++) {
             if (reserve_funds[i].id == monthly_expenses[k].id) {
-                monthly_expense = monthly_expenses[k].monthy_expense;
+                monthly_expense = Number(monthly_expenses[k].monthy_expense);
                 monthly = true;
             }
         }
+
         for (let j = 0; j < months.length; j++) {
-            let value: Number = reserve_funds[i].reserve_fund + monthly_expense;
+            let value: Number = Number(reserve_funds[i].reserve_fund) + monthly_expense;
             let revenue: Revenue = new Revenue(months[j], payment_map, units[i], Number(value.toFixed(2)), monthly);
             await revenue.save();
         }
     }
+
 }
 
 async function updateRevenues(revenues: Revenue[], monthly_expenses: { id; monthy_expense }[], reserve_funds: { id; reserve_fund }[]) {
-    for (let i = 0; i < revenues.length; i++) {
-        const revenue = revenues[i];
-    }
 
     for (let i = 0; i < reserve_funds.length; i++) {
         let monthly_expense = 0;
         for (let k = 0; k < monthly_expenses.length; k++) {
             if (reserve_funds[i].id == monthly_expenses[k].id) {
-                monthly_expense = monthly_expenses[k].monthy_expense;
+                monthly_expense = Number(monthly_expenses[k].monthy_expense);
             }
         }
+
         for (let j = 0; j < revenues.length; j++) {
-            const revenue = revenues[j];
+            let revenue = revenues[j];
             if (revenue.getUnit().getId() == reserve_funds[i].id) {
-                revenue.setValue(Number(reserve_funds[i].reserve_fund + monthly_expense));
+                let value: Number = Number((reserve_funds[i].reserve_fund + monthly_expense).toFixed(2));
+                revenue.setValue(value);
                 await revenue.save();
             }
         }

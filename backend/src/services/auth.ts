@@ -9,13 +9,18 @@ import { Contact } from '../models/contact';
 import crypto from 'crypto';
 import { transporter } from '../config/email';
 import { forgot_password } from '../email/forgot_password';
+import { welcome } from '../email/welcome';
 
 async function hasUser(email: String): Promise<boolean> {
     try {
         let hasUser: User = await User.findOne({ where: { email } });
-        if (hasUser) return true;
+
+        if (hasUser) {
+            return true;
+        }
+
         return false;
-    } catch (e) {
+    } catch (error) {
         return false;
     }
 }
@@ -57,10 +62,35 @@ export async function signUp(body: any) {
             await c.save();
         }
 
+        if (!body.password) {
+            sendWelcomeEmail(user)
+        }
+
         return true;
-    } catch (e) {
-        return e;
+    } catch (error) {
+        return error;
     }
+}
+
+async function sendWelcomeEmail(user: User) {
+    const token = crypto.randomBytes(20).toString('hex');
+
+    const now = new Date();
+    now.setHours(now.getHours() + 4);
+
+    let user_password: UserPassword = await UserPassword.findOne({ where: { user } });
+    user_password.setPassword_expire_date(now);
+    user_password.setPassword_reset_token(token);
+    await user_password.save();
+
+    transporter.sendMail({
+        to: String(user.getEmail()),
+        from: 'lei.gestao.condominios@gmail.com',
+        subject: 'Bem-vindo',
+        html: welcome(token, user.getEmail())
+    });
+
+    return true;
 }
 
 export async function signIn(body: any) {
@@ -91,8 +121,8 @@ export async function signIn(body: any) {
             token,
         };
         return response;
-    } catch (e) {
-        return e;
+    } catch (error) {
+        return error;
     }
 }
 
@@ -144,8 +174,13 @@ export async function resetPassword(body: any) {
             throw new Error(api_errors.TOKEN_EXPIRED);
         }
 
-        user_password.update_password(body.password);
+        if (body.new_password !== body.new_password_repeat) {
+            throw new Error(api_errors.NEW_PASSWORD_REPEAT_ERROR);
+        }
+
+        user_password.update_password(body.new_password);
         user_password.save();
+
         return true;
 
     } catch (error) {

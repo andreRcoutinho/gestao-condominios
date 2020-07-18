@@ -1,6 +1,7 @@
 export const USER_NOT_EXISTS = 'Utilizador inexistente. Tente novamente.';
 export const INVALID_PASSWORD = 'Password inválida!';
 export const USER_ALREADY_EXISTS = 'Utilizador já existe na base de dados';
+export const NEW_PASSWORD_REPEAT_ERROR = 'Nova Palavra-Passe e Palavra-Passe repetida são diferentes!'
 
 export const ROLES_EMPTY = 'Ainda não existem tipos de utilizadores na base de dados';
 export const ROLE_NOT_EXISTS = 'Tipo de utilizador inexistente';
@@ -15,8 +16,13 @@ export const TYPOLOGY_NOT_EXISTS = 'Tipologia inexistente';
 export const UNITS_EMPTY = 'Ainda não existem frações na base de dados';
 export const UNIT_NOT_EXISTS = 'Fração inexistente';
 export const UNIT_ALREADY_EXISTS = 'Já existe uma frações com esse nome na base de dados';
+export const UNIT_CANNOT_BE_REMOVED = 'Fração não pode ser removida!';
 
 export const NO_REVENUE_REGISTERED = 'Ainda não existem receitas registadas!';
+export const ALL_REVENUES_PAID = 'Já não existem prestações para pagar!';
+export const INVALID_INSTALLMENTS = 'Número de prestações a pagar é maior que as prestações.';
+
+export const INVALID_MONTH = 'Mês inválido!';
 
 export const NO_EXPENSES_REGISTERED = 'Ainda não existem despesas registadas.';
 export const EXPENSE_NOT_EXISTS = 'Despesa inexistente';
@@ -29,6 +35,7 @@ export const CONTACT_NOT_EXISTS = 'Contacto inexistente';
 export const PAYMENT_MAP_NOT_EXISTS = 'Mapa de Pagamento inexistente';
 export const NO_PAYMENT_MAPS = 'Ainda não existem mapas criados!';
 export const ANNUAL_PAYMENT_MAP_ALREADY_EXISTS = 'Já existe um mapa anual criado para o ano indicado';
+export const ANNUAL_PAYMENT_MAP_NOT_EXISTS = 'Não existe nenhum mapa de pagamento anual para o ano indicado';
 export const MONTH_VALUE_INCORRECT = 'O valor do mês não está correto, deve ser um valor entre 2 e 12';
 export const PAYMENT_MAP_INCOMPLETE = 'Ainda falta efetuar pagamentos referente a esse mapa'
 

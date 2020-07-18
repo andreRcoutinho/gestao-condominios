@@ -77,7 +77,7 @@ async function payment_record_normal_payment_map(payment_map: PaymentMap, unit: 
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map, unit } });
 
         if (installments_to_pay > revenues.length) {
-            throw new Error("Número de prestações a pagar é maior que as prestações.");
+            throw new Error(api_errors.INVALID_INSTALLMENTS);
         }
 
         let unPaidRevenues: Revenue[] = [];
@@ -89,7 +89,7 @@ async function payment_record_normal_payment_map(payment_map: PaymentMap, unit: 
         });
 
         if (unPaidRevenues.length == 0) {
-            throw new Error("Já não existem prestações para pagar!");
+            throw new Error(api_errors.ALL_REVENUES_PAID);
         }
 
         if (unPaidRevenues.length < installments_to_pay) {

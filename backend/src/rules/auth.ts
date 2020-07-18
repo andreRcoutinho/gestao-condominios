@@ -45,7 +45,8 @@ export function resetPasswordRules(body: any): boolean | void {
     let rules = {
         email: "required",
         token: "required",
-        password: "required"
+        new_password: "required",
+        new_password_repeat: "required"
     }
 
     var validation = new Validator(body, rules);

@@ -58,91 +58,6 @@
 				</v-form>
 			</v-container>
 		</v-row>
-		<v-row class="mb-6 mr-2" justify="center">
-			<v-dialog v-model="editedTypology.showDialog" persistent max-width="450px">
-				<template v-slot:activator="{ on }" class="text-xs-center">
-					<v-btn color="secondary" outlined v-on="on">
-						Atualizar Tipologias
-					</v-btn>
-				</template>
-				<v-card>
-					<v-card-title class="ml-2 pt-5">
-						<span>
-							Atualizar Tipologias
-						</span>
-					</v-card-title>
-
-					<v-card-text>
-						<v-form ref="editTypologyForm">
-							<v-row justify="center" class="mx-0">
-								<v-col cols="12">
-									<v-select
-										:items="typologies"
-										item-text="typology"
-										item-value="id"
-										v-model="editedTypology.selectedTypology"
-										label="Tipologia"
-										color="secondary"
-										item-color="secondary"
-										required
-										@input="loadTypologyData"
-									></v-select>
-								</v-col>
-								<v-col cols="12">
-									<v-text-field
-										v-if="editedTypology.selectedTypology"
-										v-model="editedTypology.typologyName"
-										label="Designação"
-										color="secondary"
-									></v-text-field>
-								</v-col>
-								<v-col cols="12">
-									<v-text-field
-										v-if="editedTypology.selectedTypology"
-										v-model.number="editedTypology.permilage"
-										label="Permilagem"
-										color="secondary"
-										hint="ex.: 45"
-										persistent-hint
-										:rules="newTypology.permilageRules"
-										required
-									>
-									</v-text-field>
-								</v-col>
-							</v-row>
-						</v-form>
-						<v-row justify="center">
-							<v-alert
-								v-if="editItemSuccess"
-								class="mb-3"
-								text
-								type="success"
-								transition="fade-transition"
-							>
-								{{ editItemSuccess }}
-							</v-alert>
-
-							<v-alert
-								v-else-if="editItemErrorMsg"
-								class="mb-3"
-								text
-								type="error"
-								transition="fade-transition"
-							>
-								{{ editItemErrorMsg }}
-							</v-alert>
-						</v-row>
-						<v-row class="mt-3">
-							<v-spacer></v-spacer>
-							<v-btn color="red" text @click="closeTypologyDialog">Fechar</v-btn>
-							<v-btn color="secondary" @click="updateTypology" text type="submit"
-								>Guardar Alterações</v-btn
-							>
-						</v-row>
-					</v-card-text>
-				</v-card>
-			</v-dialog>
-		</v-row>
 		<v-divider class="mx-12" />
 		<v-row class="mb-3">
 			<v-container>
@@ -287,6 +202,102 @@
 						color="secondary"
 					></v-pagination>
 				</div>
+			</v-col>
+			<v-col align-self="center">
+				<v-dialog v-model="editedTypology.showDialog" persistent max-width="450px">
+					<template v-slot:activator="{ on }" class="text-xs-center">
+						<v-container>
+							<v-row justify="center">
+								<v-btn
+									color="secondary"
+									outlined
+									v-on="on"
+									class="text-wrap"
+									height="100px"
+								>
+									Atualizar <br />
+									Tipologias
+								</v-btn>
+							</v-row>
+						</v-container>
+					</template>
+					<v-card>
+						<v-card-title class="ml-2 pt-5">
+							<span>
+								Atualizar Tipologias
+							</span>
+						</v-card-title>
+
+						<v-card-text>
+							<v-form ref="editTypologyForm">
+								<v-row justify="center" class="mx-0">
+									<v-col cols="12">
+										<v-select
+											:items="typologies"
+											item-text="typology"
+											item-value="id"
+											v-model="editedTypology.selectedTypology"
+											label="Tipologia"
+											color="secondary"
+											item-color="secondary"
+											required
+											@input="loadTypologyData"
+										></v-select>
+									</v-col>
+									<v-col cols="12">
+										<v-text-field
+											v-if="editedTypology.selectedTypology"
+											v-model="editedTypology.typologyName"
+											label="Designação"
+											color="secondary"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12">
+										<v-text-field
+											v-if="editedTypology.selectedTypology"
+											v-model.number="editedTypology.permilage"
+											label="Permilagem"
+											color="secondary"
+											hint="ex.: 45"
+											persistent-hint
+											:rules="newTypology.permilageRules"
+											required
+										>
+										</v-text-field>
+									</v-col>
+								</v-row>
+							</v-form>
+							<v-row justify="center">
+								<v-alert
+									v-if="editItemSuccess"
+									class="mb-3"
+									text
+									type="success"
+									transition="fade-transition"
+								>
+									{{ editItemSuccess }}
+								</v-alert>
+
+								<v-alert
+									v-else-if="editItemErrorMsg"
+									class="mb-3"
+									text
+									type="error"
+									transition="fade-transition"
+								>
+									{{ editItemErrorMsg }}
+								</v-alert>
+							</v-row>
+							<v-row class="mt-3">
+								<v-spacer></v-spacer>
+								<v-btn color="red" text @click="closeTypologyDialog">Fechar</v-btn>
+								<v-btn color="secondary" @click="updateTypology" text type="submit"
+									>Guardar Alterações</v-btn
+								>
+							</v-row>
+						</v-card-text>
+					</v-card>
+				</v-dialog>
 			</v-col>
 		</v-row>
 	</div>

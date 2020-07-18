@@ -210,7 +210,7 @@ async function createPaymentMap(units_month: Unit[], total_value: Number, paymen
     }
 }
 
-async function updatePaymentMap(
+export async function updatePaymentMap(
     revenues: Revenue[],
     total_value: Number,
     units_monthly: Unit[]
@@ -306,7 +306,7 @@ export async function update(id: Number, body: any) {
         await new_payment_map_value.save();
 
         let revenues: Revenue[] = await Revenue.find({
-            where: { payment_map: payment_map, month: MoreThan(month) },
+            where: { payment_map: payment_map, month: MoreThan(month), paid: false },
         });
 
         let units_monthly: Unit[] = [];
@@ -393,7 +393,7 @@ function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, 
         monthly_expense = monthly_expense * (Number(total_value) / 12);
         monthly_expenses.push({
             id: units[i].getId(),
-            monthy_expense: Number(monthly_expense.toFixed(2)),
+            monthy_expense: Number(monthly_expense),
         });
     }
 
@@ -406,7 +406,7 @@ function calculateReserveFunds(units: Unit[], total_permilage: number, total_val
         let reserve_fund = 0;
         reserve_fund = Number(units[i].getTypology().getPermilage()) / total_permilage;
         reserve_fund = reserve_fund * ((Number(total_value) * 0.1) / 12);
-        reserve_funds.push({ id: units[i].getId(), reserve_fund: Number(reserve_fund.toFixed(2)) });
+        reserve_funds.push({ id: units[i].getId(), reserve_fund: Number(reserve_fund) });
     }
     return reserve_funds;
 }
@@ -444,7 +444,8 @@ async function updateRevenues(revenues: Revenue[], monthly_expenses: { id; month
         for (let j = 0; j < revenues.length; j++) {
             const revenue = revenues[j];
             if (revenue.getUnit().getId() == reserve_funds[i].id) {
-                revenue.setValue(Number(reserve_funds[i].reserve_fund + monthly_expense));
+                let value: Number = Number((reserve_funds[i].reserve_fund + monthly_expense).toFixed(2));
+                revenue.setValue(value);
                 await revenue.save();
             }
         }

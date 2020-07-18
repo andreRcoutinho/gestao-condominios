@@ -77,6 +77,7 @@ export async function show(id: Number, year?: String) {
         let revenues_res: res_revenues[] = [];
 
         let all_paid = true;
+        let total: number = 0;
 
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
@@ -92,13 +93,15 @@ export async function show(id: Number, year?: String) {
             if (revenues[i].isPaid() === false) {
                 all_paid = false;
             }
+            total += Number(revenue.getValue());
         }
 
         let response = {
             payment_map: payment_map,
             payment_map_values: payment_map_values,
+            total,
             revenues: revenues_res,
-            all_paid
+            all_paid,
         };
 
         return response;
@@ -217,12 +220,11 @@ export async function updatePaymentMap(revenues: Revenue[], total_value: Number,
         let total_permilage: number = calculateTotalPermilages(all_units);
 
         let total_permilage_monthly: number = calculateTotalPermilages(units_monthly);
-
+        console.log(month);
         //Calculate monthly expenses
-        monthly_expenses = calculateMonthlyExpenses(units_monthly, total_permilage_monthly, Number(total_value), 12 - month);
-
+        monthly_expenses = calculateMonthlyExpenses(units_monthly, total_permilage_monthly, Number(total_value), (12 - month));
         //Calculate reserve funds
-        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value), 12 - month);
+        reserve_funds = calculateReserveFunds(all_units, total_permilage, Number(total_value), (12 - month));
 
         await updateRevenues(revenues, monthly_expenses, reserve_funds);
 
@@ -283,7 +285,7 @@ export async function update(id: Number, body: any) {
 
         //vai buscar o payment_map_values atual (irá servir para fechar mais tarde)
         let payment_map_values: PaymentMapValues[] = await PaymentMapValues.find({
-            where: { payment_map, end_date: null },
+            where: { payment_map: payment_map, end_date: null },
         });
 
         // Serve para definir a data de validade do valor anterior
@@ -304,14 +306,14 @@ export async function update(id: Number, body: any) {
 
         // Vai buscar todas as revenues daquele payment_map, com um mês maior que o anterior ao recebido, e que ainda não foram pagas
         let revenues: Revenue[] = await Revenue.find({
-            where: { payment_map: payment_map, month: MoreThan(month), paid: false },
+            where: { payment_map: payment_map, month: MoreThan(month) },
         });
-        console.log(revenues);
+
         // Serve para identificar as revenues que entram na mensalidade
         let units_monthly: Unit[] = [];
         for (let i = 0; i < revenues.length; i++) {
-            const unit: Unit = revenues[i].getUnit();
-            if (revenues[i].isMonthly() === true) {
+            let unit: Unit = revenues[i].getUnit();
+            if (revenues[i].isMonthly() == true) {
                 if (!findUnit(units_monthly, unit)) {
                     units_monthly.push(unit);
                 }
@@ -321,15 +323,19 @@ export async function update(id: Number, body: any) {
         let paidRevenues: Revenue[] = await Revenue.find({
             where: { payment_map: payment_map, month: LessThan(month + 1) }
         });
-        console.log(paidRevenues);
+
         var total_paid: number = 0;
         for (let index = 0; index < paidRevenues.length; index++) {
             var revenue = paidRevenues[index];
             total_paid += Number(revenue.getValue());
         }
+
+        console.log(total_paid);
+
         body.value = body.value - total_paid;
 
         await updatePaymentMap(revenues, body.value, units_monthly, body.month);
+
         return true;
     } catch (error) {
         return error;
@@ -379,8 +385,7 @@ export async function simulate(body: any) {
 
 function findUnit(units: Unit[], unit: Unit) {
     for (let i = 0; i < units.length; i++) {
-        const unit = units[i];
-        if (unit.getId() === unit.getId()) {
+        if (units[i].getId() === unit.getId()) {
             return true;
         }
     }
@@ -450,19 +455,17 @@ async function saveMapRevenues(reserve_funds: { id: Number; reserve_fund: Number
 }
 
 async function updateRevenues(revenues: Revenue[], monthly_expenses: { id; monthy_expense }[], reserve_funds: { id; reserve_fund }[]) {
-    for (let i = 0; i < revenues.length; i++) {
-        const revenue = revenues[i];
-    }
 
     for (let i = 0; i < reserve_funds.length; i++) {
         let monthly_expense = 0;
         for (let k = 0; k < monthly_expenses.length; k++) {
             if (reserve_funds[i].id == monthly_expenses[k].id) {
-                monthly_expense = monthly_expenses[k].monthy_expense;
+                monthly_expense = Number(monthly_expenses[k].monthy_expense);
             }
         }
+
         for (let j = 0; j < revenues.length; j++) {
-            const revenue = revenues[j];
+            let revenue = revenues[j];
             if (revenue.getUnit().getId() == reserve_funds[i].id) {
                 let value: Number = Number((reserve_funds[i].reserve_fund + monthly_expense).toFixed(2));
                 revenue.setValue(value);

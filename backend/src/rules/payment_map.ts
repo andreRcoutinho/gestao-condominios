@@ -19,4 +19,8 @@ export function updateRules(body: any): boolean | void {
         value: "required|numeric",
         month: "required|numeric|between:2,12"
     }
+
+    var validation = new Validator(body, rules);
+
+    return !validation.fails();
 }

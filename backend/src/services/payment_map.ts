@@ -6,6 +6,7 @@ import { MoreThan, LessThan } from 'typeorm';
 import * as api_errors from '../api/api_errors';
 
 const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const RESERVE_PERCENTAGE = 0.1;
 
 interface res_payment_map {
     id: Number;
@@ -255,7 +256,7 @@ export async function create(body: any) {
         await payment_map.save();
 
         if (yearly) {
-            let payment_map_values: PaymentMapValues = new PaymentMapValues(body.value, new Date(new Date().getFullYear() + '-01'), payment_map, body.value * 0.1);
+            let payment_map_values: PaymentMapValues = new PaymentMapValues(body.value, new Date(new Date().getFullYear() + '-01'), payment_map, body.value * RESERVE_PERCENTAGE);
             await payment_map_values.save();
             await createPaymentMap(units, body.value, payment_map, false);
         } else {
@@ -300,7 +301,7 @@ export async function update(id: Number, body: any) {
             body.value,
             date,
             payment_map,
-            body.value * 0.1
+            body.value * RESERVE_PERCENTAGE
         );
         await new_payment_map_value.save();
 
@@ -311,14 +312,18 @@ export async function update(id: Number, body: any) {
 
         // Serve para identificar as revenues que entram na mensalidade
         let units_monthly: Unit[] = [];
+        let units_ids: Number[] = [];
         for (let i = 0; i < revenues.length; i++) {
             let unit: Unit = revenues[i].getUnit();
             if (revenues[i].isMonthly() == true) {
                 if (!findUnit(units_monthly, unit)) {
                     units_monthly.push(unit);
+                    units_ids.push(unit.getId());
                 }
             }
         }
+
+        //CHANGE BELOW VVVVVVVVVVVVV
 
         let paidRevenues: Revenue[] = await Revenue.find({
             where: { payment_map: payment_map, month: LessThan(month + 1) }
@@ -393,7 +398,7 @@ export async function updateUsingSimulate(id: Number, body: any) {
             body.value,
             date,
             payment_map,
-            body.value * 0.1
+            body.value * RESERVE_PERCENTAGE
         );
         await new_payment_map_value.save();
 
@@ -443,17 +448,15 @@ export async function updateUsingSimulate(id: Number, body: any) {
             value = reserve_fund + monthly_expense;
 
             let aux_revenue: Revenue = await Revenue.findOne({ where: { payment_map, month: 1, unit: revenue.getUnit() } });
-            let revenues_pagas: number = Number(aux_revenue.getValue()) * month;
-            let total_com_a_simulacao: number = value * 12;
-            let revenues_por_pagar: number = value * (12 - month);
+            let paid_revenues: number = Number(aux_revenue.getValue()) * month;
+            let total_simulated: number = value * 12;
+            let unpaid_revenues: number = value * (12 - month);
 
-            let actual: number = revenues_pagas + revenues_por_pagar;
+            let total: number = paid_revenues + unpaid_revenues;
+            let difference_value: number = total_simulated - total;
+            let individual_value: number = difference_value / (12 - month);
 
-            let diferenca: number = total_com_a_simulacao - actual;
-
-            let bocadinho_a_dar_a_cada: number = diferenca / (12 - month);
-
-            revenue.setValue(value + bocadinho_a_dar_a_cada);
+            revenue.setValue(value + individual_value);
             await revenue.save();
         }
         return true;
@@ -479,6 +482,10 @@ export async function simulate(body: any) {
         return error;
     }
 }
+
+/***************************
+ *  Auxiliar functions
+ ***************************/
 
 function findUnit(units: Unit[], unit: Unit) {
     for (let i = 0; i < units.length; i++) {
@@ -519,7 +526,7 @@ function calculateReserveFunds(units: Unit[], total_permilage: number, total_val
     for (let i = 0; i < units.length; i++) {
         let reserve_fund = 0;
         reserve_fund = Number(units[i].getTypology().getPermilage()) / total_permilage;
-        reserve_fund = reserve_fund * ((Number(total_value) * 0.1) / (months ? months : 12));
+        reserve_fund = reserve_fund * ((Number(total_value) * RESERVE_PERCENTAGE) / (months ? months : 12));
         reserve_funds.push({
             id: units[i].getId(),
             reserve_fund: Number(reserve_fund)

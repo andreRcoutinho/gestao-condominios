@@ -84,7 +84,7 @@ export async function getAnualPaymentMap(req: Request, res: Response) {
 }
 
 export async function update(req: Request, res: Response) {
-    let response = await paymentMapService.update(Number(req.params.id), req.body);
+    let response = await paymentMapService.updateUsingSimulate(Number(req.params.id), req.body);
 
     if (response instanceof Error) {
         return res.status(HttpStatus.BAD_REQUEST).send(new ApiResponse(PAYMENT_MAP_UPDATE_REQUEST, PAYMENT_MAP_UPDATE_FAIL, HttpStatus.BAD_REQUEST, {}, response.message))

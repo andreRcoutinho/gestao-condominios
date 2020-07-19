@@ -330,8 +330,6 @@ export async function update(id: Number, body: any) {
             total_paid += Number(revenue.getValue());
         }
 
-        console.log(total_paid);
-
         body.value = body.value - total_paid;
 
         await updatePaymentMap(revenues, body.value, units_monthly, body.month);
@@ -365,10 +363,109 @@ export async function closePaymentMap(id: Number) {
     }
 }
 
+export async function updateUsingSimulate(id: Number, body: any) {
+    try {
+        //vai buscar o mapa 
+        let payment_map: PaymentMap = await PaymentMap.findOne({ where: { id } });
+        if (!payment_map) {
+            throw new Error(api_errors.PAYMENT_MAP_NOT_EXISTS);
+        }
+
+        //todo ver isto
+        if (body.month <= 2 && body.month >= 12) {
+            throw new Error(api_errors.MONTH_VALUE_INCORRECT);
+        }
+
+        //vai buscar o payment_map_values atual (irá servir para fechar mais tarde)
+        let payment_map_values: PaymentMapValues[] = await PaymentMapValues.find({
+            where: { payment_map: payment_map, end_date: null },
+        });
+
+        // Serve para definir a data de validade do valor anterior
+        let month = body.month - 1;
+
+        //Fechar o mapa
+        payment_map_values[0].setEnd_date(new Date(new Date().getFullYear() + '-' + month));
+        await payment_map_values[0].save();
+
+        let date = new Date(new Date().getFullYear() + '-' + body.month);
+        let new_payment_map_value = new PaymentMapValues(
+            body.value,
+            date,
+            payment_map,
+            body.value * 0.1
+        );
+        await new_payment_map_value.save();
+
+        // Vai buscar todas as revenues daquele payment_map, com um mês maior que o anterior ao recebido, e que ainda não foram pagas
+        let revenues: Revenue[] = await Revenue.find({
+            where: { payment_map: payment_map, month: MoreThan(month) },
+        });
+
+        // Serve para identificar as revenues que entram na mensalidade
+        let units_monthly: Unit[] = [];
+        let units_ids: Number[] = [];
+        for (let i = 0; i < revenues.length; i++) {
+            let unit: Unit = revenues[i].getUnit();
+            if (revenues[i].isMonthly() == true) {
+                if (!findUnit(units_monthly, unit)) {
+                    units_monthly.push(unit);
+                    units_ids.push(unit.getId());
+                }
+            }
+        }
+
+        let new_body = {
+            units_ids: units_ids,
+            name: "simulate",
+            description: "simulate",
+            year: "0000",
+            value: body.value
+        }
+        let sim = await simulate(new_body);
+
+        for (let i = 0; i < revenues.length; i++) {
+            const revenue = revenues[i];
+            let unit_id = revenue.getUnit().getId();
+            let reserve_fund = 0;
+            let monthly_expense = 0;
+            for (let i = 0; i < sim.reserve_funds.length; i++) {
+                if (sim.reserve_funds[i].id == unit_id) {
+                    reserve_fund = sim.reserve_funds[i].reserve_fund;
+                }
+            }
+            for (let i = 0; i < sim.monthly_expenses.length; i++) {
+                if (sim.monthly_expenses[i].id == unit_id) {
+                    monthly_expense = sim.monthly_expenses[i].monthy_expense;
+                }
+            }
+            let value = 0;
+            value = reserve_fund + monthly_expense;
+
+            let aux_revenue: Revenue = await Revenue.findOne({ where: { payment_map, month: 1, unit: revenue.getUnit() } });
+            let revenues_pagas: number = Number(aux_revenue.getValue()) * month;
+            let total_com_a_simulacao: number = value * 12;
+            let revenues_por_pagar: number = value * (12 - month);
+
+            let actual: number = revenues_pagas + revenues_por_pagar;
+
+            let diferenca: number = total_com_a_simulacao - actual;
+
+            let bocadinho_a_dar_a_cada: number = diferenca / (12 - month);
+
+            revenue.setValue(value + bocadinho_a_dar_a_cada);
+            await revenue.save();
+        }
+        return true;
+    } catch (error) {
+        return error;
+    }
+}
+
 export async function simulate(body: any) {
     try {
-        let units: Unit[] = await Unit.findByIds(body.unit_ids);
-        if (units.length === 0) {
+        let units: Unit[] = await Unit.findByIds(body.units_ids);
+        if (units.length == 0) {
             throw new Error(api_errors.UNIT_NOT_EXISTS);
         }
 

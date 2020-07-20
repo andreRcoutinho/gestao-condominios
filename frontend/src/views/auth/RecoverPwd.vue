@@ -70,7 +70,7 @@ import axios from 'axios';
 import LayoutAuth from '@/layouts/LayoutAuth';
 
 export default {
-	name: 'Login',
+	name: 'RecoverPassword',
 	created() {
 		this.$emit('update:layout', LayoutAuth);
 	},

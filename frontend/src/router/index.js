@@ -9,12 +9,17 @@ const routes = [
 	{
 		path: '/login',
 		name: 'login',
-		component: () => import('@/views/Login.vue'),
+		component: () => import('@/views/auth/Login.vue'),
 	},
 	{
 		path: '/forgot-password',
 		name: 'forgotPassword',
-		component: () => import('@/views/RecoverPwd.vue'),
+		component: () => import('@/views/auth/RecoverPwd.vue'),
+	},
+	{
+		path: '/reset-password',
+		name: 'resetPassword',
+		component: () => import('@/views/auth/ResetPwd.vue'),
 	},
 	{
 		path: '/home',

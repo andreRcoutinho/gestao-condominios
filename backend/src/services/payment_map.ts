@@ -134,6 +134,8 @@ export async function getAnualPaymentMap(year?: String) {
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
 
         let revenues_res: res_revenues[] = [];
+
+        let all_paid = true;
         let total: number = 0;
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
@@ -147,8 +149,13 @@ export async function getAnualPaymentMap(year?: String) {
                 value: Number(value.toFixed(2)),
             });
 
+            if (revenues[i].isPaid() === false) {
+                all_paid = false;
+            }
+
             total += Number(revenue.getValue());
         }
+
 
         total = Number(total.toFixed(2));
         let response = {
@@ -156,6 +163,7 @@ export async function getAnualPaymentMap(year?: String) {
             payment_map_values: payment_map_values,
             total: total,
             revenues: revenues_res,
+            all_paid
         };
 
         return response;

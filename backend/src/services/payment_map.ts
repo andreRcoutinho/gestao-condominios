@@ -202,8 +202,8 @@ async function createNormalPaymentMap(units: Unit[], total_value: Number, paymen
 
 async function createPaymentMap(units_month: Unit[], total_value: Number, payment_map: PaymentMap, isSimulation: Boolean): Promise<Boolean | {}> {
     try {
-        let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
-        let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
+        let reserve_funds: { id: Number; reserve_fund: Number, unit: String }[] = [];
+        let monthly_expenses: { id: Number; monthy_expense: Number, unit: String }[] = [];
 
         //Calculate total permilage (Para as frações que entram na mensalidade) 
         let total_permilage_monthly: number = calculateTotalPermilages(units_month);
@@ -490,8 +490,8 @@ function calculateTotalPermilages(units: Unit[]): number {
     return total_permilage_month;
 }
 
-function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number, months?: number): { id: Number; monthy_expense: Number }[] {
-    let monthly_expenses: { id: Number; monthy_expense: Number }[] = [];
+function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, total_value: number, months?: number): { id: Number; monthy_expense: Number; unit: String }[] {
+    let monthly_expenses: { id: Number; monthy_expense: Number, unit: String }[] = [];
 
     for (let i = 0; i < units.length; i++) {
         let monthly_expense = 0;
@@ -500,14 +500,15 @@ function calculateMonthlyExpenses(units: Unit[], total_permilage_month: number, 
         monthly_expenses.push({
             id: units[i].getId(),
             monthy_expense: Number(monthly_expense),
+            unit: units[i].getUnit()
         });
     }
 
     return monthly_expenses;
 }
 
-function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number, months?: number): { id: Number; reserve_fund: Number }[] {
-    let reserve_funds: { id: Number; reserve_fund: Number }[] = [];
+function calculateReserveFunds(units: Unit[], total_permilage: number, total_value: number, months?: number): { id: Number; reserve_fund: Number; unit: String }[] {
+    let reserve_funds: { id: Number; reserve_fund: Number, unit: String }[] = [];
 
     for (let i = 0; i < units.length; i++) {
         let reserve_fund = 0;
@@ -515,7 +516,8 @@ function calculateReserveFunds(units: Unit[], total_permilage: number, total_val
         reserve_fund = reserve_fund * ((Number(total_value) * RESERVE_PERCENTAGE) / (months ? months : 12));
         reserve_funds.push({
             id: units[i].getId(),
-            reserve_fund: Number(reserve_fund)
+            reserve_fund: Number(reserve_fund),
+            unit: units[i].getUnit()
         });
     }
 

@@ -13,129 +13,138 @@
 					:sort-desc="[false]"
 				>
 					<template v-slot:top>
-						<v-row class="mx-0">
-							<v-col align-self="center" cols="3">
-								<span class="text-button">Valor Total Anual:</span>
-								<span>
-									{{ anualPaymentMapTable.paymentMapAnualInfo.generalValues[0].value }} €
-								</span>
+						<v-row justify="center">
+							<v-col>
+								<v-row justify="center">
+									<span class="text-button">Valor Anual:</span>
+									<span style="align-self: center;"> {{ totalVal }} € </span>
+								</v-row>
 							</v-col>
-							<v-row justify="end" class="mx-0">
-								<v-col>
+
+							<v-col>
+								<v-row justify="center">
+									<span class="text-button">Fundo de Reserva:&nbsp;</span>
+									<span style="align-self: center;">{{ reserveFund }} €</span>
+								</v-row>
+							</v-col>
+						</v-row>
+
+						<!-- Buttons -->
+						<v-row justify="center" class="mx-0 mb-12">
+							<v-col>
+								<v-menu
+									v-model="showAnualMapPicker"
+									:close-on-content-click="true"
+									transition="slide-y-transition"
+									offset-y
+									auto
+									min-width="290px"
+									:return-value.sync="anualMapSelectedDate"
+								>
+									<template v-slot:activator="{ on }">
+										<v-row justify="center">
+											<v-btn depressed v-on="on">
+												Escolher ano
+												<v-icon right color="secondary">mdi-calendar</v-icon>
+											</v-btn>
+										</v-row>
+									</template>
+									<v-date-picker
+										ref="anualMapYearPicker"
+										v-model="anualMapSelectedDate"
+										@input="showInfoByYear()"
+										reactive
+										no-title
+										color="secondary"
+										min="2018"
+										:max="new Date().toISOString().substring(0, 7)"
+									>
+									</v-date-picker>
+								</v-menu>
+							</v-col>
+							<v-col>
+								<v-row justify="center">
+									<v-btn depressed :disabled="!allIsPaid">
+										Fechar Mapa
+									</v-btn>
+								</v-row>
+							</v-col>
+							<v-col>
+								<v-row justify="center">
 									<v-menu
-										v-model="showAnualMapPicker"
-										:close-on-content-click="true"
-										transition="slide-y-transition"
+										v-model="downloadAnualMapInfoMenu"
+										:close-on-content-click="false"
 										offset-y
-										auto
-										min-width="290px"
-										:return-value.sync="anualMapSelectedDate"
 									>
 										<template v-slot:activator="{ on }">
-											<v-row justify="center">
-												<v-btn depressed v-on="on">
-													Escolher ano
-													<v-icon right color="secondary">mdi-calendar</v-icon>
-												</v-btn>
-											</v-row>
+											<v-btn depressed v-on="on">
+												<v-icon left color="secondary">
+													mdi-download
+												</v-icon>
+												Transferir Dados
+											</v-btn>
 										</template>
-										<v-date-picker
-											ref="anualMapYearPicker"
-											v-model="anualMapSelectedDate"
-											@input="showInfoByYear()"
-											reactive
-											no-title
-											color="secondary"
-											min="2018"
-											:max="new Date().toISOString().substring(0, 7)"
-										>
-										</v-date-picker>
+
+										<v-card>
+											<v-row>
+												<v-menu
+													v-model="showAnualMapDownloadPicker"
+													:close-on-content-click="true"
+													transition="slide-y-transition"
+													offset-y
+													min-width="290px"
+													:nudge-right="13"
+													:return-value.sync="anualMapDownloadSelectedDate"
+												>
+													<template v-slot:activator="{ on }">
+														<v-row justify="center" class="mt-4">
+															<v-btn depressed v-on="on">
+																Escolher ano
+																<v-icon right color="secondary"
+																	>mdi-calendar</v-icon
+																>
+															</v-btn>
+														</v-row>
+													</template>
+													<v-date-picker
+														ref="anualMapDownloadYearPicker"
+														v-model="anualMapDownloadSelectedDate"
+														@input="showInfoByYear(true)"
+														reactive
+														no-title
+														color="secondary"
+														min="2018"
+														:max="new Date().toISOString().substring(0, 7)"
+													>
+													</v-date-picker>
+												</v-menu>
+											</v-row>
+											<v-card-actions>
+												<v-btn
+													text
+													@click="downloadAnualMapInfoMenu = false"
+													color="red"
+													>Fechar</v-btn
+												>
+												<v-spacer></v-spacer>
+
+												<v-btn
+													color="secondary"
+													text
+													@click="saveFile(infoToDownload, 'mapaAnual', true)"
+													>JSON</v-btn
+												>
+												<v-btn
+													color="secondary"
+													text
+													@click="saveFile(infoToDownload, 'mapaAnual', false)"
+													>CSV</v-btn
+												>
+											</v-card-actions>
+										</v-card>
 									</v-menu>
-								</v-col>
-								<v-col>
-									<v-row justify="center">
-										<v-btn depressed :disabled="!allIsPaid">
-											Fechar Mapa
-										</v-btn>
-									</v-row>
-								</v-col>
-								<v-col cols="5">
-									<v-row justify="center">
-										<v-menu
-											v-model="downloadAnualMapInfoMenu"
-											:close-on-content-click="false"
-											offset-y
-										>
-											<template v-slot:activator="{ on }">
-												<v-btn depressed v-on="on">
-													<v-icon left color="secondary">
-														mdi-download
-													</v-icon>
-													Transferir Dados Anuais
-												</v-btn>
-											</template>
-
-											<v-card>
-												<v-row>
-													<v-menu
-														v-model="showAnualMapDownloadPicker"
-														:close-on-content-click="true"
-														transition="slide-y-transition"
-														offset-y
-														min-width="290px"
-														:nudge-right="13"
-														:return-value.sync="anualMapDownloadSelectedDate"
-													>
-														<template v-slot:activator="{ on }">
-															<v-row justify="center" class="mt-4">
-																<v-btn depressed v-on="on">
-																	Escolher ano
-																	<v-icon right color="secondary"
-																		>mdi-calendar</v-icon
-																	>
-																</v-btn>
-															</v-row>
-														</template>
-														<v-date-picker
-															ref="anualMapDownloadYearPicker"
-															v-model="anualMapDownloadSelectedDate"
-															@input="showInfoByYear(true)"
-															reactive
-															no-title
-															color="secondary"
-															min="2018"
-															:max="new Date().toISOString().substring(0, 7)"
-														>
-														</v-date-picker>
-													</v-menu>
-												</v-row>
-												<v-card-actions>
-													<v-btn
-														text
-														@click="downloadAnualMapInfoMenu = false"
-														color="red"
-														>Fechar</v-btn
-													>
-													<v-spacer></v-spacer>
-
-													<v-btn
-														color="secondary"
-														text
-														@click="saveFile(infoToDownload, 'mapaAnual', true)"
-														>JSON</v-btn
-													>
-													<v-btn
-														color="secondary"
-														text
-														@click="saveFile(infoToDownload, 'mapaAnual', false)"
-														>CSV</v-btn
-													>
-												</v-card-actions>
-											</v-card>
-										</v-menu>
-									</v-row>
-								</v-col>
-							</v-row>
+								</v-row>
+							</v-col>
 						</v-row>
 					</template>
 					<template v-slot:item="props">
@@ -204,6 +213,8 @@ export default {
 		},
 		months: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
 		allIsPaid: false,
+		totalVal: 0,
+		reserveFund: 0,
 	}),
 
 	watch: {
@@ -230,6 +241,9 @@ export default {
 				`//localhost:3333/api/payment_map/anual?year=${new Date().toISOString().substr(0, 4)}`
 			)
 			.then((res) => {
+				this.allIsPaid = res.data.data.all_paid;
+				this.reserveFund = res.data.data.payment_map_values[0].reserve_fund;
+				this.totalVal = res.data.data.payment_map_values[0].value;
 				this.transformAPIres(res);
 			});
 	},

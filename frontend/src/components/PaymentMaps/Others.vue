@@ -195,7 +195,7 @@
 								<v-col cols="4" class="text-center">
 									<v-list-item two-line>
 										<v-list-item-content>
-											<v-list-item-subtitle>Valor Total</v-list-item-subtitle>
+											<v-list-item-subtitle>Valor</v-list-item-subtitle>
 											<v-list-item-title
 												v-if="mapDetailedInfo.payment_map_values.length > 0"
 											>
@@ -207,9 +207,9 @@
 								<v-col cols="4" class="text-center">
 									<v-list-item two-line>
 										<v-list-item-content>
-											<v-list-item-subtitle>Criado em</v-list-item-subtitle>
+											<v-list-item-subtitle>Prestações</v-list-item-subtitle>
 											<v-list-item-title>{{
-												mapDetailedInfo.payment_map.record_date | formatDate
+												mapDetailedInfo.installments
 											}}</v-list-item-title>
 										</v-list-item-content>
 									</v-list-item>
@@ -217,9 +217,9 @@
 								<v-col cols="4" class="text-center">
 									<v-list-item two-line>
 										<v-list-item-content>
-											<v-list-item-subtitle>Prestações</v-list-item-subtitle>
+											<v-list-item-subtitle>Criado em</v-list-item-subtitle>
 											<v-list-item-title>{{
-												mapDetailedInfo.installments
+												mapDetailedInfo.payment_map.record_date | formatDate
 											}}</v-list-item-title>
 										</v-list-item-content>
 									</v-list-item>

@@ -203,7 +203,7 @@
 					></v-pagination>
 				</div>
 			</v-col>
-			<v-col align-self="center">
+			<v-col align-self="center" cols="3">
 				<v-dialog v-model="editedTypology.showDialog" persistent max-width="450px">
 					<template v-slot:activator="{ on }" class="text-xs-center">
 						<v-container>

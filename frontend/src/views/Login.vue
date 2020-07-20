@@ -1,6 +1,6 @@
 <template>
 	<div class="parent">
-		<v-card width="400" class="px-6 py-12">
+		<v-card width="400" class="px-6 py-8">
 			<v-img
 				alt="Logo"
 				src="@/assets/logo_full.png"
@@ -32,14 +32,14 @@
 						required
 						color="#949494"
 					/>
+					<v-row justify="center" class="mb-8">
+						<v-btn text small :to="{ name: 'forgotPassword' }"
+							>Esqueceu-se da palavra-passe?</v-btn
+						>
+					</v-row>
 
 					<v-card-actions class="justify-center">
-						<v-btn
-							class="mt-4 mb-4"
-							type="submit"
-							color="secondary"
-							:disabled="!formValidity"
-						>
+						<v-btn type="submit" color="secondary" tile :disabled="!formValidity">
 							Entrar
 						</v-btn>
 					</v-card-actions>

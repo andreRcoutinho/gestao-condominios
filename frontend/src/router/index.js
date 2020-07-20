@@ -12,6 +12,11 @@ const routes = [
 		component: () => import('@/views/Login.vue'),
 	},
 	{
+		path: '/forgot-password',
+		name: 'forgotPassword',
+		component: () => import('@/views/RecoverPwd.vue'),
+	},
+	{
 		path: '/home',
 		alias: '/',
 		name: 'home',
@@ -32,28 +37,43 @@ const routes = [
 		path: '/contactos',
 		name: 'contacts',
 		component: () => import(/* webpackChunkName: "Contacts" */ '../views/Contacts.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: '/mapas',
 		name: 'paymentMaps',
 		component: () => import(/* webpackChunkName: "PaymentMaps" */ '../views/PaymentMaps.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: '/definicoes-utilizador',
 		name: 'userSettings',
 		component: () => import(/* webpackChunkName: "UserSettings" */ '../views/UserSettings.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: '/utilizadores',
 		name: 'utilizadores',
 		component: () =>
 			import(/* webpackChunkName: "UserManagement" */ '../views/UserManagement.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: '/gestao-condominio',
 		name: 'buildingManagement',
 		component: () =>
 			import(/* webpackChunkName: "BuildingManagement" */ '../views/BuildingManagement.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: '/404',

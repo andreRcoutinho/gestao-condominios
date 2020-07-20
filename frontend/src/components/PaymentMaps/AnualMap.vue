@@ -21,7 +21,7 @@
 								</span>
 							</v-col>
 							<v-row justify="end" class="mx-0">
-								<v-col class="pb-1 pr-0" cols="3">
+								<v-col>
 									<v-menu
 										v-model="showAnualMapPicker"
 										:close-on-content-click="true"
@@ -52,15 +52,15 @@
 										</v-date-picker>
 									</v-menu>
 								</v-col>
-								<v-col cols="3">
+								<v-col>
 									<v-row justify="center">
 										<v-btn depressed :disabled="!allIsPaid">
 											Fechar Mapa
 										</v-btn>
 									</v-row>
 								</v-col>
-								<v-col cols="4">
-									<v-row justify="end">
+								<v-col cols="5">
+									<v-row justify="center">
 										<v-menu
 											v-model="downloadAnualMapInfoMenu"
 											:close-on-content-click="false"

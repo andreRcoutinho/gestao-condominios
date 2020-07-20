@@ -2,7 +2,7 @@ import { Typology } from '../models/typology';
 import * as api_errors from '../api/api_errors';
 import { PaymentMap } from '../models/payment_map';
 import { Revenue } from '../models/revenue';
-import { updatePaymentMap } from '../services/payment_map';
+import { updateUsingSimulate, updateNormalPaymentMap } from '../services/payment_map';
 import { Unit } from '../models/unit';
 import { MoreThan } from 'typeorm';
 import { PaymentMapValues } from '../models/payment_map_values';
@@ -81,24 +81,18 @@ export async function update(body: any, id: number): Promise<Typology> {
 
             for (let index = 0; index < paymentMaps.length; index++) {
                 var paymentMap: PaymentMap = paymentMaps[index];
-                var paymentMapValues: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map: paymentMap } });
+                var paymentMapValues: PaymentMapValues[] = await PaymentMapValues.find({ where: { payment_map: paymentMap, end_date: null } });
 
                 let month = new Date().getMonth() + 1;
-                let revenues: Revenue[] = await Revenue.find({
-                    where: { payment_map: paymentMap, month: MoreThan(month) },
-                });
 
-                let units_monthly: Unit[] = [];
-                for (let i = 0; i < revenues.length; i++) {
-                    const unit: Unit = revenues[i].getUnit();
-                    if (revenues[i].isMonthly() === true) {
-                        if (!findUnit(units_monthly, unit)) {
-                            units_monthly.push(unit);
-                        }
-                    }
+                if (paymentMap.getYearly() && !paymentMap.isClosed()) {
+                    await updateUsingSimulate(paymentMap.getId(), {
+                        month,
+                        value: paymentMapValues[0].getValue(),
+                    });
+                } else if (!paymentMap.getYearly() && !paymentMap.isClosed()) {
+                    await updateNormalPaymentMap(paymentMap.getId(), {})
                 }
-
-                await updatePaymentMap(revenues, paymentMapValues[0].getValue(), units_monthly, month);
             }
         }
         return typology;

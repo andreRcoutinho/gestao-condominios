@@ -57,7 +57,7 @@
 
 							<v-row>
 								<v-col>
-									<v-row justify="center">
+									<v-row justify="start" class="ml-0">
 										<v-btn color="secondary" tile type="submit">
 											Guardar Alterações
 										</v-btn>
@@ -151,7 +151,7 @@
 										</v-card>
 									</v-dialog>
 								</v-col>
-								<!-- TODO: Update Password -->
+								<!-- Update Password -->
 								<v-col>
 									<v-dialog
 										v-model="editedUser.updatePwdDialog.show"
@@ -171,57 +171,178 @@
 											</v-card-title>
 
 											<v-card-text>
-												<v-row justify="center">
-													<v-col cols="12">
-														<v-text-field
-															v-model="editedUser.updatePwdDialog.activePwd"
-															label="Palavra-passe antiga"
-															color="secondary"
-															:type="showPassword1 ? 'text' : 'password'"
-															prepend-icon="mdi-lock"
-															:append-icon="
-																showPassword1 ? 'mdi-eye' : 'mdi-eye-off'
-															"
-															@click:append="showPassword1 = !showPassword1"
-														></v-text-field>
-													</v-col>
-													<v-col cols="12">
-														<v-text-field
-															v-model="editedUser.updatePwdDialog.newPwd"
-															label="Nova palavra-passe"
-															color="secondary"
-															:type="showPassword2 ? 'text' : 'password'"
-															prepend-icon="mdi-lock"
-															:append-icon="
-																showPassword2 ? 'mdi-eye' : 'mdi-eye-off'
-															"
-															@click:append="showPassword2 = !showPassword2"
-														></v-text-field>
-													</v-col>
-													<v-col cols="12">
-														<v-text-field
-															v-model="editedUser.updatePwdDialog.repeatPwd"
-															label="Repetir palavra-passe"
-															color="secondary"
-															:type="showPassword3 ? 'text' : 'password'"
-															prepend-icon="mdi-lock"
-															:append-icon="
-																showPassword3 ? 'mdi-eye' : 'mdi-eye-off'
-															"
-															@click:append="showPassword3 = !showPassword3"
-														></v-text-field>
-													</v-col>
-												</v-row>
+												<v-form
+													v-model="pwdFormValidity"
+													ref="formPwd"
+													@submit.prevent="updatePassword"
+												>
+													<v-row justify="center" class="mb-8">
+														<v-col cols="12">
+															<v-text-field
+																v-model="editedUser.updatePwdDialog.activePwd"
+																:rules="editedUser.updatePwdDialog.activePwdRules"
+																label="Palavra-passe antiga"
+																color="secondary"
+																:type="showPassword1 ? 'text' : 'password'"
+																prepend-icon="mdi-lock"
+																:append-icon="
+																	showPassword1 ? 'mdi-eye' : 'mdi-eye-off'
+																"
+																@click:append="showPassword1 = !showPassword1"
+																required
+															></v-text-field>
+														</v-col>
+														<v-col cols="12">
+															<v-text-field
+																v-model="editedUser.updatePwdDialog.newPwd"
+																:rules="editedUser.updatePwdDialog.newPwdRules"
+																label="Nova palavra-passe"
+																color="secondary"
+																:type="showPassword2 ? 'text' : 'password'"
+																prepend-icon="mdi-lock"
+																:append-icon="
+																	showPassword2 ? 'mdi-eye' : 'mdi-eye-off'
+																"
+																@click:append="showPassword2 = !showPassword2"
+																required
+															></v-text-field>
+														</v-col>
+														<v-col cols="12">
+															<v-text-field
+																v-model="editedUser.updatePwdDialog.repeatPwd"
+																:rules="editedUser.updatePwdDialog.repeatPwdRules"
+																label="Repetir palavra-passe"
+																color="secondary"
+																:type="showPassword3 ? 'text' : 'password'"
+																prepend-icon="mdi-lock"
+																:append-icon="
+																	showPassword3 ? 'mdi-eye' : 'mdi-eye-off'
+																"
+																@click:append="showPassword3 = !showPassword3"
+																required
+															></v-text-field>
+														</v-col>
+														<!-- FORGOT PASSWORD -->
+														<v-col>
+															<v-dialog
+																v-model="forgotPwdDialog.show"
+																persistent
+																max-width="600px"
+															>
+																<template
+																	v-slot:activator="{ on }"
+																	class="text-xs-center"
+																>
+																	<v-row justify="center">
+																		<v-btn v-on="on" text small
+																			>Esqueceu-se da palavra-passe?</v-btn
+																		>
+																	</v-row>
+																</template>
+																<v-card>
+																	<v-card-title class="pt-5">
+																		<span>
+																			Recuperar Palavra-passe
+																		</span>
+																	</v-card-title>
 
-												<v-row>
-													<v-spacer></v-spacer>
-													<v-btn
-														color="red"
-														text
-														@click="editedUser.updatePwdDialog.show = false"
-														>Fechar</v-btn
-													>
-												</v-row>
+																	<v-card-text>
+																		<v-form @submit.prevent="resetPassword">
+																			<v-row justify="center" class="mb-8">
+																				<v-col cols="12">
+																					<span
+																						>Enviar email para o seguinte
+																						endereço?</span
+																					>
+																					<v-text-field
+																						:value="userInfo.email"
+																						color="secondary"
+																						outlined
+																						disabled
+																						hide-details
+																					></v-text-field>
+																				</v-col>
+																			</v-row>
+																			<v-row justify="center">
+																				<v-alert
+																					v-if="resetPwdSuccess"
+																					class="mb-3"
+																					text
+																					type="success"
+																					transition="fade-transition"
+																				>
+																					Email Enviado!
+																				</v-alert>
+
+																				<v-alert
+																					v-else-if="resetPwdErrorMsg"
+																					class="mb-3"
+																					text
+																					type="error"
+																					transition="fade-transition"
+																				>
+																					{{ resetPwdErrorMsg }}
+																				</v-alert>
+																			</v-row>
+
+																			<v-row>
+																				<v-spacer></v-spacer>
+																				<v-btn
+																					color="secondary"
+																					text
+																					type="submit"
+																				>
+																					Enviar
+																				</v-btn>
+																				<v-btn
+																					color="red"
+																					text
+																					@click="forgotPwdDialog.show = false"
+																					>Cancelar</v-btn
+																				>
+																			</v-row>
+																		</v-form>
+																	</v-card-text>
+																</v-card>
+															</v-dialog>
+														</v-col>
+													</v-row>
+													<v-row justify="center">
+														<v-alert
+															v-if="changePwdSuccess"
+															class="mb-3"
+															text
+															type="success"
+															transition="fade-transition"
+														>
+															{{ changePwdSuccess }}
+														</v-alert>
+
+														<v-alert
+															v-else-if="changePwdError"
+															class="mb-3"
+															text
+															type="error"
+															transition="fade-transition"
+														>
+															{{ changePwdError }}
+														</v-alert>
+													</v-row>
+													<v-row>
+														<v-spacer></v-spacer>
+														<v-btn
+															color="secondary"
+															text
+															type="submit"
+															:disabled="!pwdFormValidity"
+														>
+															Guardar Alterações
+														</v-btn>
+														<v-btn color="red" text @click="closePwdDialog"
+															>Fechar</v-btn
+														>
+													</v-row>
+												</v-form>
 											</v-card-text>
 										</v-card>
 									</v-dialog>
@@ -315,15 +436,30 @@ export default {
 			updatePwdDialog: {
 				show: false,
 				activePwd: '',
+				activePwdRules: [(v) => !!v || 'Introduza a palavra-passe atual.'],
 				newPwd: '',
+				newPwdRules: [(v) => !!v || 'Introduza a nova palavra-passe.'],
+				repeatPwd: '',
+				repeatPwdRules: [(v) => !!v || 'Introduza de novo a nova palavra-passe.'],
 			},
 			success: false,
 			error: false,
 		},
 
+		pwdFormValidity: false,
 		showPassword1: false,
 		showPassword2: false,
 		showPassword3: false,
+
+		forgotPwdDialog: {
+			show: false,
+		},
+
+		resetPwdSuccess: null,
+		resetPwdErrorMsg: null,
+
+		changePwdSuccess: null,
+		changePwdError: null,
 
 		userInfo: [],
 		userContacts: [],
@@ -406,6 +542,55 @@ export default {
 					console.log(res);
 				})
 				.catch((err) => {
+					console.log(err);
+				});
+		},
+		closePwdDialog: function() {
+			this.editedUser.updatePwdDialog.show = false;
+			this.$refs.formPwd.reset();
+		},
+		resetPassword: function() {
+			axios
+				.post(`http://localhost:3333/api/forgot-password`, {
+					email: this.userInfo.email,
+				})
+				.then((res) => {
+					this.resetPwdSuccess = true;
+					setTimeout(() => {
+						this.resetPwdSuccess = null;
+						this.forgotPwdDialog.show = false;
+					}, 1500);
+					console.log(res);
+				})
+				.catch((err) => {
+					this.resetPwdErrorMsg = err.response.data.error;
+					setTimeout(() => {
+						this.resetPwdErrorMsg = null;
+					}, 3000);
+					console.log(err);
+				});
+		},
+		updatePassword: function() {
+			axios
+				.put(`http://localhost:3333/api/users/update-password/${this.userInfo.id}`, {
+					old_password: this.editedUser.updatePwdDialog.activePwd,
+					new_password: this.editedUser.updatePwdDialog.newPwd,
+					new_password_repeat: this.editedUser.updatePwdDialog.repeatPwd,
+				})
+				.then((res) => {
+					this.changePwdSuccess = res.data.message;
+
+					setTimeout(() => {
+						this.changePwdSuccess = null;
+					}, 3000);
+					this.$refs.formPwd.reset();
+					console.log(res);
+				})
+				.catch((err) => {
+					this.changePwdError = err.response.data.error;
+					setTimeout(() => {
+						this.changePwdError = null;
+					}, 3000);
 					console.log(err);
 				});
 		},

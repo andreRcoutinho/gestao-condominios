@@ -83,12 +83,13 @@ export async function show(id: Number, year?: String) {
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
 
+            var value: Number = Number(revenue.getValue());
             revenues_res.push({
                 month: revenue.getMonth(),
                 unit_id: revenue.getUnit().getId(),
                 unit: revenue.getUnit().getUnit(),
                 paid: revenue.isPaid(),
-                value: revenue.getValue(),
+                value: Number(value.toFixed(2)),
             });
 
             if (revenues[i].isPaid() === false) {
@@ -97,6 +98,7 @@ export async function show(id: Number, year?: String) {
             total += Number(revenue.getValue());
         }
 
+        total = Number(total.toFixed(2));
         let response = {
             payment_map: payment_map,
             payment_map_values: payment_map_values,
@@ -132,21 +134,27 @@ export async function getAnualPaymentMap(year?: String) {
         let revenues: Revenue[] = await Revenue.find({ where: { payment_map } });
 
         let revenues_res: res_revenues[] = [];
-
+        let total: number = 0;
         for (let i = 0; i < revenues.length; i++) {
             const revenue = revenues[i];
+
+            var value: Number = Number(revenue.getValue());
             revenues_res.push({
                 month: revenue.getMonth(),
                 unit_id: revenue.getUnit().getId(),
                 unit: revenue.getUnit().getUnit(),
                 paid: revenue.isPaid(),
-                value: revenue.getValue(),
+                value: Number(value.toFixed(2)),
             });
+
+            total += Number(revenue.getValue());
         }
 
+        total = Number(total.toFixed(2));
         let response = {
             payment_map: payment_map,
             payment_map_values: payment_map_values,
+            total: total,
             revenues: revenues_res,
         };
 

@@ -1112,18 +1112,18 @@ paths:
             $ref: "#/definitions/EmptyResponse"  
   
   #ServiceTypes
-  /service-type:
+  /service-types:
     get:
       tags:
         - "ServiceTypes"
-      summary: "Get all service types"
-      description: "Returns array of service types"
+      summary: "Buscar todos os tipos de serviços."
+      description: "Retorna uma lista de todos os tipos de serviços."
       operationId: "getServiceTypes"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all service types successfully"
+          description: "Tipos de Serviço retornados com sucesso!"
           schema:
             type: object
             properties:
@@ -1136,21 +1136,21 @@ paths:
               data:
                 $ref: "#/definitions/ServiceTypeList"
         "400":
-          description: "Failed to retrieve all service types"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
       tags:
         - "ServiceTypes"
-      summary: "Post new service type"
-      description: "Creates a new service type"
+      summary: "Criar tipo de serviço."
+      description: "Criar um tipo de serviço novo."
       operationId: "postServiceType"
       produces:
         - "application/json"
       parameters:
         - in: "body"
           name: "body"
-          description: "Service type object to create a new service type"
+          description: "Objeto com dados para criar tipo de serviço."
           required: true
           schema:
             type: "object"
@@ -1160,7 +1160,7 @@ paths:
                 example: "Luz"
       responses:
         "200":
-          description: "Service type created successfully"
+          description: "Tipo de Serviço criado com sucesso!"
           schema:
             type: object
             properties:
@@ -1173,27 +1173,27 @@ paths:
               data:
                 $ref: "#/definitions/ServiceType"
         "400":
-          description: "Failed to create service type"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
-  /service-type/{id}:
+  /service-types/{id}:
     get:
       tags:
         - "ServiceTypes"
-      summary: "Get service type"
-      description: "Retrieves information about a service type"
+      summary: "Buscar tipo de serviço."
+      description: "Retorna um tipo de serviço por id."
       operationId: "getServiceType"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of service type to retrieve"
+          description: "ID do tipo de serviço."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Retrieved service type successfully"
+          description: "Tipo de Serviço retornado com sucesso!"
           schema:
             type: object
             properties:
@@ -1206,26 +1206,26 @@ paths:
               data:
                 $ref: "#/definitions/ServiceType"
         "400":
-          description: "Failed to retrieve service type"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
       tags:
         - "ServiceTypes"
-      summary: "Edit a service type"
-      description: "Edits an existing service type"
+      summary: "Atualizar tipo de serviço."
+      description: "Atualiza os dados de um tipo de serviço."
       operationId: "editServiceType"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of service type to update"
+          description: "ID do tipo de serviço."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Service type object edit"
+          description: "Objeto com dados a atualizar no tipo de serviço."
           required: true
           schema:
             type: object
@@ -1234,39 +1234,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated service type successfully"
-          schema:
-            type: object
-            properties:
-              request:
-                type: string
-              message:
-                type: string
-              status:
-                type: integer
-              data:
-                $ref: "#/definitions/User"
-        "400":
-          description: "Failed to update service type"
-          schema:
-            $ref: "#/definitions/EmptyResponse"
-    delete:
-      tags:
-        - "ServiceTypes"
-      summary: "Delete service type"
-      description: "Deletes an existing service type"
-      operationId: "deleteServiceType"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "id"
-          in: "path"
-          description: "ID of service type to delete"
-          required: true
-          type: "integer"
-      responses:
-        "200":
-          description: "Removed service type successfully"
+          description: "Tipo de Serviço alterado com sucesso!"
           schema:
             type: object
             properties:
@@ -1279,7 +1247,42 @@ paths:
               data:
                 $ref: "#/definitions/ServiceType"
         "400":
-          description: "Failed to remove service type"
+          description: "Failed to update service type"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    delete:
+      tags:
+        - "ServiceTypes"
+      summary: "Remover tipo de serviço."
+      description: "Remove um tipo de serviço."
+      operationId: "deleteServiceType"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID do tipo de serviço a remover."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Tipo de Serviço removido com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                type: object
+                properties:
+                  service_type:
+                    type: string
+        "400":
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
 

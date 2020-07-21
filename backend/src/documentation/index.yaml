@@ -1291,14 +1291,14 @@ paths:
     get:
       tags:
         - "Suppliers"
-      summary: "Get all suppliers"
-      description: "Returns array of suppliers"
+      summary: "Buscar fornecedores."
+      description: "Retorna uma lista dos fornecedores."
       operationId: "getSuppliers"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all suppliers successfully"
+          description: "Todos os Fornecedores retornados com sucesso!"
           schema:
             type: object
             properties:
@@ -1311,21 +1311,21 @@ paths:
               data:
                 $ref: "#/definitions/SupplierList"
         "400":
-          description: "Failed to retrieve all suppliers"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
       tags:
         - "Suppliers"
-      summary: "Post a supplier"
-      description: "Creates a new supplier"
+      summary: "Criar fornecedor."
+      description: "Cria uma fornecedor novo."
       operationId: "postSupplier"
       produces:
         - "application/json"
       parameters:
         - in: "body"
           name: "body"
-          description: "Service type object to create a new supplier"
+          description: "Objeto com dados para criar fornecedor."
           required: true
           schema:
             type: "object"
@@ -1341,13 +1341,12 @@ paths:
               contacts:
                 type: array
                 items:
-                  $ref: "#/definitions/PhoneList"
+                  type: string
               service_types:
-                type: array
-                $ref: "#/definitions/ServiceTypeList"
+                type: integer
       responses:
         "200":
-          description: "Supplier created successfully"
+          description: "Fornecedor registado com sucesso!"
           schema:
             type: object
             properties:
@@ -1360,27 +1359,27 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to create service type"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}:
     get:
       tags:
         - "Suppliers"
-      summary: "Get supplier"
-      description: "Retrieves information about a supplier"
+      summary: "Buscar fornecedor"
+      description: "Retorna informação sobre um fornecedor."
       operationId: "getSupplier"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of supplier to retrieve"
+          description: "ID do fornecedor a retornar."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Retrieved supplier successfully"
+          description: "Fornecedor retornado com sucesso!"
           schema:
             type: object
             properties:
@@ -1393,26 +1392,26 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to retrieve supplier"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
       tags:
         - "Suppliers"
-      summary: "Edit a supplier"
-      description: "Edits an existing supplier"
+      summary: "Atualizar fornecedor."
+      description: "Atualiza os dados de um fornecedor."
       operationId: "editSupplier"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of supplier to update"
+          description: "ID do fornecedor a editar."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Supplier object edit"
+          description: "Objeto com dados para atualizar no fornecedor."
           required: true
           schema:
             type: object
@@ -1427,7 +1426,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated supplier successfully"
+          description: "Fornecedor editado com sucesso!"
           schema:
             type: object
             properties:
@@ -1440,27 +1439,59 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to update supplier"
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+    delete:
+      tags:
+        - "Suppliers"
+      summary: "Remover fornecedor."
+      description: "Remove um fornecedor."
+      operationId: "deleteUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID do fornecedor a remover."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Utilizador removido com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/add-contact:
     put:
       tags:
-        - "Users"
-      summary: "Add supplier contact"
-      description: "Adds a new contact to a supplier"
+        - "Suppliers"
+      summary: "Adicionar contato a fornecedor."
+      description: "Adiciona um novo contato à lista de contatos do fornecedor."
       operationId: "addContactSupplier"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of supplier to update"
+          description: "ID do fornecedor a adicionar contato."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Contact object to add a contact"
+          description: "Objeto com contato a adicionar."
           required: true
           schema:
             type: object
@@ -1469,7 +1500,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated supplier successfully"
+          description: "Contacto adicionado com sucesso!"
           schema:
             type: object
             properties:
@@ -1482,38 +1513,38 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to update supplier"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/update-contact:
     put:
       tags:
-        - "Users"
-      summary: "Update supplier contact"
-      description: "Updates a contact of a supplier"
+        - "Suppliers"
+      summary: "Atualizar contato de fornecedor."
+      description: "Atualiza um contato da lista de contatos de um fornecedor."
       operationId: "updateContactSupplier"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of supplier to update"
+          description: "ID do fornecedor a atualizar contato."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Contact object to update a contact"
+          description: "Objeto com id e contato a atualizar."
           required: true
           schema:
             type: object
             properties:
               phone_number:
                 type: string
-              id:
+              contact_id:
                 type: integer
       responses:
         "200":
-          description: "Updated supplier successfully"
+          description: "Contacto editado com sucesso!"
           schema:
             type: object
             properties:
@@ -1526,28 +1557,69 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to update supplier"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
-  #/suppliers/{id}/delete-contact?
+  /suppliers/{id}/delete-contact:
+    put:
+      tags:
+        - "Suppliers"
+      summary: "Remover contato de fornecedor."
+      description: "Remove um contato da lista de contatos de um fornecedor."
+      operationId: "deleteContactSupplier"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID do fornecedor a remover contato."
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Objeto com id do contato a remover."
+          required: true
+          schema:
+            type: object
+            properties:
+              contact_id:
+                type: integer
+      responses:
+        "200":
+          description: "Contacto removido com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/Supplier"
+        "400":
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/add-service-type:
     put:
       tags:
-        - "Users"
-      summary: "Add supplier service type"
-      description: "Adds a new service type to a supplier"
+        - "Suppliers"
+      summary: "Adicionar tipo de serviço a fornecedor."
+      description: "Adiciona um tipo de serviço existente a um fornecedor."
       operationId: "addServiceTypeSupplier"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of supplier to update"
+          description: "ID do fornecedor a adicionar tipo de serviço."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Service type object to add a service type"
+          description: "Objeto com id do tipo de serviço a adicionar."
           required: true
           schema:
             type: object
@@ -1556,7 +1628,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated supplier successfully"
+          description: "Tipo de Serviço adicionado com sucesso!"
           schema:
             type: object
             properties:
@@ -1569,27 +1641,27 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to update supplier"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id1}/delete-service-type:
     put:
       tags:
-        - "Users"
-      summary: "Delete supplier service type"
-      description: "Removes a service type from a supplier"
+        - "Suppliers"
+      summary: "Remover tipo de serviço de fornecedor."
+      description: "Remove um tipo de serviço de um fornecedor."
       operationId: "deleteServiceTypeSupplier"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of supplier to update"
+          description: "ID do fornecedor a remover tipo de serviço."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Service type object to delete service type"
+          description: "Objeto com id do tipo de serviço a remover."
           required: true
           schema:
             type: object
@@ -1598,7 +1670,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated supplier successfully"
+          description: "Tipo de Serviço removido com sucesso!"
           schema:
             type: object
             properties:
@@ -1611,7 +1683,7 @@ paths:
               data:
                 $ref: "#/definitions/Supplier"
         "400":
-          description: "Failed to update supplier"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
 
@@ -1620,14 +1692,14 @@ paths:
     get:
       tags:
         - "Expenses"
-      summary: "Get all expenses"
-      description: "Returns array of expenses"
+      summary: "Buscar despesas."
+      description: "Retorna uma lista de despesas."
       operationId: "getExpenses"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all expenses successfully"
+          description: "Todas as Despesas com sucesso."
           schema:
             type: object
             properties:
@@ -1640,21 +1712,21 @@ paths:
               data:
                 $ref: "#/definitions/ExpensesList"
         "400":
-          description: "Failed to retrieve all expenses"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
       tags:
         - "Expenses"
-      summary: "Post an expense"
-      description: "Creates a new expense"
+      summary: "Criar despesa."
+      description: "Cria uma nova despesa."
       operationId: "postExpense"
       produces:
         - "application/json"
       parameters:
         - in: "body"
           name: "body"
-          description: "Expense object to create a new expense"
+          description: "Objeto com dados para criar despesa."
           required: true
           schema:
             type: "object"
@@ -1669,7 +1741,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Expense created successfully"
+          description: "Despesa registada!"
           schema:
             type: object
             properties:
@@ -1682,27 +1754,27 @@ paths:
               data:
                 $ref: "#/definitions/Expense"
         "400":
-          description: "Failed to create service type"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /expenses/{id}:
     get:
       tags:
         - "Expenses"
-      summary: "Get expense"
-      description: "Retrieves information about an expense"
+      summary: "Buscar despesa."
+      description: "Retorna informação de uma despesa."
       operationId: "getExpense"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of expense to retrieve"
+          description: "ID da despesa a retornar."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Retrieved expense successfully"
+          description: "Despesa visualizada com sucesso!"
           schema:
             type: object
             properties:
@@ -1715,26 +1787,26 @@ paths:
               data:
                 $ref: "#/definitions/Expense"
         "400":
-          description: "Failed to retrieve expense"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
       tags:
         - "Expenses"
-      summary: "Edit an expense"
-      description: "Edits an existing expense"
+      summary: "Atualizar despesa."
+      description: "Atualiza os dados de uma despesa."
       operationId: "editExpense"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of expense to update"
+          description: "ID da despesa a atualizar."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Expense object edit"
+          description: "Objeto com dados para atualizar despesa."
           required: true
           schema:
             type: object
@@ -1747,7 +1819,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated expense successfully"
+          description: "Despesa alterada com sucesso!"
           schema:
             type: object
             properties:
@@ -1760,26 +1832,26 @@ paths:
               data:
                 $ref: "#/definitions/Expense"
         "400":
-          description: "Failed to update expense"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
       tags:
         - "Expenses"
-      summary: "Delete expense"
-      description: "Deletes an existing expense"
+      summary: "Remover despesa."
+      description: "Remove uma despesa."
       operationId: "deleteExpense"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of expense to delete"
+          description: "ID da despesa a remover"
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Removed expense successfully"
+          description: "Despesa removida com sucesso!"
           schema:
             type: object
             properties:
@@ -1792,7 +1864,7 @@ paths:
               data:
                 $ref: "#/definitions/Expense"
         "400":
-          description: "Failed to remove Expense"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
 
@@ -1801,14 +1873,14 @@ paths:
     get:
       tags:
         - "PaymentMap"
-      summary: "Get all payment maps"
-      description: "Returns array of payment maps"
+      summary: "Buscar mapas de pagamento."
+      description: "Retorna lista de todos os mapas de pagamento existentes."
       operationId: "getPaymentMaps"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all payment maps successfully"
+          description: "Todos os Mapas de Pagamento retornados com sucesso!"
           schema:
             type: object
             properties:
@@ -1821,21 +1893,21 @@ paths:
               data:
                 $ref: "#/definitions/PaymentMapsList"
         "400":
-          description: "Failed to retrieve all payment maps"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
       tags:
         - "PaymentMap"
-      summary: "Post a payment map"
-      description: "Creates a new payment map"
+      summary: "Criar mapa de pagamento."
+      description: "Cria um novo mapa de pagamento."
       operationId: "postPaymentMap"
       produces:
         - "application/json"
       parameters:
         - in: "body"
           name: "body"
-          description: "PaymentMap object to create a new payment map"
+          description: "Objeto com dados necessários para criar mapa de pagamento."
           required: true
           schema:
             type: "object"
@@ -1856,40 +1928,31 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Payment map created successfully"
+          description: "Mapa de Pagamento criado com sucesso!"
           schema:
-            type: object
-            properties:
-              request:
-                type: string
-              message:
-                type: string
-              status:
-                type: integer
-              data:
-                $ref: "#/definitions/PaymentMap"
+            $ref: "#/definitions/TrueResponse"
         "400":
-          description: "Failed to create payment map"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /payment_map/{id}:
     get:
       tags:
         - "PaymentMap"
-      summary: "Get payment map"
-      description: "Retrieves information about a payment map"
+      summary: "Buscar mapa de pagamento."
+      description: "Retorna informação sobre um mapa de pagamento."
       operationId: "getPaymentMap"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of payment map to retrieve"
+          description: "ID do mapa de pagamento."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Retrieved payment map successfully"
+          description: "Mapa de Pagamento retornado com sucesso!"
           schema:
             type: object
             properties:
@@ -1902,26 +1965,26 @@ paths:
               data:
                 $ref: "#/definitions/PaymentMapInfo"
         "400":
-          description: "Failed to retrieve payment map"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
       tags:
         - "PaymentMap"
-      summary: "Edit a payment map"
-      description: "Edits an existing payment map"
+      summary: "Atualizar mapa de pagamento."
+      description: "Atualiza os dados de um mapa de pagamento."
       operationId: "editPaymentMap"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of payment map to update"
+          description: "ID do mapa de pagamento."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Payment map object edit"
+          description: "Objeto com dados a atualizar no mapa de pagamento."
           required: true
           schema:
             type: object
@@ -1932,7 +1995,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated payment map successfully"
+          description: "Mapa de Pagamento alterado com sucesso!"
           schema:
             type: object
             properties:
@@ -1945,27 +2008,27 @@ paths:
               data:
                 $ref: "#/definitions/PaymentMap"
         "400":
-          description: "Failed to update payment map"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /payment_map/{id}/close:
     put:
       tags:
         - "PaymentMap"
-      summary: "Close a payment map"
-      description: "Edits an existing payment map to be closed"
+      summary: "Fechar mapa de pagamento."
+      description: "Fecha um mapa de pagamento quando todas as despesas estão pagas."
       operationId: "closePaymentMap"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of payment map to close"
+          description: "ID do mapa de pagamento a fechar."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Payment map successfully closed"
+          description: "Mapa de pagamento fechado com sucesso!"
           schema:
             type: object
             properties:
@@ -1978,7 +2041,80 @@ paths:
               data:
                 $ref: "#/definitions/PaymentMap"
         "400":
-          description: "Failed to update payment map"
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /payment_map/simulate:
+    post:
+      tags:
+        - "PaymentMap"
+      summary: "Simular mapa de pagamento."
+      description: "Simula a criação de um mapa de pagamento com base nos dados."
+      operationId: "simulatePaymentMap"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Objeto com dados para simular um mapa de pagamento."
+          required: true
+          schema:
+            type: "object"
+            properties:
+              value:
+                type: string
+              description:
+                type: string
+              name:
+                type: string
+              unit_ids:
+                type: array
+                items:
+                  type: integer
+              is_yearly:
+                type: boolean
+              year:
+                type: string
+      responses:
+        "200":
+          description: "Simualação de Mapa de Pagamento retornada com sucesso!"
+          schema:
+            $ref: "#/definitions/TrueResponse"
+        "400":
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"       
+  /payment_map/anual?year={year}:
+    get:
+      tags:
+        - "PaymentMap"
+      summary: "Buscar mapa de pagamento por ano"
+      description: "Retorna uma mapa de pagamento pelo ano."
+      operationId: "getPaymentMap"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "year"
+          in: "path"
+          description: "Ano do mapa de pagamento."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Mapa de Pagamento Anual retornado com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/PaymentMapInfo"
+        "400":
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
 
@@ -1987,14 +2123,14 @@ paths:
     get:
       tags:
         - "Revenues"
-      summary: "Get all revenues"
-      description: "Returns array of revenues"
+      summary: "Buscar receitas."
+      description: "Retorna lista de receitas efetuadas."
       operationId: "getRevenues"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all revenues successfully"
+          description: "Todas as receitas retornadas com sucesso!"
           schema:
             type: object
             properties:
@@ -2005,23 +2141,23 @@ paths:
               status:
                 type: integer
               data:
-                $ref: "#/definitions/RevenuesList"
+                $ref: "#/definitions/RevenueList"
         "400":
-          description: "Failed to retrieve all revenues"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
       tags:
         - "Revenues"
-      summary: "Post a payment record"
-      description: "Creates a new payment record"
+      summary: "Registo receita."
+      description: "Cria um registo de receita de uma despesa."
       operationId: "postPaymentRecord"
       produces:
         - "application/json"
       parameters:
         - in: "body"
           name: "body"
-          description: "Payment record object to register"
+          description: "Objeto com dados a registar uma receita."
           required: true
           schema:
             type: "object"
@@ -2034,7 +2170,27 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Payment record created successfully"
+          description: "Movimento registado!"
+          schema:
+            $ref: "#/definitions/TrueResponse"
+        "400":
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+
+  #Others
+  /others/monthly-data?month={month}&year={year}:
+    get:
+      tags:
+        - "Others"
+      summary: "Buscar informações mensais."
+      description: "Retorna informações sobre um mês num mapa de pagamento anual."
+      operationId: "getMonthlyData"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Dados mensais retornados com sucesso!"
           schema:
             type: object
             properties:
@@ -2045,14 +2201,12 @@ paths:
               status:
                 type: integer
               data:
-                $ref: "#/definitions/Revenue"
+                $ref: "#/definitions/MonthlyData"
         "400":
-          description: "Failed to create revenue"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
 
-  #Others
-  #monthly data
 
 definitions:
   TrueResponse:
@@ -2258,15 +2412,21 @@ definitions:
   Revenue:
     type: object
     properties:
+      id:
+        type: integer
       month:
         type: integer
+      payment_map_id:
+        type: integer
+      payment_map_name:
+        type: string
       unit_id:
         type: integer
       unit:
         type: string
-      paid:
-        type: boolean
       value:
+        type: string
+      payment_date:
         type: string
   RevenueList:
     type: array
@@ -2281,3 +2441,25 @@ definitions:
         $ref: "#/definitions/PaymentMapValuesList"
       revenues:
         $ref: "#/definitions/RevenueList"
+  MonthlyData:
+    type: object
+    properties:
+      total_missing:
+        type: integer
+      total_paid:
+        type: integer
+      total_spent:
+        type: integer
+      typology_values:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+      missing_payment_unit:
+        type: array
+        items:
+          type: string

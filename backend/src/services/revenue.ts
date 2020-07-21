@@ -55,6 +55,12 @@ export async function payment_record(body: any) {
             throw new Error(api_errors.UNIT_NOT_EXISTS)
         }
 
+        for (let i = 0; i < body.months.length; i++) {
+            const month = body.months[i];
+            if (month <= 0 || month > 12)
+                throw new Error(api_errors.INVALID_MONTH)
+        }
+
         if (payment_map.getYearly() === true) {
             for (let i = 0; i < body.months.length; i++) {
                 const month = body.months[i];

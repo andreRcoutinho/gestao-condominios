@@ -446,14 +446,14 @@ paths:
     get:
       tags:
         - "Users"
-      summary: "Get all users"
-      description: "Returns array of users"
+      summary: "Buscar utilizadores."
+      description: "Devolve lista dos utilizadores."
       operationId: "getUsers"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all users successfully"
+          description: "Todos os utilizadores retornados com sucesso!"
           schema:
             type: object
             properties:
@@ -466,14 +466,14 @@ paths:
               data:
                 $ref: "#/definitions/UsersList"
         "400":
-          description: "Failed to retrieve all users"
+          description: "Request inválido!"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}:
     get:
       tags:
         - "Users"
-      summary: "Get user"
+      summary: "Buscar utilizador."
       description: "Retrieves information about an user"
       operationId: "getUser"
       produces:
@@ -481,12 +481,12 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to retrieve"
+          description: "ID do utilizador."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Retrieved user successfully"
+          description: "Utilizador retornado com sucesso!"
           schema:
             type: object
             properties:
@@ -499,26 +499,26 @@ paths:
               data:
                 $ref: "#/definitions/User"
         "400":
-          description: "Failed to retrieve user"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
       tags:
         - "Users"
-      summary: "Update user"
-      description: "Updates information about an user"
+      summary: "Atualizar utilizador."
+      description: "Atualiza os dados de um utilizador."
       operationId: "updateUser"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID do utilizador."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "User object to edit a user"
+          description: "Objeto com dados a atualizar."
           required: true
           schema:
             type: object
@@ -535,7 +535,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated user successfully"
+          description: "Utilizador editado com sucesso!"
           schema:
             type: object
             properties:
@@ -548,7 +548,7 @@ paths:
               data:
                 $ref: "#/definitions/User"
         "400":
-          description: "Failed to update user"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
@@ -562,12 +562,12 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to delete"
+          description: "ID do utilizador a remover."
           required: true
           type: "integer"
       responses:
         "200":
-          description: "Removed user successfully"
+          description: "Utilizador removido com sucesso!"
           schema:
             type: object
             properties:
@@ -580,27 +580,27 @@ paths:
               data:
                 $ref: "#/definitions/User"
         "400":
-          description: "Failed to remove user"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/update-role:
     put:
       tags:
         - "Users"
-      summary: "Update user role"
-      description: "Updates the role of an user"
+      summary: "Atualizar permissão de utilizador."
+      description: "Atualiza a permissão de um utilizador."
       operationId: "updateUserRole"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID da permissão."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Role object to edit a user role"
+          description: "Objeto com dados para atualizar a permissão."
           required: true
           schema:
             type: object
@@ -609,7 +609,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated user role successfully"
+          description: "Permissões do utilizador alteradas com sucesso!"
           schema:
             type: object
             properties:
@@ -622,27 +622,73 @@ paths:
               data:
                 $ref: "#/definitions/User"
         "400":
-          description: "Failed to update user role"
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /users/{id}/update-password:
+    put:
+      tags:
+        - "Users"
+      summary: "Atualizar password."
+      description: "Atualiza a password de um utilizador."
+      operationId: "updateUserPassword"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID do utilizador."
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Objeto dados para atualizar password."
+          required: true
+          schema:
+            type: object
+            properties:
+              old_password:
+                type: string
+              new_password:
+                type: string
+              new_password_repeat:
+                type: string                                
+      responses:
+        "200":
+          description: "Password alterada com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/User"
+        "400":
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/add-contact:
     put:
       tags:
         - "Users"
-      summary: "Add user contact"
-      description: "Adds a new contact to a user"
+      summary: "Adicionar contato de utilizador."
+      description: "Adiciona um novo contato a um utilizador."
       operationId: "addContactUser"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID do utilizador."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Contact object to add a contact"
+          description: "Objeto com dados do contato."
           required: true
           schema:
             type: object
@@ -651,7 +697,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated user successfully"
+          description: "Adicionado Contacto ao utilizador com sucesso!"
           schema:
             type: object
             properties:
@@ -664,27 +710,27 @@ paths:
               data:
                 $ref: "#/definitions/User"
         "400":
-          description: "Failed to update user"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/delete-contact:
     put:
       tags:
         - "Users"
-      summary: "Delete user contact"
-      description: "Deletes a contact from an user"
+      summary: "Remover contato do utilizador."
+      description: "Remove um contato da lista de contatos de um utilizador."
       operationId: "deleteContactUser"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID do utilizador."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Contact object to delete a contact"
+          description: "Objeto com id do contato a remover."
           required: true
           schema:
             type: object
@@ -693,7 +739,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated user successfully"
+          description: "Contacto do utilizador removido com sucesso!"
           schema:
             type: object
             properties:
@@ -706,27 +752,27 @@ paths:
               data:
                 $ref: "#/definitions/User"
         "400":
-          description: "Failed to update user"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/update-contact:
     put:
       tags:
         - "Users"
-      summary: "Update user contact"
-      description: "Updates a contact on an user"
+      summary: "Atualizar contato de utilizador."
+      description: "Atualiza um contato de um utilizador da sua lista."
       operationId: "updateContactUser"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID do utilizador."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Contact object to add a contact"
+          description: "Objeto com dados para atualizar contato."
           required: true
           schema:
             type: object
@@ -737,7 +783,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated user successfully"
+          description: "Contacto do utilizador alterado com sucesso!"
           schema:
             type: object
             properties:
@@ -757,20 +803,20 @@ paths:
     put:
       tags:
         - "Users"
-      summary: "Add unit to user"
-      description: "Adds a unit to a user"
+      summary: "Adicionar fração a utilizador."
+      description: "Adiciona uma fração de um apartamento ao utilizador."
       operationId: "addUnitUser"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID do utilizador."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Unit object to add a unit"
+          description: "Objeto com id da fração a adicionar."
           required: true
           schema:
             type: object
@@ -779,7 +825,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated user successfully"
+          description: "Adicionada Fração ao utilizador com sucesso!"
           schema:
             type: object
             properties:
@@ -799,20 +845,20 @@ paths:
     put:
       tags:
         - "Users"
-      summary: "Add unit to user"
-      description: "Adds a unit to a user"
+      summary: "Remover fração de utilizador."
+      description: "Remove fração de um utilizador."
       operationId: "addUnitUser"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of user to update"
+          description: "ID do utilizador."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Unit object to add a unit"
+          description: "Objeto com id da fração a remover."
           required: true
           schema:
             type: object
@@ -821,7 +867,7 @@ paths:
                 type: integer
       responses:
         "200":
-          description: "Updated user successfully"
+          description: "Fração do utilizador removida com sucesso!"
           schema:
             type: object
             properties:

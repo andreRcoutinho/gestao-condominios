@@ -119,6 +119,14 @@
 				<v-divider class="mx-8"></v-divider>
 
 				<v-row class="mt-4" align-content="end">
+					<v-btn
+						outlined
+						color="black"
+						class="ml-11"
+						:disabled="!switchIsYearly"
+						@click="simulateMap"
+						>Simular</v-btn
+					>
 					<v-spacer></v-spacer>
 					<v-btn color="red" text @click="clearFields">Cancelar</v-btn>
 					<v-btn
@@ -135,11 +143,117 @@
 		</v-form>
 		<v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" top :color="snackbar.colour">
 			{{ snackbar.message }}
-			<v-icon v-if="snackbar.success"> mdi-checkbox-marked-circle</v-icon>
-			<v-icon v-else>
+			<v-icon v-if="snackbar.success" right> mdi-checkbox-marked-circle</v-icon>
+			<v-icon v-else right>
 				mdi-cancel
 			</v-icon>
 		</v-snackbar>
+		<v-dialog v-model="simulate.show" max-width="1000px">
+			<v-card>
+				<v-card-title class="ml-2 pt-5">
+					<span>
+						Simulação
+					</span>
+				</v-card-title>
+
+				<v-card-text>
+					<v-row class="mb-6" justify="center">
+						<v-col cols="2">
+							<v-row justify="center">
+								<v-list-item two-line class="text-center">
+									<v-list-item-content>
+										<v-list-item-subtitle>Nome</v-list-item-subtitle>
+										<v-list-item-title>{{ simulate.paymentMap.name }}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-row>
+						</v-col>
+						<v-col cols="2">
+							<v-row justify="center">
+								<v-list-item two-line class="text-center">
+									<v-list-item-content>
+										<v-list-item-subtitle>Descrição</v-list-item-subtitle>
+										<v-list-item-title>{{
+											simulate.paymentMap.description
+										}}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-row>
+						</v-col>
+						<v-col cols="2">
+							<v-row justify="center">
+								<v-list-item two-line class="text-center">
+									<v-list-item-content>
+										<v-list-item-subtitle>Ano</v-list-item-subtitle>
+										<v-list-item-title>{{ simulate.paymentMap.year }}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-row>
+						</v-col>
+						<v-col cols="2">
+							<v-row justify="center">
+								<v-list-item two-line class="text-center">
+									<v-list-item-content>
+										<v-list-item-subtitle>Valor</v-list-item-subtitle>
+										<v-list-item-title>{{ simulate.value }} €</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-row>
+						</v-col>
+						<v-col cols="2">
+							<v-row justify="center">
+								<v-list-item two-line class="text-center">
+									<v-list-item-content>
+										<v-list-item-subtitle>Fundo de Reserva</v-list-item-subtitle>
+										<v-list-item-title>{{ simulate.reserveFund }} €</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-row>
+						</v-col>
+					</v-row>
+
+					<v-row justify="center" class="mb-12">
+						<v-data-table
+							:items="simulate.monthlyExpenses"
+							:headers="simulate.unitsHeaders"
+							dense
+							:items-per-page="5"
+						>
+							<template v-slot:top>
+								<v-row justify="center">
+									<span class="text-center text-h6">
+										Valores Mensais
+									</span>
+								</v-row>
+							</template>
+							<template v-slot:item.monthy_expense="{ item }">
+								<span>{{ item.monthy_expense }} €</span>
+							</template>
+						</v-data-table>
+					</v-row>
+
+					<v-row justify="center">
+						<v-data-table
+							:items="simulate.reserveFunds"
+							:headers="simulate.rfHeaders"
+							dense
+							:items-per-page="5"
+						>
+							<template v-slot:top>
+								<v-row justify="center">
+									<span class="text-center text-h6">
+										Valores do Fundo de Reserva
+									</span>
+								</v-row>
+							</template>
+							<template v-slot:item.reserve_fund="{ item }">
+								<span>{{ item.reserve_fund }} €</span>
+							</template>
+						</v-data-table>
+					</v-row>
+				</v-card-text>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -151,7 +265,7 @@ export default {
 	data: () => ({
 		dialog1: false,
 		dialog2: false,
-		switchIsYearly: null,
+		switchIsYearly: false,
 		newMapInfo: {
 			year: +new Date().toISOString().substr(0, 4) + 1,
 			mapName: '',
@@ -166,34 +280,43 @@ export default {
 				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
 			],
 			validity: false,
-			snackbar: {
-				// 	show: false,
-				message: null,
-				// 	timeout: 3000,
-				// 	success: false,
-				// 	colour: '',
-			},
 		},
-		newAnualMapInfo: {
-			mapName: '',
-			nameRules: [(v) => !!v || 'É necessário indicar um nome.'],
-			description: '',
-			numberOfInstallments: 0,
-			numberRules: [(v) => /^\d+$/.test(v) || 'Só são permitidos números inteiros.'],
-			selectedUnits: [],
-			totalValue: 0,
-			valueRules: [
-				(v) => !!v || 'Introduza uma quantia.',
-				(v) => /^\d+(\.\d{1,2})?$/.test(v) || 'A quantia tem que ter um formato válido.',
+
+		simulate: {
+			show: false,
+			paymentMap: {},
+			value: 0,
+			reserveFund: 0,
+			monthlyExpenses: [],
+			reserveFunds: [],
+			unitsHeaders: [
+				{
+					text: 'Parcela',
+					value: 'unit',
+					align: 'center',
+					sortable: false,
+				},
+				{
+					text: 'Valor Mensal',
+					value: 'monthy_expense',
+					align: 'center',
+					sortable: false,
+				},
 			],
-			validity: false,
-			snackbar: {
-				// 	show: false,
-				message: null,
-				// 	timeout: 3000,
-				// 	success: false,
-				// 	colour: '',
-			},
+			rfHeaders: [
+				{
+					text: 'Parcela',
+					value: 'unit',
+					align: 'center',
+					sortable: false,
+				},
+				{
+					text: 'Contribuição para Fundo de Reserva',
+					value: 'reserve_fund',
+					align: 'center',
+					sortable: false,
+				},
+			],
 		},
 
 		snackbar: {
@@ -228,6 +351,46 @@ export default {
 		axios.get('//localhost:3333/api/units/').then((res) => (this.units = res.data.data));
 	},
 	methods: {
+		simulateMap: function() {
+			if (
+				this.newMapInfo.mapName &&
+				this.newMapInfo.selectedUnits.length > 0 &&
+				this.newMapInfo.year &&
+				this.newMapInfo.totalValue
+			) {
+				axios
+					.post(`http://localhost:3333/api/payment_map/simulate`, {
+						name: this.newMapInfo.mapName,
+						description: this.newMapInfo.description,
+						unit_ids: this.newMapInfo.selectedUnits,
+						year: this.newMapInfo.year,
+						is_yearly: true,
+						value: this.newMapInfo.totalValue,
+					})
+					.then((res) => {
+						let r = res.data.data;
+						this.simulate.paymentMap = r.payment_map;
+						this.simulate.value = r.value;
+						this.simulate.reserveFund = r.reserve_fund;
+						this.simulate.monthlyExpenses = r.res.monthly_expenses;
+						this.simulate.reserveFunds = r.res.reserve_funds;
+
+						this.simulate.show = true;
+						this.$refs.formNewPayMap.reset();
+					})
+					.catch((err) => {
+						this.snackbar.message = err.response.data.error;
+						this.snackbar.success = false;
+						this.snackbar.colour = 'red';
+						this.snackbar.show = true;
+					});
+			} else {
+				this.snackbar.message = 'Forneça toda a informação!';
+				this.snackbar.success = false;
+				this.snackbar.colour = 'red';
+				this.snackbar.show = true;
+			}
+		},
 		registerNewPaymentMap: function() {
 			if (this.switchIsYearly) {
 				axios

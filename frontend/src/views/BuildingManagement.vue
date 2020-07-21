@@ -1,117 +1,182 @@
 <template>
 	<div>
 		<v-row>
-			<v-container>
-				<v-form
-					v-model="newTypology.validity"
-					ref="formNewTypology"
-					class="mx-8"
-					@submit.prevent="createTypology"
-					@keydown.enter.prevent="createTypology"
-				>
-					<v-row justify="center">
-						<v-col cols="4">
-							<v-text-field
-								v-model.trim="newTypology.typology"
-								label="Tipologia"
-								color="secondary"
-								hint="ex.: T1; T2; T3 Duplex"
-								persistent-hint
-								:rules="newTypology.typologyRules"
-								required
-							></v-text-field>
-						</v-col>
-						<v-col cols="4">
-							<v-text-field
-								v-model.number="newTypology.permilage"
-								label="Permilagem"
-								color="secondary"
-								hint="ex.: 45"
-								persistent-hint
-								:rules="newTypology.permilageRules"
-								required
-							></v-text-field>
-						</v-col>
-					</v-row>
-					<v-row justify="center" class="ml-0">
-						<v-col cols="2">
-							<v-row justify="end">
-								<v-btn
+			<v-col cols="7">
+				<v-container>
+					<v-form
+						v-model="newTypology.validity"
+						ref="formNewTypology"
+						class="mx-8"
+						@submit.prevent="createTypology"
+						@keydown.enter.prevent="createTypology"
+					>
+						<v-row justify="center">
+							<v-col cols="4">
+								<v-text-field
+									v-model.trim="newTypology.typology"
+									label="Tipologia"
 									color="secondary"
-									text
-									type="submit"
-									:disabled="!newTypology.validity"
-								>
-									Nova Tipologia
-								</v-btn>
-							</v-row>
-						</v-col>
-						<v-col cols="1">
-							<v-icon v-if="newTypology.success" color="green">
-								mdi-check
-							</v-icon>
-							<v-icon v-if="newTypology.error" color="red">
-								mdi-cancel
-							</v-icon>
-						</v-col>
-					</v-row>
-				</v-form>
-			</v-container>
+									hint="ex.: T1; T2; T3 Duplex"
+									persistent-hint
+									:rules="newTypology.typologyRules"
+									required
+								></v-text-field>
+							</v-col>
+							<v-col cols="4">
+								<v-text-field
+									v-model.number="newTypology.permilage"
+									label="Permilagem"
+									color="secondary"
+									hint="ex.: 45"
+									persistent-hint
+									:rules="newTypology.permilageRules"
+									required
+								></v-text-field>
+							</v-col>
+						</v-row>
+						<v-row justify="center" class="ml-0">
+							<v-col cols="2">
+								<v-row justify="end">
+									<v-btn
+										color="secondary"
+										text
+										type="submit"
+										:disabled="!newTypology.validity"
+									>
+										Nova Tipologia
+									</v-btn>
+								</v-row>
+							</v-col>
+							<v-col cols="1">
+								<v-icon v-if="newTypology.success" color="green">
+									mdi-check
+								</v-icon>
+								<v-icon v-if="newTypology.error" color="red">
+									mdi-cancel
+								</v-icon>
+							</v-col>
+						</v-row>
+					</v-form>
+				</v-container>
+			</v-col>
+			<v-col cols="3" align-self="center">
+				<v-row justify="center">
+					<v-file-input
+						v-model="typologyFile"
+						accept="application/JSON"
+						label="Importar Tipologias"
+						color="secondary"
+						hide-details
+						outlined
+						show-size
+						chips
+						@change="handleFile(true)"
+					></v-file-input>
+				</v-row>
+				<v-row justify="center">
+					<v-col cols="4"><v-btn @click="importFileData(true)">Importar</v-btn></v-col>
+					<v-col v-if="importTypologySuccess" cols="1">
+						<v-icon color="green">
+							mdi-check
+						</v-icon>
+					</v-col>
+					<v-col v-if="importTypologyError" cols="1">
+						<v-icon color="red">
+							mdi-cancel
+						</v-icon>
+					</v-col>
+				</v-row>
+			</v-col>
 		</v-row>
 		<v-divider class="mx-12" />
 		<v-row class="mb-3">
-			<v-container>
-				<v-form
-					v-model="newUnit.validity"
-					ref="formNewUnit"
-					class="mx-8"
-					@submit.prevent="createUnit"
-					@keydown.enter.prevent="createUnit"
-				>
-					<v-row justify="center">
-						<v-col cols="4">
-							<v-text-field
-								v-model="newUnit.unit"
-								label="Fração"
-								color="secondary"
-								hint="ex.: 1º Dto; 6º Esq; Loja"
-								persistent-hint
-								:rules="newUnit.unitRules"
-								required
-							></v-text-field>
-						</v-col>
-						<v-col cols="4">
-							<v-select
-								:items="typologies"
-								item-text="typology"
-								item-value="id"
-								v-model="newUnit.selectedTypology"
-								label="Tipologia"
-								color="secondary"
-								item-color="secondary"
-								required
-							></v-select>
-						</v-col>
-					</v-row>
-					<v-row justify="center" class="ml-0">
-						<v-col cols="2">
-							<v-row justify="end">
-								<v-btn color="secondary" text type="submit" :disabled="!newUnit.validity">
-									Nova Parcela
-								</v-btn>
-							</v-row>
-						</v-col>
-						<v-col cols="1">
-							<v-icon v-if="newUnit.success" color="green">
-								mdi-check
-							</v-icon>
-							<v-icon v-if="newUnit.error" color="red">
-								mdi-cancel
-							</v-icon>
-						</v-col>
-					</v-row>
-				</v-form>
-			</v-container>
+			<v-col cols="7">
+				<v-container>
+					<v-form
+						v-model="newUnit.validity"
+						ref="formNewUnit"
+						class="mx-8"
+						@submit.prevent="createUnit"
+						@keydown.enter.prevent="createUnit"
+					>
+						<v-row justify="center">
+							<v-col cols="4">
+								<v-text-field
+									v-model="newUnit.unit"
+									label="Fração"
+									color="secondary"
+									hint="ex.: 1º Dto; 6º Esq; Loja"
+									persistent-hint
+									:rules="newUnit.unitRules"
+									required
+								></v-text-field>
+							</v-col>
+							<v-col cols="4">
+								<v-select
+									:items="typologies"
+									item-text="typology"
+									item-value="id"
+									v-model="newUnit.selectedTypology"
+									label="Tipologia"
+									color="secondary"
+									item-color="secondary"
+									required
+								></v-select>
+							</v-col>
+						</v-row>
+						<v-row justify="center" class="ml-0">
+							<v-col cols="2">
+								<v-row justify="end">
+									<v-btn
+										color="secondary"
+										text
+										type="submit"
+										:disabled="!newUnit.validity"
+									>
+										Nova Parcela
+									</v-btn>
+								</v-row>
+							</v-col>
+							<v-col cols="1">
+								<v-icon v-if="newUnit.success" color="green">
+									mdi-check
+								</v-icon>
+								<v-icon v-if="newUnit.error" color="red">
+									mdi-cancel
+								</v-icon>
+							</v-col>
+						</v-row>
+					</v-form>
+				</v-container>
+			</v-col>
+			<v-col cols="3" align-self="center">
+				<v-row justify="center">
+					<v-file-input
+						v-model="unitFile"
+						accept="application/JSON"
+						label="Importar Parcelas"
+						color="secondary"
+						hide-details
+						outlined
+						show-size
+						chips
+						@change="handleFile(false)"
+					></v-file-input>
+				</v-row>
+				<v-row justify="center">
+					<v-col cols="4"><v-btn @click="importFileData(false)">Importar</v-btn></v-col>
+					<v-col v-if="importUnitSuccess" cols="1">
+						<v-icon color="green">
+							mdi-check
+						</v-icon>
+					</v-col>
+					<v-col v-if="importUnitError" cols="1">
+						<v-icon color="red">
+							mdi-cancel
+						</v-icon>
+					</v-col>
+				</v-row>
+			</v-col>
 		</v-row>
 		<v-divider class="mx-12" />
 		<v-row justify="center" class="mx-10 mt-6">
@@ -378,6 +443,17 @@ export default {
 		editItemSuccess: null,
 		editItemErrorMsg: null,
 
+		typologyFile: null,
+		typologyFileContent: null,
+		unitFile: null,
+		unitFileContent: null,
+
+		importTypologySuccess: false,
+		importTypologyError: false,
+
+		importUnitSuccess: false,
+		importUnitError: false,
+
 		units: [],
 		typologies: [],
 	}),
@@ -513,6 +589,91 @@ export default {
 			this.$nextTick(() => {
 				this.editedIndex = -1;
 			});
+		},
+		handleFile(isTypology) {
+			let reader = new FileReader();
+			if (isTypology === true) {
+				if (!this.typologyFile) {
+					this.typologyFileContent = 'Nenhum ficheiro selecionado.';
+				}
+
+				reader.readAsText(this.typologyFile);
+				reader.onload = () => {
+					this.typologyFileContent = reader.result;
+				};
+			} else {
+				if (!this.unitFile) {
+					this.unitFileContent = 'Nenhum ficheiro selecionado.';
+				}
+
+				// Use the javascript reader object to load the contents
+				// of the file in the v-model prop
+				reader.readAsText(this.unitFile);
+				reader.onload = () => {
+					this.unitFileContent = reader.result;
+				};
+			}
+		},
+		importFileData(isTypology) {
+			if (isTypology === true) {
+				axios
+					.post(`http://localhost:3333/api/typologies/import`, this.typologyFileContent, {
+						headers: {
+							'content-type': 'application/json',
+						},
+					})
+					.then((res) => {
+						this.importTypologySuccess = true;
+						setTimeout(() => {
+							this.importTypologySuccess = false;
+						}, 1500);
+
+						this.typologyFile = null;
+						this.typologyFileContent = null;
+
+						console.log(res);
+					})
+					.catch((err) => {
+						this.importTypologyError = true;
+						setTimeout(() => {
+							this.importTypologyError = false;
+						}, 1500);
+
+						this.typologyFile = null;
+						this.typologyFileContent = null;
+
+						console.log(err);
+					});
+			} else {
+				axios
+					.post(`http://localhost:3333/api/units/import`, this.unitFileContent, {
+						headers: {
+							'content-type': 'application/json',
+						},
+					})
+					.then((res) => {
+						this.importUnitSuccess = true;
+						setTimeout(() => {
+							this.importUnitSuccess = false;
+						}, 1500);
+
+						this.unitFile = null;
+						this.unitFileContent = null;
+
+						console.log(res);
+					})
+					.catch((err) => {
+						this.importUnitError = true;
+						setTimeout(() => {
+							this.importUnitError = false;
+						}, 1500);
+
+						this.unitFile = null;
+						this.unitFileContent = null;
+
+						console.log(err);
+					});
+			}
 		},
 	},
 };

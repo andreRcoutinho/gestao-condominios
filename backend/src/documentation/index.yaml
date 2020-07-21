@@ -889,14 +889,14 @@ paths:
     get:
       tags:
         - "Units"
-      summary: "Get all units"
-      description: "Returns array of units"
+      summary: "Buscar frações."
+      description: "Retorna uma lista de todas as frações."
       operationId: "getUnits"
       produces:
         - "application/json"
       responses:
         "200":
-          description: "Retrieved all units successfully"
+          description: "Todas as frações retornadas com sucesso!"
           schema:
             type: object
             properties:
@@ -909,38 +909,31 @@ paths:
               data:
                 $ref: "#/definitions/UnitsList"
         "400":
-          description: "Failed to retrieve all Units"
+          description: "Request inválido"
           schema:
-            type: object
-            properties:
-              request:
-                type: string
-              message:
-                type: string
-              status:
-                type: integer
-              data:
-                type: object
-              error:
-                type: string
-  /units/{id}:
-    get:
+            $ref: "#/definitions/EmptyResponse"
+    post:
       tags:
         - "Units"
-      summary: "Get unit by id"
-      description: "Return a unit"
-      operationId: "getUnitById"
+      summary: "Criar fração."
+      description: "Cria uma nova fração."
+      operationId: "postUnit"
       produces:
         - "application/json"
       parameters:
-        - name: "id"
-          in: "path"
-          description: "ID of unit to return"
+        - in: "body"
+          name: "body"
+          description: "Objeto com dados para criar fração."
           required: true
-          type: "integer"
+          schema:
+            type: "object"
+            properties:
+              service_type:
+                type: string
+                example: "Luz"
       responses:
         "200":
-          description: "Get specific unit"
+          description: "Fração criada com sucesso!"
           schema:
             type: object
             properties:
@@ -953,7 +946,27 @@ paths:
               data:
                 $ref: "#/definitions/Unit"
         "400":
-          description: "Failed to retrieve specific unit"
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /units/{id}:
+    get:
+      tags:
+        - "Units"
+      summary: "Buscar fração."
+      description: "Retorna a fração pelo id."
+      operationId: "getUnitById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID da fração a retornar."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Fração retornada com sucesso!"
           schema:
             type: object
             properties:
@@ -964,26 +977,28 @@ paths:
               status:
                 type: integer
               data:
-                type: object
-              error:
-                type: string
+                $ref: "#/definitions/Unit"
+        "400":
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
     put:
       tags:
         - "Units"
-      summary: "Edit unit"
-      description: "Edits an existing unit"
+      summary: "Atualizar fração."
+      description: "Atualiza uma fração existente."
       operationId: "putUnit"
       produces:
         - "application/json"
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of unit to edit"
+          description: "ID da fração a atualizar."
           required: true
           type: "integer"
         - in: "body"
           name: "body"
-          description: "Unit object to edit"
+          description: "Objeto com dados da fração a atualizar."
           required: true
           schema:
             type: "object"
@@ -992,7 +1007,7 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Updated unit successfully"
+          description: "Fração alterada com sucesso!"
           schema:
             type: object
             properties:
@@ -1005,7 +1020,7 @@ paths:
               data:
                 $ref: "#/definitions/Unit"
         "400":
-          description: "Failed to update unit"
+          description: "Request inválido"
           schema:
             type: object
             properties:
@@ -1020,7 +1035,82 @@ paths:
                 type: object
               error:
                 type: string
-
+    delete:
+      tags:
+        - "Units"
+      summary: "Remover fração"
+      description: "Remove uma fração."
+      operationId: "deleteUser"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID da fração a remover."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Fração removida com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                type: object
+                properties:
+                  unit:
+                    type: string
+                  typology:
+                    $ref: "#/definitions/Typology"
+        "400":
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"
+  /units/import:
+    post:
+      tags:
+        - "Units"
+      summary: "Importar frações."
+      description: "Importa uma ou mais frações enviadas."
+      operationId: "importUnits"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Array de objetos de frações."
+          required: true
+          schema:
+            type: "object"
+            properties:
+              service_type:
+                type: string
+                example: "Luz"
+      responses:
+        "200":
+          description: "Frações importadas com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/UnitsList"
+        "400":
+          description: "Request inválido"
+          schema:
+            $ref: "#/definitions/EmptyResponse"  
+  
   #ServiceTypes
   /service-type:
     get:

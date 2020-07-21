@@ -22,15 +22,93 @@
 							</v-col>
 
 							<v-col>
+								<v-dialog v-model="updateValuesDialog.show" persistent max-width="450px">
+									<template v-slot:activator="{ on }" class="text-xs-center">
+										<v-row justify="center">
+											<v-btn v-on="on" depressed outlined color="red"
+												>Atualizar valores</v-btn
+											>
+										</v-row>
+									</template>
+									<v-card>
+										<v-card-title class="ml-2 pt-5">
+											<span>
+												Atualizar Valores do Mapa Anual
+											</span>
+										</v-card-title>
+
+										<v-card-text>
+											<v-form v-model="updateValuesDialog.validity" ref="editValuesForm">
+												<v-row justify="center" class="mx-0">
+													<v-col cols="12">
+														<v-text-field
+															v-model="updateValuesDialog.mapValue"
+															label="Valor do Mapa"
+															color="secondary"
+															:rules="updateValuesDialog.valRules"
+														></v-text-field>
+													</v-col>
+													<v-col cols="12">
+														<v-text-field
+															v-model="updateValuesDialog.startMonth"
+															ref="startMonthTxtField"
+															label="Mês de mudança (Mês seguinte até mês 12)"
+															color="secondary"
+															:rules="updateValuesDialog.monthRules"
+														>
+														</v-text-field>
+													</v-col>
+												</v-row>
+											</v-form>
+											<v-row justify="center">
+												<v-alert
+													v-if="editItemSuccess"
+													class="mb-3"
+													text
+													type="success"
+													transition="fade-transition"
+												>
+													{{ editItemSuccess }}
+												</v-alert>
+
+												<v-alert
+													v-else-if="editItemErrorMsg"
+													class="mb-3"
+													text
+													type="error"
+													transition="fade-transition"
+												>
+													{{ editItemErrorMsg }}
+												</v-alert>
+											</v-row>
+											<v-row class="mt-3">
+												<v-spacer></v-spacer>
+												<v-btn color="red" text @click="closeValuesDialog"
+													>Fechar</v-btn
+												>
+												<v-btn
+													color="secondary"
+													@click="updateMapValues"
+													text
+													type="submit"
+													:disabled="!updateValuesDialog.validity"
+													>Guardar Alterações</v-btn
+												>
+											</v-row>
+										</v-card-text>
+									</v-card>
+								</v-dialog>
+							</v-col>
+
+							<v-col>
 								<v-row justify="center">
-									<span class="text-button">Fundo de Reserva:&nbsp;</span>
+									<span class="text-button">Fundo de Reserva</span>
 									<span style="align-self: center;">{{ reserveFund }} €</span>
 								</v-row>
 							</v-col>
 						</v-row>
-
 						<!-- Buttons -->
-						<v-row justify="center" class="mx-0 mb-12">
+						<v-row justify="center" class="mx-0 mb-4">
 							<v-col>
 								<v-menu
 									v-model="showAnualMapPicker"
@@ -211,10 +289,27 @@ export default {
 				revenues: [],
 			},
 		},
+
+		updateValuesDialog: {
+			show: false,
+			mapValue: 0,
+			valRules: [(v) => !!v || 'Este campo é necessário.'],
+			startMonth: null,
+			monthRules: [
+				(v) =>
+					(v > +new Date().toISOString().substr(5, 2) && v <= 12) || 'Indique um mês válido.',
+				(v) => !!v || 'Este campo é necessário.',
+			],
+			validity: false,
+		},
+		editItemSuccess: false,
+		editItemErrorMsg: false,
+
 		months: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
 		allIsPaid: false,
 		totalVal: 0,
 		reserveFund: 0,
+		mapID: 0,
 	}),
 
 	watch: {
@@ -242,8 +337,9 @@ export default {
 			)
 			.then((res) => {
 				this.allIsPaid = res.data.data.all_paid;
-				this.reserveFund = res.data.data.payment_map_values[0].reserve_fund;
-				this.totalVal = res.data.data.payment_map_values[0].value;
+				this.mapID = res.data.data.payment_map.id;
+
+				this.setPayMapValues(res);
 				this.transformAPIres(res);
 			});
 	},
@@ -251,6 +347,43 @@ export default {
 	created() {},
 
 	methods: {
+		// são consideradas as alterações aos payment_map_values a partir do mês seguinte
+		setPayMapValues: function(res) {
+			let date = new Date().toISOString();
+			let index = 0;
+			res.data.data.payment_map_values.forEach((elem, i) => {
+				if (date > elem.start_date) {
+					index = i;
+				}
+			});
+			this.reserveFund = res.data.data.payment_map_values[index].reserve_fund;
+			this.totalVal = res.data.data.payment_map_values[index].value;
+			this.updateValuesDialog.mapValue = res.data.data.payment_map_values[index].value;
+		},
+
+		updateMapValues: function() {
+			axios
+				.put(`http://localhost:3333/api/payment_map/${this.mapID}`, {
+					value: this.updateValuesDialog.mapValue,
+					month: this.updateValuesDialog.startMonth,
+				})
+				.then((res) => {
+					this.editItemSuccess = res.data.message;
+					setTimeout(() => {
+						this.editItemSuccess = null;
+					}, 3000);
+				})
+				.catch((err) => {
+					this.editItemErrorMsg = err.response.data.error;
+					setTimeout(() => {
+						this.editItemErrorMsg = null;
+					}, 3000);
+				});
+		},
+		closeValuesDialog: function() {
+			this.updateValuesDialog.show = false;
+			this.$refs.startMonthTxtField.reset();
+		},
 		/**
 		 * Transforms response data into a new array with appropriate structure for the data table
 		 * res - response object
@@ -264,8 +397,8 @@ export default {
 				paymentMapObj = this.infoToDownload;
 			} else {
 				paymentMapObj = this.anualPaymentMapTable.paymentMapAnualInfo;
-				console.log(pMapInfo);
-				console.log(this.anualPaymentMapTable.paymentMapAnualInfo);
+				// console.log(pMapInfo);
+				// console.log(this.anualPaymentMapTable.paymentMapAnualInfo);
 			}
 
 			// inject info about payment map into this.anualPaymentMapTable.paymentMapAnualInfo

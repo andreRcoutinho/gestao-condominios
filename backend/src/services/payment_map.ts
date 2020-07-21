@@ -461,8 +461,14 @@ export async function simulate(body: any, normalPaymentMap?: boolean) {
             res = await createPaymentMap(units, body.value, payment_map, true);
         }
 
+        let response = {
+            payment_map,
+            value: body.value,
+            reserve_fund: body.value * RESERVE_PERCENTAGE,
+            res
+        }
 
-        return res;
+        return response;
     } catch (error) {
         console.log(error);
         return error;

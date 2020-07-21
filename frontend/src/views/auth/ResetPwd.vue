@@ -12,7 +12,7 @@
 			<v-card-title class="ml-2 pt-5">
 				<v-row justify="center">
 					<span>
-						Repor Palavra-passe
+						Nova Palavra-passe
 					</span>
 				</v-row>
 			</v-card-title>

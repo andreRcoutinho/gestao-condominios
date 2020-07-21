@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: 'This is a sample API server for the "Gestão de Condomínios" backend application.'
+  description: 'Documentação da API de backend para a aplicação "Gestão de Condomínios"'
   version: "1.0.0"
   title: "Gestão de Condomínios"
 
@@ -10,29 +10,28 @@ basePath: "/api"
 #API name routes
 tags:
   - name: "Authentication"
-    description: "Endpoints based on authentication"
+    description: "Rotas para funções de autenticação."
   - name: "Typologies"
-    description: "Endpoints for Typologies"
+    description: "Rotas para funções de tipologias."
   - name: "Roles"
-    description: "Endpoints for User Roles"
+    description: "Rotas para funções de roles de utilizadores."
   - name: "Users"
-    description: "Endpoints for the application users"
+    description: "Rotas para funções de utilizadores."
   - name: "Units"
-    description: "Endpoints for the apartment units"
+    description: "Rotas para funções de unidades de apartamento."
   - name: "ServiceTypes"
-    description: "Endpoints for the types of service given by suppliers"
+    description: "Rotas para funções de tipos de serviços."
   - name: "Suppliers"
-    description: "Endpoints for the service suppliers"
+    description: "Rotas para funções de fornecedores."
   - name: "Expenses"
-    description: "Endpoints for expenses"
+    description: "Rotas para funções de despesas."
   - name: "PaymentMap"
-    description: "Endpoints for the payment maps"
+    description: "Rotas para funções de mapas de pagamento."
   - name: "Revenues"
-    description: "Endpoints for the revenues"
+    description: "Rotas para funções de receitas."
 
 #Schemes
 schemes:
-  - "https"
   - "http"
 
 #API routes
@@ -79,9 +78,11 @@ paths:
                   $ref: "#/definitions/PhoneList"
       responses:
         "200":
-          description: "User created"
+          description: "Utilizador registado com sucesso"
+          schema:
+            $ref: "#/definitions/TrueResponse"
         "400":
-          description: "Bad Request"
+          description: "Request inválido"
           schema:
             $ref: "#/definitions/EmptyResponse"
   /sign-in:
@@ -108,7 +109,18 @@ paths:
                 type: string
       responses:
         "200":
-          description: "User logged"
+          description: "Sign in com sucesso!"
+          schema:
+            type: object
+            properties:
+              request:
+                type: string
+              message:
+                type: string
+              status:
+                type: integer
+              data:
+                $ref: "#/definitions/SignInData"
         "400":
           description: "Bad Request"
           schema:
@@ -136,7 +148,9 @@ paths:
                 type: string
       responses:
         "200":
-          description: "Password forgot"
+          description: "Recuperação da Password com sucesso!"
+          schema:
+            $ref: "#/definitions/TrueResponse"
         "400":
           description: "Bad Request"
           schema:
@@ -164,11 +178,15 @@ paths:
                 type: string
               token:
                 type: string
-              password:
+              new_password:
+                type: string
+              new_password_repeat:
                 type: string
       responses:
         "200":
-          description: "Password reset"
+          description: "Reset Password com sucesso!"
+          schema:
+            $ref: "#/definitions/TrueResponse"
         "400":
           description: "Bad Request"
           schema:
@@ -346,7 +364,7 @@ paths:
           description: "Failed to remove typology"
           schema:
             $ref: "#/definitions/EmptyResponse"
-  
+
   #Roles
   /roles:
     get:
@@ -1851,6 +1869,17 @@ paths:
   #monthly data
 
 definitions:
+  TrueResponse:
+    type: object
+    properties:
+      request:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+      data:
+        type: boolean
   EmptyResponse:
     type: object
     properties:
@@ -1863,6 +1892,19 @@ definitions:
       data:
         type: object
       error:
+        type: string
+  SignInData:
+    type: object
+    properties:
+      id:
+        type: integer
+      first_name:
+        type: string
+      last_name:
+        type: string
+      role_name:
+        type: string
+      token:
         type: string
   PhoneList:
     type: object

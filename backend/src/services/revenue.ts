@@ -22,7 +22,9 @@ export async function index(year?: String) {
             throw new Error(api_errors.NO_REVENUE_REGISTERED);
         }
         let revenues_res: { id, month?, payment_map_id, payment_map_name, unit_id, unit, value, payment_date }[] = [];
+
         for (let i = 0; i < revenues.length; i++) {
+            let value: Number = Number(revenues[i].getValue());
             let revenue = {
                 id: revenues[i].getId(),
                 month: revenues[i].getMonth(),
@@ -30,7 +32,7 @@ export async function index(year?: String) {
                 payment_map_name: revenues[i].getPayment_map().getName(),
                 unit_id: revenues[i].getUnit().getId(),
                 unit: revenues[i].getUnit().getUnit(),
-                value: revenues[i].getValue(),
+                value: Number(value.toFixed(2)),
                 payment_date: revenues[i].getPayment_date()
             }
 

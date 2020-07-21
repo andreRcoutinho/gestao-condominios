@@ -32,9 +32,10 @@ export async function monthlyData(month: Number, year: String) {
         let typology_values: { name: String; value: Number }[] = [];
         for (let i = 0; i < revenues.length; i++) {
             if (!existsTypologyName(typology_values, revenues[i].getUnit().getTypology().getTypology())) {
+                let value: Number = Number(revenues[i].getValue());
                 typology_values.push({
                     name: revenues[i].getUnit().getTypology().getTypology(),
-                    value: revenues[i].getValue(),
+                    value: Number(value.toFixed(2)),
                 });
             }
         }
@@ -64,6 +65,11 @@ export async function monthlyData(month: Number, year: String) {
         for (let i = 0; i < expenses.length; i++) {
             total_spent += Number(expenses[i].getValue());
         }
+
+        //round
+        total_paid = Number(total_paid.toFixed(2));
+        total_missing = Number(total_missing.toFixed(2));
+        total_spent = Number(total_spent.toFixed(2));
 
         let res = {
             total_missing,

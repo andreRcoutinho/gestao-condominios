@@ -461,6 +461,17 @@ export async function simulate(body: any, normalPaymentMap?: boolean) {
             res = await createPaymentMap(units, body.value, payment_map, true);
         }
 
+
+        for (let index = 0; index < res['reserve_funds'].length; index++) {
+            var reserve_fund: any = res['reserve_funds'][index];
+            reserve_fund.reserve_fund = Number(reserve_fund.reserve_fund.toFixed(2));
+        }
+
+        for (let index = 0; index < res['monthly_expenses'].length; index++) {
+            var monthy_expense: any = res['monthly_expenses'][index];
+            monthy_expense.monthy_expense = Number(monthy_expense.monthy_expense.toFixed(2));
+        }
+
         let response = {
             payment_map,
             value: body.value,

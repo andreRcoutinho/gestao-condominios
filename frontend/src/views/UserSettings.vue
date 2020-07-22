@@ -2,7 +2,7 @@
 	<div>
 		<v-row class="ml-6 pageHeight" align="center">
 			<span class="ml-8 mt-8 text-h4">Conta Pessoal</span>
-			<v-row justify="start" class="ma-12">
+			<v-row justify="start" class="ma-8">
 				<!-- LEFT SIDE -->
 				<v-col>
 					<v-row class="my-6 ml-12 mr-0">
@@ -377,12 +377,12 @@
 									<span class="button text-uppercase">{{ userInfo.email }}</span>
 								</v-col>
 
-								<v-col cols="6">
+								<v-col cols="6" md="12">
 									<span class="text-h6 font-weight-bold">IBAN</span> <br />
 									<span class="button text-uppercase">{{ userInfo.iban }}</span>
 								</v-col>
 
-								<v-col cols="6">
+								<v-col cols="6" md="12">
 									<span class="text-h6 font-weight-bold">NIF</span> <br />
 									<span class="button text-uppercase">{{ userInfo.nif }}</span>
 								</v-col>
@@ -601,6 +601,12 @@ export default {
 <style scoped>
 .pageHeight {
 	height: 80vh;
+}
+
+@media only screen and (max-width: 1280px) {
+	.pageHeight {
+		height: auto;
+	}
 }
 
 .listLineH {

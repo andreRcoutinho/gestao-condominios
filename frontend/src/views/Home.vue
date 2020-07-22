@@ -9,11 +9,11 @@
 		<v-tabs-items v-model="tab">
 			<v-tab-item v-for="item in months" :key="item">
 				<v-row id="height"> </v-row>
-				<v-row justify="space-around" class="my-10">
-					<v-col cols="3">
+				<v-row justify="space-around" class="my-10 mx-12">
+					<v-col>
 						<v-card class="mb-12 text-center" color="primary" height="200px" raised>
 							<v-row justify="center">
-								<v-card-title class="mt-6 secondary--text display-1">
+								<v-card-title class="mt-6 secondary--text text-h5 font-weight-medium">
 									Rendas pagas
 								</v-card-title>
 							</v-row>
@@ -22,10 +22,10 @@
 							</v-card-subtitle>
 						</v-card>
 					</v-col>
-					<v-col cols="3">
+					<v-col>
 						<v-card class="mb-12 text-center" color="primary" height="200px" raised>
 							<v-row justify="center">
-								<v-card-title class="mt-6 secondary--text display-1">
+								<v-card-title class="mt-6 secondary--text text-h5 font-weight-medium">
 									Rendas em falta
 								</v-card-title>
 							</v-row>
@@ -34,10 +34,10 @@
 							</v-card-subtitle>
 						</v-card>
 					</v-col>
-					<v-col cols="3">
+					<v-col>
 						<v-card class="mb-12 text-center" color="primary" height="200px" raised>
 							<v-row justify="center">
-								<v-card-title class="mt-6 secondary--text display-1"
+								<v-card-title class="mt-6 secondary--text text-h5 font-weight-medium"
 									>Total gasto</v-card-title
 								>
 							</v-row>
@@ -65,25 +65,27 @@
 						</v-simple-table>
 					</v-col>
 					<v-col cols="4">
-						<v-card max-width="450px" shaped>
-							<v-card-title class="justify-center secondary--text title">
-								<v-icon left>mdi-home</v-icon>Por pagar
-							</v-card-title>
-							<v-row justify="center">
-								<v-list class="column_wrapper mb-2">
-									<v-list-item
-										v-for="(item, index) in totals.missing_payment_unit"
-										:key="index"
-									>
-										<v-list-item-content>
-											<v-chip class="justify-center" outlined color="secondary">{{
-												item
-											}}</v-chip>
-										</v-list-item-content>
-									</v-list-item>
-								</v-list>
-							</v-row>
-						</v-card>
+						<v-row justify="center">
+							<v-card shaped class="widthMod">
+								<v-card-title class="justify-center secondary--text title">
+									<v-icon left>mdi-home</v-icon>Por pagar
+								</v-card-title>
+								<v-row justify="center" class="mx-0">
+									<v-list class="column_wrapper mb-5">
+										<v-list-item
+											v-for="(item, index) in totals.missing_payment_unit"
+											:key="index"
+										>
+											<v-list-item-content>
+												<v-chip class="justify-center" outlined color="secondary">{{
+													item
+												}}</v-chip>
+											</v-list-item-content>
+										</v-list-item>
+									</v-list>
+								</v-row>
+							</v-card>
+						</v-row>
 					</v-col>
 				</v-row>
 			</v-tab-item>
@@ -155,6 +157,10 @@ export default {
 	min-height: 88vh;
 	background-color: #ffffff;
 } */
+
+.widthMod {
+	max-width: 110% !important;
+}
 
 #height {
 	min-height: 45px;

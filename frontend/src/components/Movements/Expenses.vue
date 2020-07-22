@@ -112,7 +112,7 @@
 		</v-row>
 		<!-- TABLE -->
 		<v-row justify="space-around">
-			<v-col cols="10">
+			<v-col xl="8" lg="8" md="12">
 				<v-data-table
 					:headers="expensesTableOptions.headers"
 					:items="expenses"

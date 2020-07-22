@@ -116,7 +116,7 @@
 		</v-row>
 		<!-- TABLE -->
 		<v-row justify="space-around">
-			<v-col cols="8">
+			<v-col xl="8" lg="8" md="10">
 				<v-data-table
 					:headers="otherMapsTableOptions.headers"
 					:items="maps"
@@ -133,14 +133,14 @@
 						</v-icon>
 					</template>
 				</v-data-table>
-				<v-dialog v-model="mapDetailedInfo.show" max-width="850px" height="800px">
+				<v-dialog v-model="mapDetailedInfo.show">
 					<v-card>
 						<v-card-title class="ml-2 pt-5">
 							{{ mapDetailedInfo.payment_map.name }}
 						</v-card-title>
 						<v-card-text>
 							<v-row justify="center" class="my-3">
-								<v-col cols="10">
+								<v-col>
 									<v-data-table
 										:headers="mapDetailedInfo.headers"
 										:items="mapDetailedInfo.revenues"
@@ -266,7 +266,9 @@ export default {
 			payment_map: {},
 			payment_map_values: [],
 			revenues: [],
+			info: [],
 		},
+
 		otherMapsTableOptions: {
 			search: '',
 			page: 1,
@@ -391,7 +393,7 @@ export default {
 
 			await Object.assign(this.mapDetailedInfo, mapAllInfo);
 
-			console.log(this.mapDetailedInfo);
+			//console.log(this.mapDetailedInfo);
 
 			let counts = {};
 

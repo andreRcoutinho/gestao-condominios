@@ -491,7 +491,7 @@ export default {
 					typology: this.newTypology.typology.replace(/\s+/g, ''),
 					permilage: this.newTypology.permilage,
 				})
-				.then((res) => {
+				.then(() => {
 					this.newTypology.success = true;
 
 					setTimeout(() => {
@@ -500,14 +500,14 @@ export default {
 
 					this.$refs.formNewTypology.reset();
 
-					console.log(res.data.data);
+					//console.log(res.data.data);
 				})
-				.catch((err) => {
+				.catch(() => {
 					this.newTypology.error = true;
 					setTimeout(() => {
 						this.newTypology.error = false;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 		createUnit() {
@@ -516,7 +516,7 @@ export default {
 					unit: this.newUnit.unit,
 					typology_id: this.newUnit.typology,
 				})
-				.then((res) => {
+				.then(() => {
 					this.newUnit.success = true;
 
 					setTimeout(() => {
@@ -525,14 +525,14 @@ export default {
 
 					this.$refs.formNewUnit.reset();
 
-					console.log(res.data.data);
+					//console.log(res.data.data);
 				})
-				.catch((err) => {
+				.catch(() => {
 					this.newUnit.error = true;
 					setTimeout(() => {
 						this.newUnit.error = false;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 		editUnit(item) {
@@ -555,7 +555,7 @@ export default {
 						this.editItemSuccess = null;
 					}, 3000);
 
-					console.log(res);
+					//	console.log(res);
 				})
 				.catch((err) => {
 					this.editItemErrorMsg = err.response.data.error;
@@ -563,7 +563,7 @@ export default {
 						this.editItemErrorMsg = null;
 					}, 3000);
 
-					console.log(err);
+					//	console.log(err);
 				});
 		},
 		updateTypology() {
@@ -580,14 +580,14 @@ export default {
 
 					this.$refs.editTypologyForm.reset();
 
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.editItemErrorMsg = err.response.data.error;
 					setTimeout(() => {
 						this.editItemErrorMsg = null;
 					}, 3000);
-					console.log(err);
+					//	console.log(err);
 				});
 		},
 		close() {
@@ -628,7 +628,7 @@ export default {
 							'content-type': 'application/json',
 						},
 					})
-					.then((res) => {
+					.then(() => {
 						this.importTypologySuccess = true;
 						setTimeout(() => {
 							this.importTypologySuccess = false;
@@ -637,9 +637,9 @@ export default {
 						this.typologyFile = null;
 						this.typologyFileContent = null;
 
-						console.log(res);
+						//console.log(res);
 					})
-					.catch((err) => {
+					.catch(() => {
 						this.importTypologyError = true;
 						setTimeout(() => {
 							this.importTypologyError = false;
@@ -648,7 +648,7 @@ export default {
 						this.typologyFile = null;
 						this.typologyFileContent = null;
 
-						console.log(err);
+						//console.log(err);
 					});
 			} else {
 				axios
@@ -657,7 +657,7 @@ export default {
 							'content-type': 'application/json',
 						},
 					})
-					.then((res) => {
+					.then(() => {
 						this.importUnitSuccess = true;
 						setTimeout(() => {
 							this.importUnitSuccess = false;
@@ -666,9 +666,9 @@ export default {
 						this.unitFile = null;
 						this.unitFileContent = null;
 
-						console.log(res);
+						//console.log(res);
 					})
-					.catch((err) => {
+					.catch(() => {
 						this.importUnitError = true;
 						setTimeout(() => {
 							this.importUnitError = false;
@@ -677,7 +677,7 @@ export default {
 						this.unitFile = null;
 						this.unitFileContent = null;
 
-						console.log(err);
+						//console.log(err);
 					});
 			}
 		},

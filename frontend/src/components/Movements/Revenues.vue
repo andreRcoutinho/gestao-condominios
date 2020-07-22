@@ -238,8 +238,8 @@ export default {
 				axios
 					.get(`//localhost:3333/api/revenue?year=${year}`)
 					.then((res) => (this.revenuesToDownload = res.data.data))
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//	console.log(err.response.data.error);
 						this.revenuesToDownload = [];
 					});
 
@@ -250,8 +250,8 @@ export default {
 				axios
 					.get(`//localhost:3333/api/revenue?year=${year}`)
 					.then((res) => (this.revenues = res.data.data))
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//console.log(err.response.data.error);
 						this.revenues = [];
 					});
 

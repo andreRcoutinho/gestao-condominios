@@ -270,7 +270,7 @@ export default {
 			}
 			this.newSupplierInfo.otherContact = true;
 			this.newSupplierInfo.contactValue = null;
-			console.log(this.newSupplierInfo.contacts);
+			//console.log(this.newSupplierInfo.contacts);
 		},
 		registerNewServiceType() {
 			axios
@@ -288,7 +288,7 @@ export default {
 
 					this.$refs.formNewServiceType.reset();
 
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.newSupplierInfo.serviceTypeDialog.errorMsg = err.response.data.error;

@@ -87,19 +87,19 @@ export default {
 				.post(`http://localhost:3333/api/forgot-password`, {
 					email: this.email,
 				})
-				.then((res) => {
+				.then(() => {
 					this.forgotPwdSuccess = true;
 					setTimeout(() => {
 						this.forgotPwdSuccess = null;
 					}, 1500);
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.forgotPwdErrorMsg = err.response.data.error;
 					setTimeout(() => {
 						this.forgotPwdErrorMsg = null;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 	},

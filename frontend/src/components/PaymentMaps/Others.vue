@@ -346,14 +346,14 @@ export default {
 								.then((res) => {
 									this.otherMapsToDownload.push(res.data.data);
 								})
-								.catch((err) => {
-									console.log(err.response.data.error);
+								.catch(() => {
+									//	console.log(err.response.data.error);
 									this.otherMapsToDownload = [];
 								});
 						});
 					})
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//console.log(err.response.data.error);
 						this.otherMapsToDownload = [];
 					});
 
@@ -368,8 +368,8 @@ export default {
 						let result = res.data.data.filter((pMap) => pMap.yearly === false);
 						this.maps = result;
 					})
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//console.log(err.response.data.error);
 						this.maps = [];
 					});
 
@@ -387,7 +387,7 @@ export default {
 					mapAllInfo = res.data.data;
 				})
 				.catch((err) => {
-					console.log(err);
+					//	console.log(err);
 					mapAllInfo = { error: err };
 				});
 

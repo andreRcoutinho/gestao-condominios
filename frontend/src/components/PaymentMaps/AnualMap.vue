@@ -442,8 +442,8 @@ export default {
 					.then((res) => {
 						this.transformAPIres(res, true);
 					})
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//console.log(err.response.data.error);
 						this.infoToDownload = [];
 					});
 
@@ -456,8 +456,8 @@ export default {
 					.then((res) => {
 						this.transformAPIres(res);
 					})
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//console.log(err.response.data.error);
 						this.anualPaymentMapTable.paymentMapAnualInfo.revenues = [];
 					});
 

@@ -373,7 +373,7 @@ export default {
 						this.editItemSuccess = null;
 					}, 3000);
 
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.editItemErrorMsg = err.response.data.error;
@@ -381,7 +381,7 @@ export default {
 						this.editItemErrorMsg = null;
 					}, 3000);
 
-					console.log(err);
+					//console.log(err);
 				});
 		},
 
@@ -415,14 +415,14 @@ export default {
 						this.snackbar.success = true;
 						this.snackbar.colour = 'green';
 						this.snackbar.show = true;
-						console.log(res);
+						//console.log(res);
 					})
 					.catch((err) => {
 						this.snackbar.message = err.response.data.error;
 						this.snackbar.success = false;
 						this.snackbar.colour = 'red';
 						this.snackbar.show = true;
-						console.log(err.response.data.error);
+						//console.log(err.response.data.error);
 					});
 		},
 
@@ -432,8 +432,8 @@ export default {
 				axios
 					.get(`//localhost:3333/api/expenses?year=${year}`)
 					.then((res) => (this.expensesToDownload = res.data.data))
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//	console.log(err.response.data.error);
 						this.expensesToDownload = [];
 					});
 
@@ -443,8 +443,8 @@ export default {
 				axios
 					.get(`//localhost:3333/api/expenses?year=${this.expsSelectedDate.substr(0, 4)}`)
 					.then((res) => (this.expenses = res.data.data))
-					.catch((err) => {
-						console.log(err.response.data.error);
+					.catch(() => {
+						//	console.log(err.response.data.error);
 						this.expenses = [];
 					});
 

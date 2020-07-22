@@ -127,14 +127,14 @@ export default {
 					setTimeout(() => {
 						this.resetPwdSuccess = null;
 					}, 1500);
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.resetPwdErrorMsg = err.response.data.error;
 					setTimeout(() => {
 						this.resetPwdErrorMsg = null;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 	},

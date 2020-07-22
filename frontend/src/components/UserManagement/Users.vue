@@ -401,7 +401,7 @@ export default {
 						this.editItemSuccess = null;
 					}, 3000);
 
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.editItemErrorMsg = err.response.data.error;
@@ -409,7 +409,7 @@ export default {
 						this.editItemErrorMsg = null;
 					}, 3000);
 
-					console.log(err);
+					//console.log(err);
 				});
 		},
 		async addUnitToUser() {
@@ -420,33 +420,33 @@ export default {
 					})
 					.then((res) => {
 						this.editedItem.units.push(res.data.data);
-						console.log(res);
-					})
-					.catch((err) => console.log(err));
+						//	console.log(res);
+					});
+				//.catch((err) => console.log(err));
 			}
 			this.editedItem.selectedUnit = null;
-			console.log(this.editedItem.units);
+			//	console.log(this.editedItem.units);
 		},
 		deleteUserUnit(index) {
 			axios
 				.put(`http://localhost:3333/api/users/${this.editedItem.id}/delete-unit`, {
 					unit_id: this.editedItem.units[index].id,
 				})
-				.then((res) => {
+				.then(() => {
 					this.editedItem.units.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
+					//(res);
+				});
+			//.catch((err) => console.log(err));
 		},
 		updateRole() {
 			axios
 				.put(`http://localhost:3333/api/users/${this.editedItem.id}/update-role`, {
 					role_id: this.editedItem.role,
 				})
-				.then((res) => {
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
+				.then(() => {
+					//	console.log(res);
+				});
+			//.catch((err) => console.log(err));
 		},
 		addNewContact() {
 			if (this.editedItem.contactValue) {
@@ -456,24 +456,24 @@ export default {
 					})
 					.then((res) => {
 						this.editedItem.contacts.push(res.data.data);
-						console.log(res);
-					})
-					.catch((err) => console.log(err));
+						//	console.log(res);
+					});
+				//.catch((err) => console.log(err));
 			}
 			this.editedItem.otherContact = true;
 			this.editedItem.contactValue = null;
-			console.log(this.editedItem.contacts);
+			//console.log(this.editedItem.contacts);
 		},
 		deleteUserContact(index) {
 			axios
 				.put(`http://localhost:3333/api/users/${this.editedItem.id}/delete-contact`, {
 					contact_id: this.editedItem.contacts[index].id,
 				})
-				.then((res) => {
+				.then(() => {
 					this.editedItem.contacts.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
+					//	console.log(res);
+				});
+			//	.catch((err) => console.log(err));
 		},
 		openOwnerInfo(item) {
 			Object.assign(this.ownerRowDlog, item);
@@ -506,7 +506,7 @@ export default {
 						this.snackbar.colour = 'green';
 						this.snackbar.show = true;
 
-						console.log(res);
+						//console.log(res);
 					})
 					.catch((err) => {
 						this.snackbar.message = err.response.data.error;
@@ -514,7 +514,7 @@ export default {
 						this.snackbar.colour = 'red';
 						this.snackbar.show = true;
 
-						console.log(err);
+						//console.log(err);
 					});
 		},
 		closeOwnerInfo() {

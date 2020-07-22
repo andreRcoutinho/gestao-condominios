@@ -325,7 +325,7 @@ export default {
 		payMapText: (item) => item.name + ': ' + item.description,
 
 		registerNewExpense: function() {
-			console.log(this.d2Info);
+			//console.log(this.d2Info);
 			axios
 				.post('//localhost:3333/api/expenses', {
 					supplier_id: this.d2Info.supplier,

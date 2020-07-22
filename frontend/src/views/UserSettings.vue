@@ -508,12 +508,12 @@ export default {
 						this.userInfo = res.data.data;
 					});
 				})
-				.catch((err) => {
+				.catch(() => {
 					this.editedUser.error = true;
 					setTimeout(() => {
 						this.editedUser.error = null;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 		addContact: function() {
@@ -527,23 +527,23 @@ export default {
 					});
 					this.editedUser.updateContactsDialog.newContact = '';
 					this.$refs.form.reset();
-				})
-				.catch((err) => {
-					console.log(err);
 				});
+			// .catch((err) => {
+			// 	console.log(err);
+			// });
 		},
 		removeContact: function(id, contactIndex) {
 			axios
 				.put(`http://localhost:3333/api/users/${this.userInfo.id}/delete-contact`, {
 					contact_id: id,
 				})
-				.then((res) => {
+				.then(() => {
 					this.userContacts.splice(contactIndex, 1);
-					console.log(res);
-				})
-				.catch((err) => {
-					console.log(err);
+					//console.log(res);
 				});
+			// .catch((err) => {
+			// 	console.log(err);
+			// });
 		},
 		closePwdDialog: function() {
 			this.editedUser.updatePwdDialog.show = false;
@@ -554,20 +554,20 @@ export default {
 				.post(`http://localhost:3333/api/forgot-password`, {
 					email: this.userInfo.email,
 				})
-				.then((res) => {
+				.then(() => {
 					this.resetPwdSuccess = true;
 					setTimeout(() => {
 						this.resetPwdSuccess = null;
 						this.forgotPwdDialog.show = false;
 					}, 1500);
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.resetPwdErrorMsg = err.response.data.error;
 					setTimeout(() => {
 						this.resetPwdErrorMsg = null;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 		updatePassword: function() {
@@ -584,14 +584,14 @@ export default {
 						this.changePwdSuccess = null;
 					}, 3000);
 					this.$refs.formPwd.reset();
-					console.log(res);
+					//console.log(res);
 				})
 				.catch((err) => {
 					this.changePwdError = err.response.data.error;
 					setTimeout(() => {
 						this.changePwdError = null;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 	},

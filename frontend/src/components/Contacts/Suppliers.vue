@@ -411,12 +411,12 @@ export default {
 					})
 					.then((res) => {
 						this.editedItem.service_types.push(res.data.data);
-						console.log(res);
-					})
-					.catch((err) => console.log(err));
+						//console.log(res);
+					});
+				//	.catch((err) => console.log(err));
 			}
 			this.editedItem.selectedServiceType = null;
-			console.log(this.editedItem.service_types);
+			//console.log(this.editedItem.service_types);
 		},
 
 		addContactToArray() {
@@ -427,13 +427,13 @@ export default {
 					})
 					.then((res) => {
 						this.editedItem.contacts.push(res.data.data);
-						console.log(res);
-					})
-					.catch((err) => console.log(err));
+						//	console.log(res);
+					});
+				//.catch((err) => console.log(err));
 			}
 			this.editedItem.otherContact = true;
 			this.editedItem.contactValue = null;
-			console.log(this.editedItem.contacts);
+			//	console.log(this.editedItem.contacts);
 		},
 
 		deleteSupplierST(index) {
@@ -441,11 +441,11 @@ export default {
 				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-service-type`, {
 					service_type_id: this.editedItem.service_types[index].id,
 				})
-				.then((res) => {
+				.then(() => {
 					this.editedItem.service_types.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
+					//	console.log(res);
+				});
+			//.catch((err) => console.log(err));
 		},
 
 		deleteSupplierContact(index) {
@@ -453,11 +453,11 @@ export default {
 				.put(`http://localhost:3333/api/suppliers/${this.editedItem.id}/delete-contact`, {
 					contact_id: this.editedItem.contacts[index].id,
 				})
-				.then((res) => {
+				.then(() => {
 					this.editedItem.contacts.splice(index, 1);
-					console.log(res);
-				})
-				.catch((err) => console.log(err));
+					//console.log(res);
+				});
+			//.catch((err) => console.log(err));
 		},
 
 		deleteItem(item) {
@@ -473,14 +473,14 @@ export default {
 						this.snackbar.success = true;
 						this.snackbar.colour = 'green';
 						this.snackbar.show = true;
-						console.log(res);
+						//	console.log(res);
 					})
 					.catch((err) => {
 						this.snackbar.message = err.response.data.error;
 						this.snackbar.success = false;
 						this.snackbar.colour = 'red';
 						this.snackbar.show = true;
-						console.log(err.response.data.error);
+						//	console.log(err.response.data.error);
 					});
 		},
 
@@ -501,7 +501,7 @@ export default {
 						this.editItemSuccess = null;
 					}, 3000);
 
-					console.log(res);
+					//	console.log(res);
 				})
 				.catch((err) => {
 					this.editItemErrorMsg = err.response.data.error;
@@ -509,7 +509,7 @@ export default {
 						this.editItemErrorMsg = null;
 					}, 3000);
 
-					console.log(err);
+					//	console.log(err);
 				});
 		},
 
@@ -531,7 +531,7 @@ export default {
 		openSupplierInfo(item) {
 			Object.assign(this.supplierRowDlog, item);
 			this.supplierRowDlog.show = true;
-			console.log(item);
+			//console.log(item);
 		},
 
 		closeSupplierInfo() {

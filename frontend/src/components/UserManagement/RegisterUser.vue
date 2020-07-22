@@ -187,7 +187,7 @@ export default {
 			}
 			this.newUserInfo.otherContact = true;
 			this.newUserInfo.contactValue = null;
-			console.log(this.newUserInfo.contacts);
+			//console.log(this.newUserInfo.contacts);
 		},
 		registerNewUser() {
 			axios
@@ -210,14 +210,14 @@ export default {
 
 					this.newUserInfo.contacts = [];
 					this.$refs.formNewUser.reset();
-					console.log(res);
+					//	console.log(res);
 				})
 				.catch((err) => {
 					this.errorMsg = err.response.data.error;
 					setTimeout(() => {
 						this.errorMsg = null;
 					}, 3000);
-					console.log(err);
+					//console.log(err);
 				});
 		},
 	},

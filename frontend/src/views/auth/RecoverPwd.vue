@@ -1,14 +1,16 @@
 <template>
 	<div class="parent">
 		<v-card width="400" class="px-6 py-8">
-			<v-img
-				alt="Logo"
-				src="@/assets/logo_full.png"
-				contain
-				transition="scale-transition"
-				max-height="85"
-				id="img_logo"
-			/>
+			<router-link to="/login">
+				<v-img
+					alt="Logo"
+					:src="require('@/assets/logo_full.png')"
+					contain
+					transition="scale-transition"
+					max-height="85"
+					id="img_logo"
+				/>
+			</router-link>
 			<v-card-title class="ml-2 pt-5">
 				<v-row justify="center">
 					<span>

@@ -142,7 +142,7 @@
 							</v-col>
 							<v-col>
 								<v-row justify="center">
-									<v-btn depressed :disabled="!allIsPaid">
+									<v-btn depressed :disabled="!allIsPaid" @click="closeMap">
 										Fechar Mapa
 									</v-btn>
 								</v-row>
@@ -347,6 +347,9 @@ export default {
 	created() {},
 
 	methods: {
+		closeMap() {
+			axios.put(`http://localhost:3333/api/payment_map/${this.mapID}/close`);
+		},
 		// são consideradas as alterações aos payment_map_values a partir do mês seguinte
 		setPayMapValues: function(res) {
 			let date = new Date().toISOString();

@@ -34,7 +34,13 @@ export default {
 		tabs: [{ tab: 'Utilizadores' }, { tab: 'Novo Utilizador' }],
 	}),
 	watch: {},
-	mounted() {},
+	mounted() {
+		let role = this.$store.state.user.role_name;
+
+		if (role !== 'Administrador') {
+			this.$router.push('home');
+		}
+	},
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},

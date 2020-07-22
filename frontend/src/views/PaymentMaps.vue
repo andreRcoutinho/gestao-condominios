@@ -39,10 +39,16 @@ export default {
 	},
 	data: () => ({
 		tab: null,
-		tabs: [{ tab: 'Mensalidades' }, { tab: 'Outros' }, { tab: 'Novo Mapa' }],
+		tabs: [{ tab: 'Mensalidades' }, { tab: 'Outros' }],
 	}),
 	watch: {},
-	mounted() {},
+	mounted() {
+		let role = this.$store.state.user.role_name;
+
+		if (role == 'Administrador') {
+			this.tabs.push({ tab: 'Novo Mapa' });
+		}
+	},
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},

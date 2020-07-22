@@ -463,6 +463,12 @@ export default {
 	mounted() {
 		axios.get(`//localhost:3333/api/typologies`).then((res) => (this.typologies = res.data.data));
 		axios.get(`//localhost:3333/api/units`).then((res) => (this.units = res.data.data));
+
+		let role = this.$store.state.user.role_name;
+
+		if (role !== 'Administrador') {
+			this.$router.push('home');
+		}
 	},
 	methods: {
 		loadTypologyData() {

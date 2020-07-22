@@ -38,12 +38,18 @@ export default {
 	},
 	data: () => ({
 		tab: null,
-		tabs: [{ tab: 'Condóminos' }, { tab: 'Fornecedores' }, { tab: 'Novo Fornecedor' }],
+		tabs: [{ tab: 'Condóminos' }, { tab: 'Fornecedores' }],
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},
-	mounted() {},
+	mounted() {
+		let role = this.$store.state.user.role_name;
+
+		if (role == 'Administrador') {
+			this.tabs.push({ tab: 'Novo Fornecedor' });
+		}
+	},
 	methods: {},
 };
 </script>

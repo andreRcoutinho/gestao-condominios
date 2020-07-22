@@ -35,13 +35,19 @@ export default {
 	name: 'Movements',
 	data: () => ({
 		tab: null,
-		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }, { tab: 'Novo Movimento' }],
+		tabs: [{ tab: 'Receitas' }, { tab: 'Despesas' }],
 	}),
 	created() {
 		this.$emit('update:layout', LayoutDefault);
 	},
 	watch: {},
-	mounted() {},
+	mounted() {
+		let role = this.$store.state.user.role_name;
+
+		if (role == 'Administrador') {
+			this.tabs.push({ tab: 'Novo Movimento' });
+		}
+	},
 	methods: {},
 };
 </script>

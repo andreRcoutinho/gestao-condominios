@@ -5,13 +5,11 @@ import adminMiddleware from '../middlewares/admin';
 
 const routes = Router();
 
-
+routes.use(authMiddleware);
 routes.get('/', supplier.index);
 routes.get('/:id', supplier.show);
 
-//routes.use(authMiddleware);
-//routes.use(adminMiddleware);
-
+routes.use(adminMiddleware);
 routes.post('/', supplier.create);
 routes.put('/:id/add-contact', supplier.addContact);
 routes.put('/:id/update-contact', supplier.updateContact);

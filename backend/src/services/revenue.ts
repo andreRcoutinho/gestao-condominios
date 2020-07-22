@@ -59,7 +59,7 @@ export async function payment_record(body: any) {
 
         for (let i = 0; i < body.months.length; i++) {
             const month = body.months[i];
-            if (month <= 0 || month > 12)
+            if (month < 0 || month > 12)
                 throw new Error(api_errors.INVALID_MONTH)
         }
 

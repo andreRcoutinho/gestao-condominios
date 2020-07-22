@@ -11,7 +11,6 @@ export function signUpRules(body: any): boolean | void {
         NIF: "required",
         IBAN: "required",
         role_id: "required",
-        units_id: "required",
         contacts: "required",
     };
 

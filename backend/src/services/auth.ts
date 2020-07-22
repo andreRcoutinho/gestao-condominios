@@ -49,12 +49,14 @@ export async function signUp(body: any) {
 
         await user_password.save();
 
-        let units = await Unit.findByIds(body.units_id);
-        if (!units) {
-            throw new Error(api_errors.UNIT_NOT_EXISTS);
+        if (body.units_id) {
+            let units = await Unit.findByIds(body.units_id);
+            if (!units) {
+                throw new Error(api_errors.UNIT_NOT_EXISTS);
+            }
+            user.setUnits(units);
         }
 
-        user.setUnits(units);
         await user.save();
 
         for (let index = 0; index < body.contacts.length; index++) {
@@ -64,7 +66,6 @@ export async function signUp(body: any) {
         }
 
         if (!body.password) {
-            console.log('entrei aqui');
             await sendWelcomeEmail(user)
         }
 

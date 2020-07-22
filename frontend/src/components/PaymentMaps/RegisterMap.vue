@@ -73,7 +73,7 @@
 							:rules="newMapInfo.numberRules"
 							label="Ano"
 							type="number"
-							:min="nextYear"
+							:min="thisYear"
 							color="secondary"
 							outlined
 						/>
@@ -267,7 +267,7 @@ export default {
 		dialog2: false,
 		switchIsYearly: false,
 		newMapInfo: {
-			year: +new Date().toISOString().substr(0, 4) + 1,
+			year: +new Date().toISOString().substr(0, 4),
 			mapName: '',
 			nameRules: [(v) => !!v || 'É necessário indicar um nome.'],
 			description: '',
@@ -328,7 +328,7 @@ export default {
 		},
 
 		units: [],
-		nextYear: +new Date().toISOString().substr(0, 4) + 1,
+		thisYear: +new Date().toISOString().substr(0, 4),
 	}),
 	computed: {
 		selectAll: {

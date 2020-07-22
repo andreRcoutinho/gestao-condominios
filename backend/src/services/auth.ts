@@ -10,6 +10,7 @@ import crypto from 'crypto';
 import { transporter } from '../config/email';
 import { forgot_password } from '../email/forgot_password';
 import { welcome } from '../email/welcome';
+import { LessThan, LessThanOrEqual } from 'typeorm';
 
 async function hasUser(email: String): Promise<boolean> {
     try {
@@ -42,9 +43,9 @@ export async function signUp(body: any) {
             password = body.password
         }
 
-        var user_password: UserPassword = new UserPassword(password);
+        let user_password: UserPassword = new UserPassword(password);
 
-        var user: User = new User(body.email, body.first_name, body.last_name, body.IBAN, body.NIF, role, user_password);
+        let user: User = new User(body.email, body.first_name, body.last_name, body.IBAN, body.NIF, role, user_password);
 
         await user_password.save();
 
@@ -57,13 +58,14 @@ export async function signUp(body: any) {
         await user.save();
 
         for (let index = 0; index < body.contacts.length; index++) {
-            const contact = body.contacts[index];
+            let contact = body.contacts[index];
             let c: Contact = new Contact(contact, user, null);
             await c.save();
         }
 
         if (!body.password) {
-            sendWelcomeEmail(user)
+            console.log('entrei aqui');
+            await sendWelcomeEmail(user)
         }
 
         return true;
@@ -73,24 +75,29 @@ export async function signUp(body: any) {
 }
 
 async function sendWelcomeEmail(user: User) {
-    const token = crypto.randomBytes(20).toString('hex');
+    try {
+        let token = crypto.randomBytes(20).toString('hex');
 
-    const now = new Date();
-    now.setHours(now.getHours() + 4);
+        let now = new Date();
+        now.setHours(now.getHours() + 4);
 
-    let user_password: UserPassword = await UserPassword.findOne({ where: { user } });
-    user_password.setPassword_expire_date(now);
-    user_password.setPassword_reset_token(token);
-    await user_password.save();
+        let user_password: UserPassword = user.getUser_password();
+        user_password.setPassword_expire_date(now);
+        user_password.setPassword_reset_token(token);
+        await user_password.save();
 
-    transporter.sendMail({
-        to: String(user.getEmail()),
-        from: 'lei.gestao.condominios@gmail.com',
-        subject: 'Bem-vindo',
-        html: welcome(token, user.getEmail())
-    });
+        transporter.sendMail({
+            to: String(user.getEmail()),
+            from: 'lei.gestao.condominios@gmail.com',
+            subject: 'Bem-vindo',
+            html: welcome(token, user.getEmail())
+        });
 
-    return true;
+        return true;
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 export async function signIn(body: any) {

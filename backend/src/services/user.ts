@@ -47,7 +47,7 @@ export async function index() {
 
 export async function show(id: Number) {
     try {
-        let user_res: { id; name; email; iban; nif; role_name; units; contacts };
+        let user_res: { id; last_name; first_name; name; email; iban; nif; role_name; units; contacts };
         let user: User = await User.findOne({ where: { id } });
         if (!user) {
             throw new Error(api_errors.USER_NOT_EXISTS);
@@ -62,6 +62,8 @@ export async function show(id: Number) {
 
         user_res = {
             id: user.getId(),
+            first_name: user.getFirst_name(),
+            last_name: user.getLast_name(),
             name: user.getFirst_name() + ' ' + user.getLast_name(),
             email: user.getEmail(),
             iban: user.getIBAN(),

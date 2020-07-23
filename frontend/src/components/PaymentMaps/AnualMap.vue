@@ -102,7 +102,7 @@
 
 							<v-col>
 								<v-row justify="center">
-									<span class="text-button">Fundo de Reserva</span>
+									<span class="text-button">Fundo de Reserva:</span>
 									<span style="align-self: center;">{{ reserveFund }} €</span>
 								</v-row>
 							</v-col>

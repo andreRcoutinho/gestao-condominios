@@ -466,16 +466,14 @@ export default {
 	}),
 	async mounted() {
 		let userID = this.$store.state.user.id;
-		let userFirstName = this.$store.state.user.first_name;
-		let userLastName = this.$store.state.user.last_name;
 
 		await axios.get(`//localhost:3333/api/users/${userID}`).then((res) => {
 			this.userInfo = res.data.data;
 			this.userContacts = res.data.data.contacts;
 		});
 
-		this.editedUser.firstName = userFirstName;
-		this.editedUser.lastName = userLastName;
+		this.editedUser.firstName = this.userInfo.first_name;
+		this.editedUser.lastName = this.userInfo.last_name;
 		this.editedUser.email = this.userInfo.email;
 		this.editedUser.IBAN = this.userInfo.iban;
 		this.editedUser.NIF = this.userInfo.nif;

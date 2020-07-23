@@ -148,7 +148,7 @@
 				mdi-cancel
 			</v-icon>
 		</v-snackbar>
-		<v-dialog v-model="simulate.show" max-width="1000px">
+		<v-dialog v-model="simulate.show" max-width="1000px" persistent>
 			<v-card>
 				<v-card-title class="ml-2 pt-5">
 					<span>
@@ -163,7 +163,9 @@
 								<v-list-item two-line class="text-center">
 									<v-list-item-content>
 										<v-list-item-subtitle>Nome</v-list-item-subtitle>
-										<v-list-item-title>{{ simulate.paymentMap.name }}</v-list-item-title>
+										<v-list-item-title class="text-wrap">{{
+											simulate.paymentMap.name
+										}}</v-list-item-title>
 									</v-list-item-content>
 								</v-list-item>
 							</v-row>
@@ -173,7 +175,7 @@
 								<v-list-item two-line class="text-center">
 									<v-list-item-content>
 										<v-list-item-subtitle>Descrição</v-list-item-subtitle>
-										<v-list-item-title>{{
+										<v-list-item-title class="text-wrap">{{
 											simulate.paymentMap.description
 										}}</v-list-item-title>
 									</v-list-item-content>
@@ -212,7 +214,7 @@
 						</v-col>
 					</v-row>
 
-					<v-row justify="center" class="mb-12">
+					<v-row justify="center" class="mb-2">
 						<v-data-table
 							:items="simulate.monthlyExpenses"
 							:headers="simulate.unitsHeaders"
@@ -252,6 +254,12 @@
 						</v-data-table>
 					</v-row>
 				</v-card-text>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn color="red" text @click="simulate.show = false">
+						Fechar
+					</v-btn>
+				</v-card-actions>
 			</v-card>
 		</v-dialog>
 	</div>

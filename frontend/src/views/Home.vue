@@ -67,7 +67,7 @@
 					<v-col cols="4">
 						<v-row justify="center">
 							<v-card shaped class="widthMod">
-								<v-card-title class="justify-center secondary--text title">
+								<v-card-title class="justify-center secondary--text">
 									<v-icon left>mdi-home</v-icon>Por pagar
 								</v-card-title>
 								<v-row justify="center" class="mx-0">
@@ -167,6 +167,6 @@ export default {
 }
 
 .column_wrapper {
-	column-count: 3;
+	column-count: 4;
 }
 </style>

@@ -514,7 +514,7 @@ export default {
 			axios
 				.post(`//localhost:3333/api/units`, {
 					unit: this.newUnit.unit,
-					typology_id: this.newUnit.typology,
+					typology_id: this.newUnit.selectedTypology,
 				})
 				.then(() => {
 					this.newUnit.success = true;

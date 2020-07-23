@@ -227,7 +227,7 @@
 							</v-row>
 							<v-row class="mr-2">
 								<v-spacer></v-spacer>
-								<v-btn color="secondary" text @click="closeMapInfo">Fechar</v-btn>
+								<v-btn color="red" text @click="closeMapInfo">Fechar</v-btn>
 							</v-row>
 						</v-card-text>
 					</v-card>

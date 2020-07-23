@@ -554,8 +554,8 @@ paths:
     delete:
       tags:
         - "Users"
-      summary: "Delete user"
-      description: "Deletes an existing user"
+      summary: "Remover utilizador."
+      description: "Remove um utilizador."
       operationId: "deleteUser"
       produces:
         - "application/json"
@@ -569,16 +569,7 @@ paths:
         "200":
           description: "Utilizador removido com sucesso!"
           schema:
-            type: object
-            properties:
-              request:
-                type: string
-              message:
-                type: string
-              status:
-                type: integer
-              data:
-                $ref: "#/definitions/User"
+            $ref: "#/definitions/TrueResponse"
         "400":
           description: "Request inválido"
           schema:
@@ -695,6 +686,8 @@ paths:
             properties:
               phone_number:
                 type: string
+              id: 
+                type: integer
       responses:
         "200":
           description: "Adicionado Contacto ao utilizador com sucesso!"

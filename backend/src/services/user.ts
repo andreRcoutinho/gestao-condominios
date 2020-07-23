@@ -104,7 +104,7 @@ export async function remove(id: Number) {
         await Contact.remove(user_contacts);
         await User.remove(user);
 
-        return user;
+        return true;
     } catch (error) {
         return error;
     }
@@ -159,6 +159,8 @@ export async function updateRole(id: Number, body: any) {
 
 export async function addContact(id: Number, body: any) {
     try {
+        let contact_res: { phone_number; id; };
+
         let user: User = await User.findOne({ where: { id } });
         if (!user) {
             throw new Error(api_errors.USER_NOT_EXISTS);
@@ -167,7 +169,12 @@ export async function addContact(id: Number, body: any) {
         let contact: Contact = new Contact(body.phone_number, user, null);
         await contact.save();
 
-        return contact;
+        contact_res = {
+            phone_number: contact.getPhone_number(),
+            id: contact.getId()
+        }
+
+        return contact_res;
     } catch (error) {
         return error;
     }

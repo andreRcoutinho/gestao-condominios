@@ -284,7 +284,7 @@ export default {
 			headers: [{ text: '', value: 'unit' }],
 			page: 1,
 			pageCount: 0,
-			itemsPerPage: 13,
+			itemsPerPage: 10,
 			paymentMapAnualInfo: {
 				revenues: [],
 			},

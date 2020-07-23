@@ -364,7 +364,7 @@ export default {
 					value: this.editedItem.value,
 					description: this.editedItem.description,
 					expense_date: this.editedItem.expense_date.substring(0, 10),
-					supplier_id: this.editedItem.supplier,
+					supplier_id: this.editedItem.supplier.id,
 				})
 				.then((res) => {
 					this.editItemSuccess = res.data.message;

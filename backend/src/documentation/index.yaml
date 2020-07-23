@@ -6,6 +6,11 @@ info:
 
 host: "localhost:3333"
 basePath: "/api"
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 
 #API name routes
 tags:
@@ -197,6 +202,8 @@ paths:
   #Typologies
   /typologies:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Typologies"
       summary: "Buscar tipologias."
@@ -224,6 +231,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /typologies/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Typologies"
       summary: "Buscar tipologia."
@@ -256,6 +265,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []
       tags:
         - "Typologies"
       summary: "Criar tipologia."
@@ -293,6 +304,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "Typologies"
       summary: "Atualizar tipologia."
@@ -335,6 +348,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
+      security:
+        - Bearer: []
       tags:
         - "Typologies"
       summary: "Apagar tipologia."
@@ -373,6 +388,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /typologies/import:
     post:
+      security:
+        - Bearer: []
       tags:
         - "Typologies"
       summary: "Importar tipologias."
@@ -415,6 +432,8 @@ paths:
   #Roles
   /roles:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Roles"
       summary: "Buscar permissões."
@@ -444,6 +463,8 @@ paths:
   #Users
   /users:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Buscar utilizadores."
@@ -471,6 +492,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Buscar utilizador."
@@ -503,6 +526,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Atualizar utilizador."
@@ -552,6 +577,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Remover utilizador."
@@ -576,6 +603,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/update-role:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Atualizar permissão de utilizador."
@@ -618,6 +647,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/update-password:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Atualizar password."
@@ -664,6 +695,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/add-contact:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Adicionar contato de utilizador."
@@ -708,6 +741,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/delete-contact:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Remover contato do utilizador."
@@ -750,6 +785,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/update-contact:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Atualizar contato de utilizador."
@@ -794,6 +831,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/add-unit:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Adicionar fração a utilizador."
@@ -836,6 +875,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /users/{id}/delete-unit:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Users"
       summary: "Remover fração de utilizador."
@@ -880,6 +921,8 @@ paths:
   #Units
   /units:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Units"
       summary: "Buscar frações."
@@ -906,6 +949,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []
       tags:
         - "Units"
       summary: "Criar fração."
@@ -944,6 +989,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /units/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Units"
       summary: "Buscar fração."
@@ -976,6 +1023,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "Units"
       summary: "Atualizar fração."
@@ -1029,6 +1078,8 @@ paths:
               error:
                 type: string
     delete:
+      security:
+        - Bearer: []
       tags:
         - "Units"
       summary: "Remover fração"
@@ -1067,6 +1118,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /units/import:
     post:
+      security:
+        - Bearer: []
       tags:
         - "Units"
       summary: "Importar frações."
@@ -1107,6 +1160,8 @@ paths:
   #ServiceTypes
   /service-types:
     get:
+      security:
+        - Bearer: []
       tags:
         - "ServiceTypes"
       summary: "Buscar todos os tipos de serviços."
@@ -1133,6 +1188,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []
       tags:
         - "ServiceTypes"
       summary: "Criar tipo de serviço."
@@ -1171,6 +1228,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /service-types/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "ServiceTypes"
       summary: "Buscar tipo de serviço."
@@ -1203,6 +1262,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "ServiceTypes"
       summary: "Atualizar tipo de serviço."
@@ -1244,6 +1305,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
+      security:
+        - Bearer: []
       tags:
         - "ServiceTypes"
       summary: "Remover tipo de serviço."
@@ -1282,6 +1345,8 @@ paths:
   #Suppliers
   /suppliers:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Buscar fornecedores."
@@ -1308,6 +1373,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Criar fornecedor."
@@ -1357,6 +1424,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Buscar fornecedor"
@@ -1389,6 +1458,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Atualizar fornecedor."
@@ -1436,6 +1507,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Remover fornecedor."
@@ -1469,6 +1542,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/add-contact:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Adicionar contato a fornecedor."
@@ -1511,6 +1586,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/update-contact:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Atualizar contato de fornecedor."
@@ -1555,6 +1632,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/delete-contact:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Remover contato de fornecedor."
@@ -1597,6 +1676,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id}/add-service-type:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Adicionar tipo de serviço a fornecedor."
@@ -1639,6 +1720,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /suppliers/{id1}/delete-service-type:
     put:
+      security:
+        - Bearer: []
       tags:
         - "Suppliers"
       summary: "Remover tipo de serviço de fornecedor."
@@ -1683,6 +1766,8 @@ paths:
   #Expenses
   /expenses:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Expenses"
       summary: "Buscar despesas."
@@ -1709,6 +1794,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []      
       tags:
         - "Expenses"
       summary: "Criar despesa."
@@ -1752,6 +1839,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /expenses/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Expenses"
       summary: "Buscar despesa."
@@ -1784,6 +1873,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "Expenses"
       summary: "Atualizar despesa."
@@ -1829,6 +1920,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     delete:
+      security:
+        - Bearer: []
       tags:
         - "Expenses"
       summary: "Remover despesa."
@@ -1864,6 +1957,8 @@ paths:
   #PaymentMap
   /payment_map:
     get:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Buscar mapas de pagamento."
@@ -1890,6 +1985,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Criar mapa de pagamento."
@@ -1930,6 +2027,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /payment_map/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Buscar mapa de pagamento."
@@ -1962,6 +2061,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     put:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Atualizar mapa de pagamento."
@@ -2006,6 +2107,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /payment_map/{id}/close:
     put:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Fechar mapa de pagamento."
@@ -2039,6 +2142,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"
   /payment_map/simulate:
     post:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Simular mapa de pagamento."
@@ -2079,6 +2184,8 @@ paths:
             $ref: "#/definitions/EmptyResponse"       
   /payment_map/anual?year={year}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "PaymentMap"
       summary: "Buscar mapa de pagamento por ano"
@@ -2114,6 +2221,8 @@ paths:
   #Revenues
   /revenue:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Revenues"
       summary: "Buscar receitas."
@@ -2140,6 +2249,8 @@ paths:
           schema:
             $ref: "#/definitions/EmptyResponse"
     post:
+      security:
+        - Bearer: []
       tags:
         - "Revenues"
       summary: "Registo receita."
@@ -2174,6 +2285,8 @@ paths:
   #Others
   /others/monthly-data?month={month}&year={year}:
     get:
+      security:
+        - Bearer: []
       tags:
         - "Others"
       summary: "Buscar informações mensais."
